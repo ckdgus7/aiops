@@ -1,4 +1,4 @@
-import { type CSSProperties, type ReactNode, useEffect } from "react";
+import { type CSSProperties, type ReactNode, type ReactElement, useEffect } from "react";
 import { Button } from "./Button";
 
 type AlertType = "info" | "success" | "warning" | "error";
@@ -65,7 +65,7 @@ function CloseIcon() {
   );
 }
 
-const ICON_MAP: Record<AlertType, () => JSX.Element> = {
+const ICON_MAP: Record<AlertType, () => ReactElement> = {
   info: InfoIcon,
   success: SuccessIcon,
   warning: WarningIcon,
