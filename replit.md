@@ -44,7 +44,7 @@ vite.config.ts  - Vite configuration
 - Q&A `/qna`
 
 ### SSF관리
-- 도메인(L1)정보 관리 `/ssf/domain`
+- 도메인(L1)정보 관리 `/ssf/domain` (fully implemented: filter bar with ChooseButton + search, data table with sorting/pagination, 13 mock rows)
 - 컴포넌트(L2)정보 관리 `/ssf/component`
 - 업무(L3)정보 관리 `/ssf/business`
 - 기능(L4)정보 관리 `/ssf/function`
