@@ -17,10 +17,33 @@ index.html      - HTML shell
 vite.config.ts  - Vite configuration
 ```
 
-## Features
+## Menu Structure & Routes
 
-- **Q&A** (`/qna`, `/`): Q&A list page with search, filtering, pagination (10 rows/page, 100 mock items)
-- **Notices** (`/notices`, `/notices/:id`): Notice list and detail pages
+### 요구관리
+- 요구사항 `/requirements`
+- 요구사항 명세 작성 `/requirements/spec`
+- 요구사항 검토자 배정 `/requirements/reviewer`
+- 요구사항 검토 `/requirements/review`
+- 요구상세 `/requirements/detail`
+- 요구상세 승인 `/requirements/approval`
+- 요구사항 반려 검토 `/requirements/reject-review`
+- 업무 Flow 설계 `/requirements/flow-design`
+- 애플리케이션 설계 `/requirements/app-design`
+
+### UI 관리
+- SB기획 `/ui/sb-planning`
+- UI디자인 `/ui/design`
+- 퍼블리싱 `/ui/publishing`
+
+### 기능관리
+- 기능설계 `/features/design`
+- 상세기능 설계 `/features/detail-design`
+
+### 게시판
+- 공지사항 `/notices` (fully implemented with search/pagination)
+- Q&A `/qna`
+
+All pages except 공지사항 are blank placeholder pages using the shared `BlankPage` component.
 
 ## Shared UI Components
 
@@ -79,6 +102,9 @@ src/
  │   │   ├─ ui/
  ├─ pages/
  │   ├─ notices/
+ │   ├─ requirements/
+ │   ├─ ui-management/
+ │   ├─ feature-management/
  │   ├─ qna/
  ├─ shared/
  │   ├─ components/
