@@ -37,12 +37,17 @@ const s = {
     overflow: "hidden",
   } satisfies CSSProperties,
   logoWrap: {
-    height: 88,
     display: "flex",
+    flexDirection: "column",
     alignItems: "center",
-    padding: "16px 22px",
-    boxSizing: "border-box",
+    justifyContent: "center",
+    padding: 16,
     flexShrink: 0,
+  } satisfies CSSProperties,
+  logoInner: {
+    display: "flex",
+    alignItems: "flex-start",
+    gap: 8,
   } satisfies CSSProperties,
   logoIcon: {
     width: 24,
@@ -61,28 +66,28 @@ const s = {
     lineHeight: 1,
   } satisfies CSSProperties,
   logoTitle: {
-    marginLeft: 8,
     display: "flex",
     flexDirection: "column",
+    gap: 4,
+    width: 164,
+    color: "#71717a",
   } satisfies CSSProperties,
   logoNova: {
-    fontSize: 12,
+    fontSize: 16,
     fontWeight: 600,
-    color: "#3f3f46",
     lineHeight: "20px",
-    letterSpacing: 1,
   } satisfies CSSProperties,
   logoDevops: {
-    fontSize: 18,
-    fontWeight: 700,
-    color: "#18181b",
-    lineHeight: "28px",
-    letterSpacing: 0.5,
+    fontSize: 28,
+    fontWeight: 900,
+    lineHeight: "32px",
   } satisfies CSSProperties,
   navWrap: {
     flex: 1,
     overflowY: "auto",
     overflowX: "hidden",
+    display: "flex",
+    flexDirection: "column",
   } satisfies CSSProperties,
   depthWrap: {
     display: "flex",
@@ -97,7 +102,6 @@ const s = {
     gap: 8,
     padding: "12px 8px",
     cursor: "pointer",
-    borderRadius: 4,
     userSelect: "none",
   } satisfies CSSProperties,
   depthIcon1: {
@@ -119,12 +123,6 @@ const s = {
     whiteSpace: "nowrap",
     overflow: "hidden",
     textOverflow: "ellipsis",
-  } satisfies CSSProperties,
-  depthArrow: {
-    fontSize: 10,
-    color: "#a1a1aa",
-    flexShrink: 0,
-    transition: "transform 0.2s ease",
   } satisfies CSSProperties,
   depth2Wrap: {
     display: "flex",
@@ -179,6 +177,9 @@ const s = {
     textOverflow: "ellipsis",
   } satisfies CSSProperties,
   favWrap: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 8,
     padding: "24px 16px",
     flexShrink: 0,
     borderTop: "1px solid #e4e4e7",
@@ -186,24 +187,20 @@ const s = {
   favHeader: {
     display: "flex",
     alignItems: "center",
-    gap: 8,
-    marginBottom: 8,
-  } satisfies CSSProperties,
-  favIcon: {
-    fontSize: 16,
-    color: "#a1a1aa",
+    gap: 4,
   } satisfies CSSProperties,
   favLabel: {
     fontSize: 12,
-    fontWeight: 400,
+    fontWeight: 700,
     color: "#3f3f46",
     lineHeight: "18px",
   } satisfies CSSProperties,
   favEmpty: {
     fontSize: 12,
-    color: "#a1a1aa",
+    fontWeight: 400,
+    color: "#71717a",
     textAlign: "center",
-    padding: "16px 20px",
+    padding: 16,
     lineHeight: "18px",
     background: "#fafafa",
     borderRadius: 4,
@@ -228,13 +225,11 @@ const s = {
     lineHeight: 1,
   } satisfies CSSProperties,
   functionWrap: {
-    height: 56,
     display: "flex",
     alignItems: "center",
     justifyContent: "flex-end",
-    padding: "0 16px",
+    padding: 16,
     flexShrink: 0,
-    borderTop: "1px solid #e4e4e7",
   } satisfies CSSProperties,
   collapseBtn: {
     width: 24,
@@ -245,8 +240,6 @@ const s = {
     cursor: "pointer",
     border: "none",
     background: "transparent",
-    color: "#71717a",
-    fontSize: 14,
     padding: 0,
     borderRadius: 4,
   } satisfies CSSProperties,
@@ -268,6 +261,37 @@ const LNB_ICONS: Record<string, string> = {
   "Q&A": "❓",
 };
 
+function HeartIcon() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style={{ opacity: 0.5, flexShrink: 0 }}>
+      <path
+        d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+        stroke="#3f3f46"
+        strokeWidth="1.5"
+        fill="none"
+      />
+    </svg>
+  );
+}
+
+function CollapseSidebarIcon({ direction = "left" }: { direction?: "left" | "right" }) {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      {direction === "left" ? (
+        <>
+          <path d="M15 6L9 12L15 18" stroke="#71717a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          <line x1="4" y1="4" x2="4" y2="20" stroke="#71717a" strokeWidth="1.5" strokeLinecap="round" />
+        </>
+      ) : (
+        <>
+          <path d="M9 6L15 12L9 18" stroke="#71717a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          <line x1="20" y1="4" x2="20" y2="20" stroke="#71717a" strokeWidth="1.5" strokeLinecap="round" />
+        </>
+      )}
+    </svg>
+  );
+}
+
 interface LNBProps {
   activeItem?: string;
   activeGnb?: string;
@@ -276,8 +300,8 @@ interface LNBProps {
 
 export function LNB({ activeItem = "Q&A", activeGnb = "게시판", onItemClick }: LNBProps) {
   const navigate = useNavigate();
-  const fetchMenu = useMenuStore((s) => s.fetchMenu);
-  const menuItems = useMenuStore((s) => s.menuItems);
+  const fetchMenu = useMenuStore((st) => st.fetchMenu);
+  const menuItems = useMenuStore((st) => st.menuItems);
   const favorites = useFavoritesStore((st) => st.favorites);
   const removeFavorite = useFavoritesStore((st) => st.removeFavorite);
 
@@ -317,7 +341,7 @@ export function LNB({ activeItem = "Q&A", activeGnb = "게시판", onItemClick }
   if (collapsed) {
     return (
       <aside style={s.sidebarCollapsed}>
-        <div style={{ ...s.logoWrap, padding: "16px 10px", justifyContent: "center" }}>
+        <div style={{ ...s.logoWrap, padding: "16px 10px" }}>
           <div style={s.logoIcon}>
             <span style={s.logoIconText}>N</span>
           </div>
@@ -344,7 +368,7 @@ export function LNB({ activeItem = "Q&A", activeGnb = "게시판", onItemClick }
             onClick={() => setCollapsed(false)}
             title="사이드바 펼치기"
           >
-            ▶
+            <CollapseSidebarIcon direction="right" />
           </button>
         </div>
       </aside>
@@ -354,12 +378,14 @@ export function LNB({ activeItem = "Q&A", activeGnb = "게시판", onItemClick }
   return (
     <aside style={s.sidebar}>
       <div style={s.logoWrap}>
-        <div style={s.logoIcon}>
-          <span style={s.logoIconText}>N</span>
-        </div>
-        <div style={s.logoTitle}>
-          <span style={s.logoNova}>NOVA</span>
-          <span style={s.logoDevops}>AI DevOps</span>
+        <div style={s.logoInner}>
+          <div style={s.logoIcon}>
+            <span style={s.logoIconText}>N</span>
+          </div>
+          <div style={s.logoTitle}>
+            <span style={s.logoNova}>NOVA</span>
+            <span style={s.logoDevops}>AI DevOps</span>
+          </div>
         </div>
       </div>
 
@@ -374,14 +400,6 @@ export function LNB({ activeItem = "Q&A", activeGnb = "게시판", onItemClick }
               >
                 <span style={s.depthIcon1}>{GNB_ICONS[gnb.gnbName] || "📁"}</span>
                 <span style={s.depthTitle1}>{gnb.gnbName}</span>
-                <span
-                  style={{
-                    ...s.depthArrow,
-                    transform: isExpanded ? "rotate(90deg)" : "rotate(0deg)",
-                  }}
-                >
-                  ▶
-                </span>
               </div>
               {isExpanded && (
                 <div style={s.depth2Wrap}>
@@ -409,7 +427,7 @@ export function LNB({ activeItem = "Q&A", activeGnb = "게시판", onItemClick }
 
       <div style={s.favWrap}>
         <div style={s.favHeader}>
-          <span style={s.favIcon}>☆</span>
+          <HeartIcon />
           <span style={s.favLabel}>즐겨찾기</span>
         </div>
         {favorites.length === 0 ? (
@@ -446,7 +464,7 @@ export function LNB({ activeItem = "Q&A", activeGnb = "게시판", onItemClick }
           onClick={() => setCollapsed(true)}
           title="사이드바 접기"
         >
-          ◀
+          <CollapseSidebarIcon direction="left" />
         </button>
       </div>
     </aside>
