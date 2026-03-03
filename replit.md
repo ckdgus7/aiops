@@ -52,7 +52,8 @@ All pages except 공지사항 are blank placeholder pages using the shared `Blan
 - **PageHeader** (`src/shared/ui/PageHeader.tsx`): Site header wrapper combining MDI Tab (36px) + page title wrap (120px). Contains MdiTab at top and renders children (Breadcrumb + PageTitle) in white content area with 24px/32px padding.
 - **MdiTab** (`src/shared/ui/MdiTab.tsx`): MDI tab bar (36px, bg #fafafa). Each tab has label + close button, max-width 240px. Managed by Zustand store (`mdi.store.ts`). Pages register their own tab via `useMdiStore.addTab()`.
 - **Breadcrumb** (`src/shared/ui/Breadcrumb.tsx`): Navigation breadcrumb with home icon, chevron dividers. 12px Pretendard font. Last item is active (#3f3f46, Medium weight) with hover underline.
-- **PageTitle** (`src/shared/ui/PageTitle.tsx`): Page title (20px Bold) with optional badge (purple border pill), favorite star button, and action buttons slot.
+- **PageTitle** (`src/shared/ui/PageTitle.tsx`): Page title (32px Bold, 40px line-height) with optional status badge (purple #7a5af8) and ID badge (blue #36bffa), favorite button (1px solid black border, 3px padding), optional back button, refresh button, and CTA action slot.
+- **PageFooter** (`src/shared/ui/PageFooter.tsx`): Footer with copyright text (10px #a1a1aa) and links (서비스 이용약관 12px Regular, 개인정보처리방침 12px Bold in #52525b). Border-top #e4e4e7, padding 16px 32px.
 - When composing screens, import and use the common components (such as Button, Input, Datepicker, etc.) that are defined in `shared/ui`.
 - **All styles use inline CSSProperties** (no CSS files, no Tailwind). Pretendard font family.
 

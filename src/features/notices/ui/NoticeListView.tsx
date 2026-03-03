@@ -29,7 +29,7 @@ const s = {
   outerWrapper: {
     display: "flex",
     flexDirection: "column",
-    height: "100%",
+    flex: 1,
     fontFamily: "'Pretendard', sans-serif",
   } satisfies CSSProperties,
   wrapper: {

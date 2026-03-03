@@ -2,6 +2,7 @@ import { Outlet, useLocation } from "react-router";
 import { useEffect, useState } from "react";
 import type { CSSProperties } from "react";
 import { LNB } from "./LNB";
+import { PageFooter } from "./PageFooter";
 import { useMenuStore } from "@/shared/model/menu.store";
 
 const styles = {
@@ -55,6 +56,7 @@ export function LayoutRoute() {
       <LNB activeItem={activeLnb} activeGnb={activeGnb} />
       <main style={styles.content}>
         <Outlet />
+        <PageFooter />
       </main>
     </div>
   );
