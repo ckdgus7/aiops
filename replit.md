@@ -58,6 +58,7 @@ All other pages are blank placeholder pages using the shared `BlankPage` compone
 - **Breadcrumb** (`src/shared/ui/Breadcrumb.tsx`): Navigation breadcrumb with home icon, chevron dividers. 12px Pretendard font. Last item is active (#3f3f46, Medium weight) with hover underline.
 - **PageTitle** (`src/shared/ui/PageTitle.tsx`): Page title (32px Bold, 40px line-height) with optional status badge (purple #7a5af8) and ID badge (blue #36bffa), favorite button (1px solid black border, 3px padding), optional back button, refresh button, and CTA action slot.
 - **PageFooter** (`src/shared/ui/PageFooter.tsx`): Footer with copyright text (10px #a1a1aa) and links (서비스 이용약관 12px Regular, 개인정보처리방침 12px Bold in #52525b). Border-top #e4e4e7, padding 16px 32px.
+- **Typography** (`src/shared/ui/styles.ts`): Figma-based typography system with `typography.title` (page 32/40, popup 24/32), `typography.paragraphTitle` (xl→xs: 20→12, Bold/Medium), `typography.paragraph` (xl→xs: 20→10, Regular), `typography.field` (labelM/S, valueL/M, indicator, placeholderL). All Pretendard. Import as `import { typography } from "@/shared/ui/styles"`.
 - When composing screens, import and use the common components (such as Button, Input, Datepicker, etc.) that are defined in `shared/ui`.
 - **All styles use inline CSSProperties** (no CSS files, no Tailwind). Pretendard font family.
 

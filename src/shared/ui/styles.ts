@@ -1,117 +1,145 @@
 import type { CSSProperties } from "react";
 
-export const layout = {
-  page: {
-    maxWidth: 980,
-    margin: "0 auto",
-    padding: "24px 16px",
-    fontFamily: "system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, 'Apple Color Emoji', 'Segoe UI Emoji'",
-  } satisfies CSSProperties,
-  headerRow: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "flex-end",
-    gap: 12,
-    marginBottom: 12,
-  } satisfies CSSProperties,
-  formRow: {
-    display: "grid",
-    gridTemplateColumns: "1.2fr 0.9fr 0.9fr auto",
-    gap: 12,
-    alignItems: "end",
-  } satisfies CSSProperties,
+const FONT_FAMILY = "'Pretendard', sans-serif";
+
+export const typography = {
+  title: {
+    page: {
+      fontFamily: FONT_FAMILY,
+      fontSize: 32,
+      fontWeight: 700,
+      lineHeight: "40px",
+      fontStyle: "normal",
+    } satisfies CSSProperties,
+    popup: {
+      fontFamily: FONT_FAMILY,
+      fontSize: 24,
+      fontWeight: 700,
+      lineHeight: "32px",
+      fontStyle: "normal",
+    } satisfies CSSProperties,
+  },
+
+  paragraphTitle: {
+    xl: {
+      fontFamily: FONT_FAMILY,
+      fontSize: 20,
+      fontWeight: 500,
+      lineHeight: "32px",
+      fontStyle: "normal",
+    } satisfies CSSProperties,
+    l: {
+      fontFamily: FONT_FAMILY,
+      fontSize: 18,
+      fontWeight: 700,
+      lineHeight: "28px",
+      fontStyle: "normal",
+    } satisfies CSSProperties,
+    m: {
+      fontFamily: FONT_FAMILY,
+      fontSize: 16,
+      fontWeight: 700,
+      lineHeight: "24px",
+      fontStyle: "normal",
+    } satisfies CSSProperties,
+    s: {
+      fontFamily: FONT_FAMILY,
+      fontSize: 14,
+      fontWeight: 700,
+      lineHeight: "20px",
+      fontStyle: "normal",
+    } satisfies CSSProperties,
+    xs: {
+      fontFamily: FONT_FAMILY,
+      fontSize: 12,
+      fontWeight: 700,
+      lineHeight: "18px",
+      fontStyle: "normal",
+    } satisfies CSSProperties,
+  },
+
+  paragraph: {
+    xl: {
+      fontFamily: FONT_FAMILY,
+      fontSize: 20,
+      fontWeight: 400,
+      lineHeight: "32px",
+      fontStyle: "normal",
+    } satisfies CSSProperties,
+    l: {
+      fontFamily: FONT_FAMILY,
+      fontSize: 16,
+      fontWeight: 400,
+      lineHeight: "24px",
+      fontStyle: "normal",
+    } satisfies CSSProperties,
+    m: {
+      fontFamily: FONT_FAMILY,
+      fontSize: 14,
+      fontWeight: 400,
+      lineHeight: "20px",
+      fontStyle: "normal",
+    } satisfies CSSProperties,
+    s: {
+      fontFamily: FONT_FAMILY,
+      fontSize: 12,
+      fontWeight: 400,
+      lineHeight: "18px",
+      fontStyle: "normal",
+    } satisfies CSSProperties,
+    xs: {
+      fontFamily: FONT_FAMILY,
+      fontSize: 10,
+      fontWeight: 400,
+      lineHeight: "16px",
+      fontStyle: "normal",
+    } satisfies CSSProperties,
+  },
+
   field: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 6,
-  } satisfies CSSProperties,
-  label: {
-    fontSize: 12,
-    color: "#444",
-    fontWeight: 600,
-  } satisfies CSSProperties,
+    labelM: {
+      fontFamily: FONT_FAMILY,
+      fontSize: 14,
+      fontWeight: 500,
+      lineHeight: "18px",
+      fontStyle: "normal",
+    } satisfies CSSProperties,
+    labelS: {
+      fontFamily: FONT_FAMILY,
+      fontSize: 12,
+      fontWeight: 500,
+      lineHeight: "16px",
+      fontStyle: "normal",
+    } satisfies CSSProperties,
+    valueL: {
+      fontFamily: FONT_FAMILY,
+      fontSize: 16,
+      fontWeight: 400,
+      lineHeight: "24px",
+      fontStyle: "normal",
+    } satisfies CSSProperties,
+    valueM: {
+      fontFamily: FONT_FAMILY,
+      fontSize: 14,
+      fontWeight: 500,
+      lineHeight: "20px",
+      fontStyle: "normal",
+    } satisfies CSSProperties,
+    indicator: {
+      fontFamily: FONT_FAMILY,
+      fontSize: 12,
+      fontWeight: 400,
+      lineHeight: "18px",
+      fontStyle: "normal",
+    } satisfies CSSProperties,
+    placeholderL: {
+      fontFamily: FONT_FAMILY,
+      fontSize: 16,
+      fontWeight: 400,
+      lineHeight: "24px",
+      fontStyle: "normal",
+    } satisfies CSSProperties,
+  },
 };
 
-export const h1: CSSProperties = {
-  margin: 0,
-  fontSize: 20,
-  fontWeight: 800,
-  letterSpacing: "-0.2px",
-};
-
-export const muted: CSSProperties = {
-  color: "#666",
-  fontSize: 12,
-};
-
-export const card: CSSProperties = {
-  border: "1px solid #e6e6e6",
-  borderRadius: 12,
-  padding: 16,
-  background: "#fff",
-  boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
-  marginBottom: 12,
-};
-
-export const input: CSSProperties = {
-  height: 36,
-  padding: "0 12px",
-  borderRadius: 10,
-  border: "1px solid #d9d9d9",
-  outline: "none",
-};
-
-export const button = {
-  primary: {
-    height: 36,
-    padding: "0 14px",
-    borderRadius: 10,
-    border: "1px solid #111",
-    background: "#111",
-    color: "#fff",
-    cursor: "pointer",
-    fontWeight: 700,
-    whiteSpace: "nowrap",
-  } satisfies CSSProperties,
-  secondary: {
-    height: 36,
-    padding: "0 14px",
-    borderRadius: 10,
-    border: "1px solid #d9d9d9",
-    background: "#fff",
-    color: "#111",
-    cursor: "pointer",
-    fontWeight: 700,
-    whiteSpace: "nowrap",
-    textDecoration: "none",
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-  } satisfies CSSProperties,
-};
-
-export const table: CSSProperties = {
-  width: "100%",
-  borderCollapse: "collapse",
-};
-
-export const th: CSSProperties = {
-  textAlign: "left",
-  fontSize: 12,
-  color: "#333",
-  background: "#f6f6f6",
-  padding: "10px 12px",
-  borderBottom: "1px solid #e6e6e6",
-};
-
-export const td: CSSProperties = {
-  padding: "10px 12px",
-  borderBottom: "1px solid #f0f0f0",
-  fontSize: 13,
-  color: "#111",
-};
-
-export const link: CSSProperties = {
-  color: "#111",
-  textDecoration: "underline",
-};
+export const FONT = FONT_FAMILY;
