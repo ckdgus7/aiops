@@ -1,19 +1,12 @@
 import type { CSSProperties, ReactNode } from "react";
-import { GNB } from "./GNB";
 import { LNB } from "./LNB";
 
 const styles = {
   container: {
     display: "flex",
-    flexDirection: "column",
     height: "100vh",
     width: "100%",
     fontFamily: "'Pretendard', sans-serif",
-  } satisfies CSSProperties,
-  body: {
-    display: "flex",
-    flex: 1,
-    overflow: "hidden",
   } satisfies CSSProperties,
   content: {
     flex: 1,
@@ -36,11 +29,8 @@ export function Layout({
 }: LayoutProps) {
   return (
     <div style={styles.container}>
-      <GNB activeMenu={activeGnb} />
-      <div style={styles.body}>
-        <LNB activeItem={activeLnb} activeGnb={activeGnb} />
-        <main style={styles.content}>{children}</main>
-      </div>
+      <LNB activeItem={activeLnb} activeGnb={activeGnb} />
+      <main style={styles.content}>{children}</main>
     </div>
   );
 }

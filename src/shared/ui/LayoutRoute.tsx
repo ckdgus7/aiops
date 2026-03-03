@@ -1,22 +1,15 @@
 import { Outlet, useLocation } from "react-router";
 import { useEffect, useState } from "react";
 import type { CSSProperties } from "react";
-import { GNB } from "./GNB";
 import { LNB } from "./LNB";
 import { useMenuStore } from "@/shared/model/menu.store";
 
 const styles = {
   container: {
     display: "flex",
-    flexDirection: "column",
     height: "100vh",
     width: "100%",
     fontFamily: "'Pretendard', sans-serif",
-  } satisfies CSSProperties,
-  body: {
-    display: "flex",
-    flex: 1,
-    overflow: "hidden",
   } satisfies CSSProperties,
   content: {
     flex: 1,
@@ -52,13 +45,10 @@ export function LayoutRoute() {
 
   return (
     <div style={styles.container}>
-      <GNB activeMenu={activeGnb} />
-      <div style={styles.body}>
-        <LNB activeItem={activeLnb} activeGnb={activeGnb} />
-        <main style={styles.content}>
-          <Outlet />
-        </main>
-      </div>
+      <LNB activeItem={activeLnb} activeGnb={activeGnb} />
+      <main style={styles.content}>
+        <Outlet />
+      </main>
     </div>
   );
 }
