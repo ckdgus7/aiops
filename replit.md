@@ -80,7 +80,8 @@ All other pages are blank placeholder pages using the shared `BlankPage` compone
 - **Button** (`src/shared/ui/Button.tsx`): Figma-based button component. Props: `size` (l/m/s → 40/32/24px), `variant` (filled/outlined/text), `color` (positive #7a5af8, negative #f04438, warning #f79009, success #1ac057, info #71717a), `disabled` (opacity 0.4), `leadingIcon`, `trailingIcon`, `children`. Font: L=16px Bold, M=14px Medium, S=12px Regular. Border-radius 4px. Named export `Button`.
 - **Input** (`src/shared/ui/Input.tsx`): Figma-based input field. Props: `label`, `required` (6px blue dot), `leftIcon`, `rightIcon`, `indicator` (char count), `error` (red border #f04438), `disabled`, `helperText`. Field base: 40px height, 8px padding, border 1px solid #e4e7ec, radius 4px. Focus border #7a5af8. Text: Pretendard Regular 16px/24px. Label: Medium 14px/18px #a1a1aa.
 - **DatePicker** (`src/shared/ui/DatePicker.tsx`): Figma-based date picker field. Same Field pattern as Input. Props: `value` (string), `onChange` (string callback), `label`, `required`, `disabled`, `error`, `helperText`. Right calendar icon (SVG). Native browser picker icon hidden. Focus/error border same as Input.
-- When composing screens, import and use the common components (such as Button, Input, Datepicker, etc.) that are defined in `shared/ui`.
+- **SelectBox** (`src/shared/ui/SelectBox.tsx`): Figma-based select dropdown. Same Field pattern. Props: `value`, `onChange` (string callback), `options` ({label, value}[]), `placeholder`, `label`, `required`, `disabled`, `error`, `helperText`. Custom dropdown with chevron icon (rotates on open). Hover #f4f4f5, active #ede9fe. Outside click to close. Max dropdown height 240px.
+- When composing screens, import and use the common components (such as Button, Input, Datepicker, SelectBox, etc.) that are defined in `shared/ui`.
 - **All styles use inline CSSProperties** (no CSS files, no Tailwind). Pretendard font family.
 
 
