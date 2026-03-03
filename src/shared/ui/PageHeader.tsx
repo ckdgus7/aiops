@@ -8,7 +8,6 @@ const siteHeaderStyle: CSSProperties = {
 
 const pageTitleWrapStyle: CSSProperties = {
   width: "100%",
-  height: 120,
   background: "#ffffff",
   display: "flex",
   alignItems: "flex-start",
@@ -18,10 +17,8 @@ const pageTitleWrapStyle: CSSProperties = {
 const pageTitleInnerStyle: CSSProperties = {
   display: "flex",
   flexDirection: "column",
-  justifyContent: "center",
-  gap: 8,
+  gap: 16,
   width: "100%",
-  height: "100%",
   padding: "24px 32px",
   boxSizing: "border-box",
 };
