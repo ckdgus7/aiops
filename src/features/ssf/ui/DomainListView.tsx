@@ -10,6 +10,7 @@ import type { SortKey, SortDir, DomainItem } from "@/features/ssf/model/types";
 import { DOMAIN_MOCK_DATA } from "@/features/ssf/model/mock-data";
 import { DomainFormPopup } from "@/features/ssf/ui/DomainFormPopup";
 import { DomainDeletePopup } from "@/features/ssf/ui/DomainDeletePopup";
+import { DomainDetailPopup } from "@/features/ssf/ui/DomainDetailPopup";
 
 const FONT = "'Pretendard', sans-serif";
 
@@ -324,6 +325,8 @@ export function DomainListView() {
   const [popupMode, setPopupMode] = useState<"create" | "edit">("create");
   const [editTarget, setEditTarget] = useState<DomainItem | null>(null);
   const [deletePopupOpen, setDeletePopupOpen] = useState(false);
+  const [detailPopupOpen, setDetailPopupOpen] = useState(false);
+  const [detailTarget, setDetailTarget] = useState<DomainItem | null>(null);
 
   const handleSort = (key: SortKey) => {
     if (sortKey === key) {
@@ -536,7 +539,7 @@ export function DomainListView() {
                   <tr
                     key={item.no}
                     style={{ cursor: "pointer" }}
-                    onClick={() => { setPopupMode("edit"); setEditTarget(item); setPopupOpen(true); }}
+                    onClick={() => { setDetailTarget(item); setDetailPopupOpen(true); }}
                   >
                     <td style={s.td}>{item.no}</td>
                     <td style={s.td}>{item.abbr}</td>
@@ -555,6 +558,19 @@ export function DomainListView() {
           </table>
         </div>
       </div>
+      <DomainDetailPopup
+        open={detailPopupOpen}
+        onClose={() => setDetailPopupOpen(false)}
+        data={detailTarget}
+        onEdit={() => {
+          setPopupMode("edit");
+          setEditTarget(detailTarget);
+          setPopupOpen(true);
+        }}
+        onDelete={() => {
+          setDeletePopupOpen(true);
+        }}
+      />
       <DomainFormPopup
         open={popupOpen}
         onClose={() => setPopupOpen(false)}
