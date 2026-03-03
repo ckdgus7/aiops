@@ -43,6 +43,24 @@ vite.config.ts  - Vite configuration
 - 공지사항 `/notices` (fully implemented with search/pagination)
 - Q&A `/qna`
 
+### SSF관리
+- 도메인(L1)정보 관리 `/ssf/domain`
+- 컴포넌트(L2)정보 관리 `/ssf/component`
+- 업무(L3)정보 관리 `/ssf/business`
+- 기능(L4)정보 관리 `/ssf/function`
+- SSF탐색기 `/ssf/explorer`
+
+### 워크스페이스
+- 사용자 관리 `/workspace/users`
+- 사이트 이용약관 관리 `/workspace/terms`
+- 개인정보 처리방침 관리 `/workspace/privacy`
+
+### 업무 기준 정보 관리
+- 업무Flow 관리 `/business-info/flow`
+- 화면 기준 정보 관리 `/business-info/screen`
+- 개발 진척 관리 `/business-info/progress`
+- 과제 관리 `/business-info/project`
+
 Pages with full UI implementation:
 - 공지사항 (`/notices`) — table list with search, pagination
 - 요구사항 (`/requirements`) — card list with filter bar (date range, status, search scope + keyword), tabs (All/Personal), chip sort (Update 일시/완료 희망일), pagination, and requirement cards (status circle badge, req ID, title, due date, task, updated time, author with role icon)

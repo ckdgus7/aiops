@@ -55,6 +55,45 @@ const QnaPage = lazy(() =>
   import('@/pages/qna/QnaPage').then(m => ({ default: m.QnaPage })),
 );
 
+const DomainPage = lazy(() =>
+  import('@/pages/ssf/DomainPage').then(m => ({ default: m.DomainPage })),
+);
+const ComponentInfoPage = lazy(() =>
+  import('@/pages/ssf/ComponentInfoPage').then(m => ({ default: m.ComponentInfoPage })),
+);
+const BusinessInfoPage = lazy(() =>
+  import('@/pages/ssf/BusinessInfoPage').then(m => ({ default: m.BusinessInfoPage })),
+);
+const FunctionInfoPage = lazy(() =>
+  import('@/pages/ssf/FunctionInfoPage').then(m => ({ default: m.FunctionInfoPage })),
+);
+const SsfExplorerPage = lazy(() =>
+  import('@/pages/ssf/SsfExplorerPage').then(m => ({ default: m.SsfExplorerPage })),
+);
+
+const UsersPage = lazy(() =>
+  import('@/pages/workspace/UsersPage').then(m => ({ default: m.UsersPage })),
+);
+const TermsPage = lazy(() =>
+  import('@/pages/workspace/TermsPage').then(m => ({ default: m.TermsPage })),
+);
+const PrivacyPage = lazy(() =>
+  import('@/pages/workspace/PrivacyPage').then(m => ({ default: m.PrivacyPage })),
+);
+
+const FlowManagementPage = lazy(() =>
+  import('@/pages/business-info/FlowManagementPage').then(m => ({ default: m.FlowManagementPage })),
+);
+const ScreenInfoPage = lazy(() =>
+  import('@/pages/business-info/ScreenInfoPage').then(m => ({ default: m.ScreenInfoPage })),
+);
+const ProgressPage = lazy(() =>
+  import('@/pages/business-info/ProgressPage').then(m => ({ default: m.ProgressPage })),
+);
+const ProjectPage = lazy(() =>
+  import('@/pages/business-info/ProjectPage').then(m => ({ default: m.ProjectPage })),
+);
+
 function LazyFallback() {
   return <div style={{ padding: 40, textAlign: 'center', color: '#a1a1aa' }}>Loading...</div>;
 }
@@ -92,6 +131,21 @@ export const routes: RouteObject[] = [
 
       { path: '/notices', element: withSuspense(NoticeListPage) },
       { path: '/qna', element: withSuspense(QnaPage) },
+
+      { path: '/ssf/domain', element: withSuspense(DomainPage) },
+      { path: '/ssf/component', element: withSuspense(ComponentInfoPage) },
+      { path: '/ssf/business', element: withSuspense(BusinessInfoPage) },
+      { path: '/ssf/function', element: withSuspense(FunctionInfoPage) },
+      { path: '/ssf/explorer', element: withSuspense(SsfExplorerPage) },
+
+      { path: '/workspace/users', element: withSuspense(UsersPage) },
+      { path: '/workspace/terms', element: withSuspense(TermsPage) },
+      { path: '/workspace/privacy', element: withSuspense(PrivacyPage) },
+
+      { path: '/business-info/flow', element: withSuspense(FlowManagementPage) },
+      { path: '/business-info/screen', element: withSuspense(ScreenInfoPage) },
+      { path: '/business-info/progress', element: withSuspense(ProgressPage) },
+      { path: '/business-info/project', element: withSuspense(ProjectPage) },
     ],
   },
 ];
