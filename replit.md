@@ -9,7 +9,7 @@ A React frontend application built with Vite, TypeScript, React Router v7, TanSt
 ```
 src/
   app/          - App root, providers, router setup
-  features/     - Feature modules (notices, qna)
+  features/     - Feature modules (notices, qna, ssf)
   pages/        - Page-level components
   shared/       - Shared utilities and UI components (GNB, LNB, Layout)
   main.tsx      - Application entry point
