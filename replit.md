@@ -2,7 +2,7 @@
 
 ## Overview
 
-A React frontend application built with Vite, TypeScript, React Router v7, TanStack Query, and Zustand. It follows a feature-based architecture with a NOVA AI DevOps themed layout (GNB + LNB + content area).
+A React frontend application built with Vite, TypeScript, React Router v7, TanStack Query, and Zustand. It follows a feature-based architecture with a NOVA AI DevOps themed layout (vertical sidebar + content area).
 
 ## Project Structure
 
@@ -24,9 +24,8 @@ vite.config.ts  - Vite configuration
 
 ## Shared UI Components
 
-- **GNB** (`src/shared/ui/GNB.tsx`): Global Navigation Bar - logo, nav items, bell icon, user profile
-- **LNB** (`src/shared/ui/LNB.tsx`): Left Navigation Bar - search, tabs, collapsible menu sections, recent menus
-- **Layout** (`src/shared/ui/Layout.tsx`): Wrapper combining GNB + LNB + content area
+- **LNB** (`src/shared/ui/LNB.tsx`): Main Sidebar - logo, collapsible GNB/LNB navigation sections, favorites, collapse toggle
+- **Layout** (`src/shared/ui/Layout.tsx`): Wrapper combining sidebar + content area
 - When composing screens, import and use the common components (such as Button, Input, Datepicker, etc.) that are defined in `shared/ui`.
 
 
