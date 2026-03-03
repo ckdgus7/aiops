@@ -482,6 +482,13 @@ export function DomainListView() {
               <button style={s.downloadBtn} title="다운로드">
                 <DownloadIcon />
               </button>
+              <Button
+                size="m"
+                variant="filled"
+                color="positive"
+              >
+                등록
+              </Button>
             </div>
           </div>
 
