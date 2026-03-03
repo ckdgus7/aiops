@@ -122,10 +122,10 @@ function FavIcon({ filled }: { filled: boolean }) {
     <svg width="18" height="24" viewBox="0 0 18 24" fill="none" style={{ overflow: "hidden", flexShrink: 0 }}>
       <path
         d="M9 14.1L5.87 15.84l.6-3.48L4 9.9l3.5-.51L9 6.24l1.5 3.15 3.5.51-2.47 2.46.6 3.48L9 14.1z"
-        stroke={filled ? "#f59e0b" : "black"}
+        stroke={filled ? "#EAAA08" : "black"}
         strokeWidth="1"
         strokeLinejoin="round"
-        fill={filled ? "#f59e0b" : "none"}
+        fill={filled ? "#EAAA08" : "none"}
       />
     </svg>
   );
