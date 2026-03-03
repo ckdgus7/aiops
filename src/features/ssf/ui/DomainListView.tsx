@@ -6,9 +6,9 @@ import { ChooseButton } from "@/shared/ui/ChooseButton";
 import { Input } from "@/shared/ui/Input";
 import { Button } from "@/shared/ui/Button";
 import { useMdiStore } from "@/shared/model/mdi.store";
-import type { SortKey, SortDir } from "@/features/ssf/model/types";
+import type { SortKey, SortDir, DomainItem } from "@/features/ssf/model/types";
 import { DOMAIN_MOCK_DATA } from "@/features/ssf/model/mock-data";
-import { DomainCreatePopup } from "@/features/ssf/ui/DomainCreatePopup";
+import { DomainFormPopup } from "@/features/ssf/ui/DomainFormPopup";
 
 const FONT = "'Pretendard', sans-serif";
 
@@ -319,7 +319,9 @@ export function DomainListView() {
   const [sortDir, setSortDir] = useState<SortDir>(null);
   const [page, setPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
-  const [createPopupOpen, setCreatePopupOpen] = useState(false);
+  const [popupOpen, setPopupOpen] = useState(false);
+  const [popupMode, setPopupMode] = useState<"create" | "edit">("create");
+  const [editTarget, setEditTarget] = useState<DomainItem | null>(null);
 
   const handleSort = (key: SortKey) => {
     if (sortKey === key) {
@@ -488,7 +490,7 @@ export function DomainListView() {
                 size="m"
                 variant="filled"
                 color="positive"
-                onClick={() => setCreatePopupOpen(true)}
+                onClick={() => { setPopupMode("create"); setEditTarget(null); setPopupOpen(true); }}
               >
                 등록
               </Button>
@@ -529,7 +531,11 @@ export function DomainListView() {
                 </tr>
               ) : (
                 pageItems.map((item) => (
-                  <tr key={item.no}>
+                  <tr
+                    key={item.no}
+                    style={{ cursor: "pointer" }}
+                    onClick={() => { setPopupMode("edit"); setEditTarget(item); setPopupOpen(true); }}
+                  >
                     <td style={s.td}>{item.no}</td>
                     <td style={s.td}>{item.abbr}</td>
                     <td style={s.td}>{item.nameKo}</td>
@@ -547,9 +553,11 @@ export function DomainListView() {
           </table>
         </div>
       </div>
-      <DomainCreatePopup
-        open={createPopupOpen}
-        onClose={() => setCreatePopupOpen(false)}
+      <DomainFormPopup
+        open={popupOpen}
+        onClose={() => setPopupOpen(false)}
+        mode={popupMode}
+        initialData={editTarget}
       />
     </div>
   );
