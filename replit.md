@@ -43,7 +43,11 @@ vite.config.ts  - Vite configuration
 - 공지사항 `/notices` (fully implemented with search/pagination)
 - Q&A `/qna`
 
-All pages except 공지사항 are blank placeholder pages using the shared `BlankPage` component.
+Pages with full UI implementation:
+- 공지사항 (`/notices`) — table list with search, pagination
+- 요구사항 (`/requirements`) — card list with filter bar (date range, status, search scope + keyword), tabs (All/Personal), chip sort (Update 일시/완료 희망일), pagination, and requirement cards (status circle badge, req ID, title, due date, task, updated time, author with role icon)
+
+All other pages are blank placeholder pages using the shared `BlankPage` component.
 
 ## Shared UI Components
 

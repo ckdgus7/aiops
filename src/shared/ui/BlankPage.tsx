@@ -14,7 +14,7 @@ const styles = {
   } satisfies CSSProperties,
   content: {
     flex: 1,
-    padding: "0 32px 20px",
+    padding: "20px 32px 20px",
     overflow: "auto",
     display: "flex",
     flexDirection: "column",

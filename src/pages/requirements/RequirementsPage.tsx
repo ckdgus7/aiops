@@ -1,5 +1,5 @@
-import { BlankPage } from "@/shared/ui/BlankPage";
+import { RequirementListView } from "@/features/requirements/ui/RequirementListView";
 
 export function RequirementsPage() {
-  return <BlankPage title="요구사항" gnbName="요구관리" path="/requirements" />;
+  return <RequirementListView />;
 }
