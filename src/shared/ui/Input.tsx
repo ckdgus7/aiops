@@ -1,11 +1,38 @@
 import { useState, type CSSProperties, type InputHTMLAttributes, type ReactNode } from "react";
 
 type InputSize = "m";
+type InputPrefix = "search";
 
-interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "size" | "style"> {
+function SearchIcon() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path
+        d="M11 19C15.4183 19 19 15.4183 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19Z"
+        stroke="#a1a1aa"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M21 21L16.65 16.65"
+        stroke="#a1a1aa"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+const PREFIX_MAP: Record<InputPrefix, ReactNode> = {
+  search: <SearchIcon />,
+};
+
+interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "size" | "style" | "prefix"> {
   size?: InputSize;
   label?: string;
   required?: boolean;
+  prefix?: InputPrefix;
   leftIcon?: ReactNode;
   rightIcon?: ReactNode;
   indicator?: string;
@@ -78,6 +105,7 @@ export function Input({
   size = "m",
   label,
   required = false,
+  prefix,
   leftIcon,
   rightIcon,
   indicator,
@@ -92,6 +120,8 @@ export function Input({
 }: InputProps) {
   const [focused, setFocused] = useState(false);
   const config = SIZE_CONFIG[size];
+
+  const resolvedLeftIcon = leftIcon ?? (prefix ? PREFIX_MAP[prefix] : undefined);
 
   const borderColor = error
     ? COLORS.borderError
@@ -231,7 +261,7 @@ export function Input({
       )}
       <div style={fieldBaseStyle}>
         <div style={leftAreaStyle}>
-          {leftIcon && <span style={iconStyle}>{leftIcon}</span>}
+          {resolvedLeftIcon && <span style={iconStyle}>{resolvedLeftIcon}</span>}
           <div style={inputTextWrapStyle}>
             <input
               disabled={disabled}
