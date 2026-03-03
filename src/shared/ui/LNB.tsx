@@ -124,6 +124,16 @@ const s = {
     overflow: "hidden",
     textOverflow: "ellipsis",
   } satisfies CSSProperties,
+  depthTitle1Active: {
+    flex: 1,
+    fontSize: 14,
+    fontWeight: 700,
+    color: "#18181b",
+    lineHeight: "20px",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+  } satisfies CSSProperties,
   depth2Wrap: {
     display: "flex",
     flexDirection: "column",
@@ -402,6 +412,7 @@ export function LNB({ activeItem = "Q&A", activeGnb = "게시판", onItemClick }
       <div style={s.navWrap}>
         {menuItems.map((gnb) => {
           const isExpanded = !!expandedSections[gnb.gnbName];
+          const isGnbActive = gnb.gnbName === activeGnb;
           return (
             <div key={gnb.id} style={s.depthWrap}>
               <div
@@ -409,7 +420,7 @@ export function LNB({ activeItem = "Q&A", activeGnb = "게시판", onItemClick }
                 onClick={() => toggleSection(gnb.gnbName)}
               >
                 <span style={s.depthIcon1}>{GNB_ICONS[gnb.gnbName] || "📁"}</span>
-                <span style={s.depthTitle1}>{gnb.gnbName}</span>
+                <span style={isGnbActive ? s.depthTitle1Active : s.depthTitle1}>{gnb.gnbName}</span>
               </div>
               {isExpanded && (
                 <div style={s.depth2Wrap}>

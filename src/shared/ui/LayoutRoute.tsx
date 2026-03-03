@@ -34,14 +34,19 @@ export function LayoutRoute() {
 
   useEffect(() => {
     const path = location.pathname;
+    let bestMatch: { gnbName: string; lnbName: string; pathLen: number } | null = null;
     for (const gnb of menuItems) {
       for (const lnb of gnb.lnb) {
         if (path === lnb.path || path.startsWith(lnb.path + "/")) {
-          setActiveGnb(gnb.gnbName);
-          setActiveLnb(lnb.name);
-          return;
+          if (!bestMatch || lnb.path.length > bestMatch.pathLen) {
+            bestMatch = { gnbName: gnb.gnbName, lnbName: lnb.name, pathLen: lnb.path.length };
+          }
         }
       }
+    }
+    if (bestMatch) {
+      setActiveGnb(bestMatch.gnbName);
+      setActiveLnb(bestMatch.lnbName);
     }
   }, [location.pathname, menuItems]);
 
