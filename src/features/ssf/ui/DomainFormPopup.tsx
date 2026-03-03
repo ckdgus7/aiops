@@ -11,6 +11,7 @@ interface DomainFormPopupProps {
   open: boolean;
   onClose: () => void;
   onSave?: (data: DomainFormData) => void;
+  onDelete?: () => void;
   mode: "create" | "edit";
   initialData?: DomainItem | null;
 }
@@ -155,7 +156,7 @@ const TITLE_MAP = {
   edit: "도메인(L1) 수정",
 };
 
-export function DomainFormPopup({ open, onClose, onSave, mode, initialData }: DomainFormPopupProps) {
+export function DomainFormPopup({ open, onClose, onSave, onDelete, mode, initialData }: DomainFormPopupProps) {
   const [abbr, setAbbr] = useState("");
   const [nameKo, setNameKo] = useState("");
   const [nameEn, setNameEn] = useState("");
@@ -283,11 +284,22 @@ export function DomainFormPopup({ open, onClose, onSave, mode, initialData }: Do
             </Button>
           </div>
           <div style={s.footerRight}>
+            {mode === "edit" && onDelete && (
+              <Button
+                size="l"
+                variant="filled"
+                color="negative"
+                onClick={() => { onClose(); onDelete(); }}
+              >
+                삭제
+              </Button>
+            )}
             <Button
               size="l"
               variant="filled"
               color="positive"
               onClick={handleSave}
+              style={mode === "edit" && onDelete ? { marginLeft: 8 } : undefined}
             >
               저장
             </Button>

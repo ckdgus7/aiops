@@ -9,6 +9,7 @@ import { useMdiStore } from "@/shared/model/mdi.store";
 import type { SortKey, SortDir, DomainItem } from "@/features/ssf/model/types";
 import { DOMAIN_MOCK_DATA } from "@/features/ssf/model/mock-data";
 import { DomainFormPopup } from "@/features/ssf/ui/DomainFormPopup";
+import { DomainDeletePopup } from "@/features/ssf/ui/DomainDeletePopup";
 
 const FONT = "'Pretendard', sans-serif";
 
@@ -322,6 +323,7 @@ export function DomainListView() {
   const [popupOpen, setPopupOpen] = useState(false);
   const [popupMode, setPopupMode] = useState<"create" | "edit">("create");
   const [editTarget, setEditTarget] = useState<DomainItem | null>(null);
+  const [deletePopupOpen, setDeletePopupOpen] = useState(false);
 
   const handleSort = (key: SortKey) => {
     if (sortKey === key) {
@@ -558,6 +560,11 @@ export function DomainListView() {
         onClose={() => setPopupOpen(false)}
         mode={popupMode}
         initialData={editTarget}
+        onDelete={() => setDeletePopupOpen(true)}
+      />
+      <DomainDeletePopup
+        open={deletePopupOpen}
+        onClose={() => setDeletePopupOpen(false)}
       />
     </div>
   );
