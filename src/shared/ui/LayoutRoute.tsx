@@ -16,6 +16,8 @@ const styles = {
     overflow: "auto",
     background: "#f5f5f5",
     position: "relative",
+    display: "flex",
+    flexDirection: "column",
   } satisfies CSSProperties,
 };
 

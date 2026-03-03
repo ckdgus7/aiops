@@ -43,7 +43,7 @@
     "id": "6",
     "gnbName": "게시판",
     "lnb": [
-      { "name": "공지사항", "path": "/board-menu1" },
+      { "name": "공지사항", "path": "/notices" },
       { "name": "Q&A", "path": "/board-menu2" }
     ]
   }

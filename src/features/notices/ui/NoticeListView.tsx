@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import type { CSSProperties } from "react";
 import { Link } from "react-router";
 import type { Notice } from "../model/types";
@@ -6,6 +7,7 @@ import { DatePicker } from "@/shared/ui/DatePicker";
 import { PageHeader } from "@/shared/ui/PageHeader";
 import { Breadcrumb } from "@/shared/ui/Breadcrumb";
 import { PageTitle } from "@/shared/ui/PageTitle";
+import { useMdiStore } from "@/shared/model/mdi.store";
 
 const actionBtnStyle: CSSProperties = {
   height: 40,
@@ -24,9 +26,17 @@ const actionBtnStyle: CSSProperties = {
 };
 
 const s = {
-  wrapper: {
-    padding: "0 20px 20px",
+  outerWrapper: {
+    display: "flex",
+    flexDirection: "column",
+    height: "100%",
     fontFamily: "'Pretendard', sans-serif",
+  } satisfies CSSProperties,
+  wrapper: {
+    padding: "0 32px 20px",
+    fontFamily: "'Pretendard', sans-serif",
+    flex: 1,
+    overflow: "auto",
   } satisfies CSSProperties,
   searchBox: {
     background: "#fff",
@@ -284,6 +294,12 @@ export function NoticeListView({
   onSearch,
   onPageChange,
 }: NoticeListViewProps) {
+  const addTab = useMdiStore((s) => s.addTab);
+
+  useEffect(() => {
+    addTab({ id: "/notices", label: "공지사항", path: "/notices" });
+  }, [addTab]);
+
   const clampedPage = Math.min(page, totalPages);
   const startPage = Math.max(1, clampedPage - 4);
   const endPage = Math.min(totalPages, startPage + 9);
@@ -292,12 +308,13 @@ export function NoticeListView({
     : [1];
 
   return (
-    <div style={s.wrapper}>
+    <div style={s.outerWrapper}>
       <PageHeader>
         <Breadcrumb items={[{ label: "게시판" }, { label: "공지사항" }]} />
         <PageTitle
           title="공지사항"
           favoriteKey="공지사항"
+          badge="활성"
           actions={
             <button style={actionBtnStyle}>
               <span>✏️</span>
@@ -307,6 +324,7 @@ export function NoticeListView({
         />
       </PageHeader>
 
+      <div style={s.wrapper}>
       <div style={s.searchBox}>
         <div style={s.searchFields}>
           <div style={s.searchField}>
@@ -449,6 +467,7 @@ export function NoticeListView({
             </div>
           </>
         )}
+      </div>
       </div>
     </div>
   );
