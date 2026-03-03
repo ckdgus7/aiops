@@ -1,6 +1,8 @@
 import type { CSSProperties, ReactNode } from "react";
 import { useFavoritesStore } from "@/shared/model/favorites.store";
 
+const FONT_FAMILY = "'Pretendard', sans-serif";
+
 const st = {
   header: {
     display: "flex",
@@ -20,11 +22,15 @@ const st = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    border: "none",
-    background: "transparent",
+    border: "1px solid #18181b",
+    background: "white",
     cursor: "pointer",
-    padding: 0,
+    padding: 3,
     borderRadius: 4,
+    flexShrink: 0,
+    width: 24,
+    height: 24,
+    boxSizing: "border-box",
   } satisfies CSSProperties,
   titleArea: {
     display: "flex",
@@ -45,9 +51,9 @@ const st = {
   titleText: {
     fontSize: 32,
     fontWeight: 700,
-    color: "black",
+    color: "#18181b",
     lineHeight: "40px",
-    fontFamily: "'Pretendard', sans-serif",
+    fontFamily: FONT_FAMILY,
     fontStyle: "normal",
     whiteSpace: "nowrap",
     flexShrink: 0,
@@ -63,7 +69,7 @@ const st = {
     fontSize: 14,
     fontWeight: 500,
     lineHeight: "16px",
-    fontFamily: "'Pretendard', sans-serif",
+    fontFamily: FONT_FAMILY,
     whiteSpace: "nowrap",
     flexShrink: 0,
   } satisfies CSSProperties,
@@ -87,12 +93,15 @@ const st = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    border: "1px solid black",
+    border: "1px solid #18181b",
     background: "white",
     cursor: "pointer",
     padding: 3,
     borderRadius: 4,
     flexShrink: 0,
+    width: 24,
+    height: 24,
+    boxSizing: "border-box",
   } satisfies CSSProperties,
   ctaWrap: {
     display: "flex",
@@ -105,10 +114,10 @@ const st = {
 
 function BackArrowIcon() {
   return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style={{ overflow: "hidden" }}>
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style={{ overflow: "hidden" }}>
       <path
         d="M14.5 7.43L9.93 12l4.57 4.57"
-        stroke="black"
+        stroke="#18181b"
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -119,10 +128,10 @@ function BackArrowIcon() {
 
 function FavIcon({ filled }: { filled: boolean }) {
   return (
-    <svg width="18" height="24" viewBox="0 0 18 24" fill="none" style={{ overflow: "hidden", flexShrink: 0 }}>
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style={{ overflow: "hidden", flexShrink: 0 }}>
       <path
-        d="M9 14.1L5.87 15.84l.6-3.48L4 9.9l3.5-.51L9 6.24l1.5 3.15 3.5.51-2.47 2.46.6 3.48L9 14.1z"
-        stroke={filled ? "#EAAA08" : "black"}
+        d="M9 11.1L6.37 12.57l.5-2.93L4.8 7.65l2.94-.43L9 4.49l1.26 2.73 2.94.43-2.07 2-0.01-.01.5 2.93L9 11.1z"
+        stroke={filled ? "#EAAA08" : "#18181b"}
         strokeWidth="1"
         strokeLinejoin="round"
         fill={filled ? "#EAAA08" : "none"}
@@ -133,17 +142,17 @@ function FavIcon({ filled }: { filled: boolean }) {
 
 function RefreshIcon() {
   return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style={{ overflow: "hidden", flexShrink: 0 }}>
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style={{ overflow: "hidden", flexShrink: 0 }}>
       <path
         d="M4 12a8 8 0 0114.93-4M20 12a8 8 0 01-14.93 4"
-        stroke="black"
+        stroke="#18181b"
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
         d="M20 4v4h-4M4 20v-4h4"
-        stroke="black"
+        stroke="#18181b"
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
