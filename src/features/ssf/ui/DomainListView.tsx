@@ -8,6 +8,7 @@ import { Button } from "@/shared/ui/Button";
 import { useMdiStore } from "@/shared/model/mdi.store";
 import type { SortKey, SortDir } from "@/features/ssf/model/types";
 import { DOMAIN_MOCK_DATA } from "@/features/ssf/model/mock-data";
+import { DomainCreatePopup } from "@/features/ssf/ui/DomainCreatePopup";
 
 const FONT = "'Pretendard', sans-serif";
 
@@ -318,6 +319,7 @@ export function DomainListView() {
   const [sortDir, setSortDir] = useState<SortDir>(null);
   const [page, setPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [createPopupOpen, setCreatePopupOpen] = useState(false);
 
   const handleSort = (key: SortKey) => {
     if (sortKey === key) {
@@ -486,6 +488,7 @@ export function DomainListView() {
                 size="m"
                 variant="filled"
                 color="positive"
+                onClick={() => setCreatePopupOpen(true)}
               >
                 등록
               </Button>
@@ -544,6 +547,10 @@ export function DomainListView() {
           </table>
         </div>
       </div>
+      <DomainCreatePopup
+        open={createPopupOpen}
+        onClose={() => setCreatePopupOpen(false)}
+      />
     </div>
   );
 }

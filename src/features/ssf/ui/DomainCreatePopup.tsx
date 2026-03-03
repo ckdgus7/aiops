@@ -1,0 +1,280 @@
+import { useState, type CSSProperties } from "react";
+import { Button } from "@/shared/ui/Button";
+import { Input } from "@/shared/ui/Input";
+import { Textarea } from "@/shared/ui/Textarea";
+import { RadioGroup } from "@/shared/ui/RadioGroup";
+
+const FONT = "'Pretendard', sans-serif";
+
+interface DomainCreatePopupProps {
+  open: boolean;
+  onClose: () => void;
+  onSave?: (data: DomainFormData) => void;
+}
+
+interface DomainFormData {
+  abbr: string;
+  nameKo: string;
+  nameEn: string;
+  description: string;
+  useYn: string;
+}
+
+function CloseIcon() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M6 6L18 18" stroke="#71717a" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M18 6L6 18" stroke="#71717a" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+const s = {
+  overlay: {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 1000,
+  } satisfies CSSProperties,
+  popup: {
+    width: 880,
+    maxHeight: "90vh",
+    backgroundColor: "#ffffff",
+    borderRadius: 8,
+    boxShadow: "0 4px 24px rgba(0, 0, 0, 0.12)",
+    display: "flex",
+    flexDirection: "column",
+    overflow: "hidden",
+  } satisfies CSSProperties,
+  header: {
+    display: "flex",
+    flexDirection: "column",
+    padding: "32px 32px 16px 32px",
+    gap: 12,
+    borderBottom: "1px solid #e4e4e7",
+  } satisfies CSSProperties,
+  titleRow: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%",
+  } satisfies CSSProperties,
+  titleText: {
+    fontFamily: FONT,
+    fontSize: 20,
+    fontWeight: 700,
+    lineHeight: "32px",
+    color: "#18181b",
+  } satisfies CSSProperties,
+  closeBtn: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: 32,
+    height: 32,
+    border: "none",
+    background: "transparent",
+    cursor: "pointer",
+    borderRadius: 4,
+    padding: 0,
+  } satisfies CSSProperties,
+  requiredRow: {
+    display: "flex",
+    alignItems: "center",
+    gap: 6,
+  } satisfies CSSProperties,
+  requiredMark: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: "#36bffa",
+    flexShrink: 0,
+  } satisfies CSSProperties,
+  requiredText: {
+    fontFamily: FONT,
+    fontSize: 14,
+    fontWeight: 400,
+    lineHeight: "18px",
+    color: "#a1a1aa",
+  } satisfies CSSProperties,
+  main: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 24,
+    padding: "24px 32px",
+    overflowY: "auto",
+    flex: 1,
+  } satisfies CSSProperties,
+  fieldRow: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 8,
+    width: "100%",
+  } satisfies CSSProperties,
+  labelRow: {
+    display: "flex",
+    alignItems: "center",
+    gap: 4,
+  } satisfies CSSProperties,
+  label: {
+    fontFamily: FONT,
+    fontSize: 14,
+    fontWeight: 500,
+    lineHeight: "18px",
+    color: "#a1a1aa",
+    whiteSpace: "nowrap",
+  } satisfies CSSProperties,
+  footer: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: "16px 32px 32px 32px",
+    borderTop: "1px solid #e4e4e7",
+  } satisfies CSSProperties,
+  footerLeft: {
+    display: "flex",
+    alignItems: "center",
+  } satisfies CSSProperties,
+  footerRight: {
+    display: "flex",
+    alignItems: "center",
+  } satisfies CSSProperties,
+};
+
+export function DomainCreatePopup({ open, onClose, onSave }: DomainCreatePopupProps) {
+  const [abbr, setAbbr] = useState("");
+  const [nameKo, setNameKo] = useState("");
+  const [nameEn, setNameEn] = useState("");
+  const [description, setDescription] = useState("");
+  const [useYn, setUseYn] = useState("사용");
+
+  const handleSave = () => {
+    onSave?.({ abbr, nameKo, nameEn, description, useYn });
+    handleClose();
+  };
+
+  const handleClose = () => {
+    setAbbr("");
+    setNameKo("");
+    setNameEn("");
+    setDescription("");
+    setUseYn("사용");
+    onClose();
+  };
+
+  if (!open) return null;
+
+  return (
+    <div style={s.overlay} onClick={handleClose}>
+      <div style={s.popup} onClick={(e) => e.stopPropagation()}>
+        <div style={s.header}>
+          <div style={s.titleRow}>
+            <span style={s.titleText}>도메인(L1) 신규 등록</span>
+            <button style={s.closeBtn} onClick={handleClose}>
+              <CloseIcon />
+            </button>
+          </div>
+          <div style={s.requiredRow}>
+            <div style={s.requiredMark} />
+            <span style={s.requiredText}>표시는 필수로 입력하세요.</span>
+          </div>
+        </div>
+
+        <div style={s.main}>
+          <div style={s.fieldRow}>
+            <Input
+              label="도메인(약어) 명"
+              required
+              value={abbr}
+              onChange={(e) => setAbbr(e.target.value)}
+              placeholder="도메인"
+              maxLength={70}
+              indicator={`${abbr.length}/70`}
+            />
+          </div>
+
+          <div style={s.fieldRow}>
+            <Input
+              label="도메인(한글) 명"
+              required
+              value={nameKo}
+              onChange={(e) => setNameKo(e.target.value)}
+              placeholder="도메인"
+              maxLength={70}
+              indicator={`${nameKo.length}/70`}
+            />
+          </div>
+
+          <div style={s.fieldRow}>
+            <Input
+              label="도메인(영문) 명"
+              required
+              value={nameEn}
+              onChange={(e) => setNameEn(e.target.value)}
+              maxLength={70}
+              indicator={`${nameEn.length}/70`}
+            />
+          </div>
+
+          <Textarea
+            label="도메인(L1) 설명"
+            required
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder="설명을 입력하세요."
+            maxLength={500}
+            indicator
+            wrapperStyle={{ minHeight: 400 }}
+            style={{ minHeight: 350 }}
+          />
+
+          <div style={s.fieldRow}>
+            <div style={s.labelRow}>
+              <span style={s.label}>사용여부</span>
+            </div>
+            <RadioGroup
+              value={useYn}
+              onChange={setUseYn}
+              options={[
+                { label: "사용", value: "사용" },
+                { label: "미사용", value: "미사용" },
+              ]}
+              size="m"
+              direction="horizontal"
+              gap={32}
+            />
+          </div>
+        </div>
+
+        <div style={s.footer}>
+          <div style={s.footerLeft}>
+            <Button
+              size="l"
+              variant="outlined"
+              color="info"
+              onClick={handleClose}
+            >
+              닫기
+            </Button>
+          </div>
+          <div style={s.footerRight}>
+            <Button
+              size="l"
+              variant="filled"
+              color="positive"
+              onClick={handleSave}
+            >
+              저장
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
