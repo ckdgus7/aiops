@@ -2,13 +2,14 @@ import type { CSSProperties, ReactNode } from "react";
 import { useFavoritesStore } from "@/shared/model/favorites.store";
 
 const st = {
-  wrapper: {
+  header: {
     display: "flex",
     flexWrap: "wrap",
     alignItems: "center",
     alignContent: "center",
     gap: 16,
     width: "100%",
+    flexShrink: 0,
   } satisfies CSSProperties,
   leadingFunction: {
     display: "flex",
@@ -19,8 +20,6 @@ const st = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    width: 24,
-    height: 24,
     border: "none",
     background: "transparent",
     cursor: "pointer",
@@ -37,12 +36,19 @@ const st = {
     minWidth: 360,
     minHeight: 1,
   } satisfies CSSProperties,
+  badgeWrap: {
+    display: "flex",
+    alignItems: "center",
+    gap: 0,
+    flexShrink: 0,
+  } satisfies CSSProperties,
   titleText: {
     fontSize: 32,
     fontWeight: 700,
     color: "black",
     lineHeight: "40px",
     fontFamily: "'Pretendard', sans-serif",
+    fontStyle: "normal",
     whiteSpace: "nowrap",
     flexShrink: 0,
   } satisfies CSSProperties,
@@ -52,6 +58,8 @@ const st = {
     justifyContent: "center",
     padding: "4px 12px",
     borderRadius: 12,
+    borderWidth: 1,
+    borderStyle: "solid",
     fontSize: 14,
     fontWeight: 500,
     lineHeight: "16px",
@@ -60,13 +68,13 @@ const st = {
     flexShrink: 0,
   } satisfies CSSProperties,
   badgeStatus: {
-    border: "1px solid #7a5af8",
+    borderColor: "#7a5af8",
     background: "#fafaff",
     color: "#7a5af8",
   } satisfies CSSProperties,
   badgeId: {
-    border: "1px solid #36bffa",
-    background: "#ffffff",
+    borderColor: "#36bffa",
+    background: "white",
     color: "#36bffa",
   } satisfies CSSProperties,
   functionWrap: {
@@ -75,20 +83,18 @@ const st = {
     gap: 8,
     flexShrink: 0,
   } satisfies CSSProperties,
-  starBtn: {
+  iconBtn: {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    width: 32,
-    height: 32,
     border: "1px solid black",
     background: "white",
     cursor: "pointer",
-    padding: 4,
+    padding: 3,
     borderRadius: 4,
-    boxSizing: "border-box",
+    flexShrink: 0,
   } satisfies CSSProperties,
-  trailingActions: {
+  ctaWrap: {
     display: "flex",
     alignItems: "center",
     gap: 8,
@@ -99,10 +105,10 @@ const st = {
 
 function BackArrowIcon() {
   return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style={{ overflow: "hidden" }}>
       <path
-        d="M15 6L9 12L15 18"
-        stroke="#18181b"
+        d="M14.5 7.43L9.93 12l4.57 4.57"
+        stroke="black"
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -111,20 +117,35 @@ function BackArrowIcon() {
   );
 }
 
-function StarIcon({ filled }: { filled: boolean }) {
-  if (filled) {
-    return (
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="#f59e0b">
-        <path d="M12 2l3 6.01L21 8.72l-4.5 4.38 1.06 6.18L12 16.27l-5.56 3.01L7.5 13.1 3 8.72l6-0.71L12 2z" />
-      </svg>
-    );
-  }
+function FavIcon({ filled }: { filled: boolean }) {
   return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+    <svg width="18" height="24" viewBox="0 0 18 24" fill="none" style={{ overflow: "hidden", flexShrink: 0 }}>
       <path
-        d="M12 2l3 6.01L21 8.72l-4.5 4.38 1.06 6.18L12 16.27l-5.56 3.01L7.5 13.1 3 8.72l6-0.71L12 2z"
-        stroke="#d4d4d8"
-        strokeWidth="1.2"
+        d="M9 14.1L5.87 15.84l.6-3.48L4 9.9l3.5-.51L9 6.24l1.5 3.15 3.5.51-2.47 2.46.6 3.48L9 14.1z"
+        stroke={filled ? "#f59e0b" : "black"}
+        strokeWidth="1"
+        strokeLinejoin="round"
+        fill={filled ? "#f59e0b" : "none"}
+      />
+    </svg>
+  );
+}
+
+function RefreshIcon() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style={{ overflow: "hidden", flexShrink: 0 }}>
+      <path
+        d="M4 12a8 8 0 0114.93-4M20 12a8 8 0 01-14.93 4"
+        stroke="black"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M20 4v4h-4M4 20v-4h4"
+        stroke="black"
+        strokeWidth="1.5"
+        strokeLinecap="round"
         strokeLinejoin="round"
       />
     </svg>
@@ -138,15 +159,26 @@ interface PageTitleProps {
   idBadge?: string;
   actions?: ReactNode;
   onBack?: () => void;
+  showRefresh?: boolean;
+  onRefresh?: () => void;
 }
 
-export function PageTitle({ title, favoriteKey, badge, idBadge, actions, onBack }: PageTitleProps) {
+export function PageTitle({
+  title,
+  favoriteKey,
+  badge,
+  idBadge,
+  actions,
+  onBack,
+  showRefresh,
+  onRefresh,
+}: PageTitleProps) {
   const toggleFavorite = useFavoritesStore((s) => s.toggleFavorite);
   const isFavorite = useFavoritesStore((s) => s.isFavorite);
   const starred = favoriteKey ? isFavorite(favoriteKey) : false;
 
   return (
-    <div style={st.wrapper}>
+    <div style={st.header}>
       {onBack && (
         <div style={st.leadingFunction}>
           <button style={st.backBtn} onClick={onBack} title="뒤로 가기">
@@ -157,26 +189,41 @@ export function PageTitle({ title, favoriteKey, badge, idBadge, actions, onBack 
 
       <div style={st.titleArea}>
         {idBadge && (
-          <span style={{ ...st.badgeBase, ...st.badgeId }}>{idBadge}</span>
+          <div style={st.badgeWrap}>
+            <span style={{ ...st.badgeBase, ...st.badgeId }}>{idBadge}</span>
+          </div>
         )}
         <span style={st.titleText}>{title}</span>
         {badge && (
-          <span style={{ ...st.badgeBase, ...st.badgeStatus }}>{badge}</span>
+          <div style={st.badgeWrap}>
+            <span style={{ ...st.badgeBase, ...st.badgeStatus }}>{badge}</span>
+          </div>
         )}
-        {favoriteKey && (
+        {(favoriteKey || showRefresh) && (
           <div style={st.functionWrap}>
-            <button
-              style={st.starBtn}
-              onClick={() => toggleFavorite(favoriteKey)}
-              title={starred ? "즐겨찾기 해제" : "즐겨찾기 추가"}
-            >
-              <StarIcon filled={starred} />
-            </button>
+            {favoriteKey && (
+              <button
+                style={st.iconBtn}
+                onClick={() => toggleFavorite(favoriteKey)}
+                title={starred ? "즐겨찾기 해제" : "즐겨찾기 추가"}
+              >
+                <FavIcon filled={starred} />
+              </button>
+            )}
+            {showRefresh && (
+              <button
+                style={st.iconBtn}
+                onClick={onRefresh}
+                title="새로고침"
+              >
+                <RefreshIcon />
+              </button>
+            )}
           </div>
         )}
       </div>
 
-      {actions && <div style={st.trailingActions}>{actions}</div>}
+      {actions && <div style={st.ctaWrap}>{actions}</div>}
     </div>
   );
 }
