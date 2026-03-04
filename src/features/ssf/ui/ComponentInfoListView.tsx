@@ -8,6 +8,7 @@ import { usePageHeader } from "@/shared/hooks/usePageHeader";
 import type { ComponentSortKey, SortDir, ComponentItem } from "@/features/ssf/model/types";
 import { COMPONENT_MOCK_DATA, DOMAIN_MOCK_DATA } from "@/features/ssf/model/mock-data";
 import { ComponentCreatePopup } from "@/features/ssf/ui/ComponentCreatePopup";
+import { ComponentDetailPopup } from "@/features/ssf/ui/ComponentDetailPopup";
 
 const FONT = "'Pretendard', sans-serif";
 
@@ -333,6 +334,7 @@ export function ComponentInfoListView() {
   }, [addTab]);
 
   const [createPopupOpen, setCreatePopupOpen] = useState(false);
+  const [detailItem, setDetailItem] = useState<ComponentItem | null>(null);
   const [statusFilter, setStatusFilter] = useState("전체");
   const [domainFilter, setDomainFilter] = useState("");
   const [searchKey, setSearchKey] = useState("컴포넌트(L2)명");
@@ -586,6 +588,7 @@ export function ComponentInfoListView() {
                   <tr
                     key={item.no}
                     style={{ cursor: "pointer" }}
+                    onClick={() => setDetailItem(item)}
                   >
                     <td style={s.td}>{item.no}</td>
                     <td style={s.td}>{item.componentId}</td>
@@ -611,6 +614,12 @@ export function ComponentInfoListView() {
       <ComponentCreatePopup
         open={createPopupOpen}
         onClose={() => setCreatePopupOpen(false)}
+      />
+
+      <ComponentDetailPopup
+        open={detailItem !== null}
+        onClose={() => setDetailItem(null)}
+        item={detailItem}
       />
     </div>
   );
