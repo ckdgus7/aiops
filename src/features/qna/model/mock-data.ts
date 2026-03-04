@@ -1,4 +1,4 @@
-import type { QnAItem } from "./types";
+import type { QnAItem, QnADetail } from "./types";
 
 const CATEGORIES = ["이용문의", "기술", "이용문의", "기술", "이용문의", "기술"];
 const TITLES = [
@@ -89,4 +89,52 @@ export function getQnAList(params: QnAQueryParams) {
   const items = filtered.slice(start, start + params.pageSize);
 
   return { items, total, page, pageSize: params.pageSize, totalPages };
+}
+
+export function getQnADetail(id: number): QnADetail | null {
+  const item = ALL_QNA_ITEMS.find((i) => i.no === id);
+  if (!item) return null;
+
+  const hasComments = item.hasReply;
+
+  return {
+    id: item.no,
+    category: item.category,
+    title: item.title,
+    author: item.author,
+    createdAt: item.createdAt,
+    views: 100 + item.no * 7,
+    content:
+      "안녕하세요.\n\n" +
+      item.title.replace(".", "") +
+      "\n\n" +
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. " +
+      "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. " +
+      "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.\n\n감사합니다.",
+    attachments:
+      item.no % 4 === 0
+        ? [
+            {
+              id: `att-${item.no}-1`,
+              name: `Q&A_첨부파일_${item.no}.xlsx`,
+              downloads: 5 + item.no,
+              size: "1.2MB",
+              uploadedAt: item.createdAt,
+            },
+          ]
+        : [],
+    comments: hasComments
+      ? [
+          {
+            id: `cmt-${item.no}-1`,
+            content:
+              "내가 작성한 요구명세 내용 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. " +
+              "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+            author: "Admin",
+            createdAt: item.createdAt,
+            updatedAt: item.createdAt,
+          },
+        ]
+      : [],
+  };
 }

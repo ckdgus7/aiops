@@ -28,3 +28,31 @@ export interface QnAListResult {
   pageSize: number;
   totalPages: number;
 }
+
+export interface QnAComment {
+  id: string;
+  content: string;
+  author: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface QnAAttachment {
+  id: string;
+  name: string;
+  downloads: number;
+  size: string;
+  uploadedAt: string;
+}
+
+export interface QnADetail {
+  id: number;
+  category: string;
+  title: string;
+  author: string;
+  createdAt: string;
+  views: number;
+  content: string;
+  attachments: QnAAttachment[];
+  comments: QnAComment[];
+}

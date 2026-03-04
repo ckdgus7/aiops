@@ -57,6 +57,9 @@ const DetailFeatureDesignPage = lazy(() =>
 const QnaPage = lazy(() =>
   import('@/pages/qna/QnaPage').then(m => ({ default: m.QnaPage })),
 );
+const QnaDetailPage = lazy(() =>
+  import('@/pages/qna/QnaDetailPage').then(m => ({ default: m.QnaDetailPage })),
+);
 
 const DomainPage = lazy(() =>
   import('@/pages/ssf/DomainPage').then(m => ({ default: m.DomainPage })),
@@ -135,6 +138,7 @@ export const routes: RouteObject[] = [
       { path: '/notices', element: withSuspense(NoticeListPage) },
       { path: '/notices/:id', element: withSuspense(NoticeDetailPage) },
       { path: '/qna', element: withSuspense(QnaPage) },
+      { path: '/qna/:id', element: withSuspense(QnaDetailPage) },
 
       { path: '/ssf/domain', element: withSuspense(DomainPage) },
       { path: '/ssf/component', element: withSuspense(ComponentInfoPage) },

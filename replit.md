@@ -41,7 +41,7 @@ vite.config.ts  - Vite configuration
 
 ### 게시판
 - 공지사항 `/notices` (fully implemented: Figma-based design with category filter SelectBox, search scope SelectBox + keyword search, data table with 8 columns (번호/분류/제목/작성자/등록일/수정일/첨부/조회수), column sorting, category badges (공지/일반), pinned badge (필독), pagination with items-per-page, 30 mock rows, "등록" button opens create popup. Create popup: 880px modal with header (title + close + required indicator), form body (분류 RadioGroup 공지/필독공지/일반, 제목 Input + 작성자 Input row, 게시 RadioGroup 즉시, 내용 Textarea, 첨부 file upload with drag/click), footer (취소/임시저장/등록 buttons))
-- Q&A `/qna`
+- Q&A `/qna`, Q&A 상세 `/qna/:id`
 
 ### SSF관리
 - 도메인(L1)정보 관리 `/ssf/domain` (fully implemented: filter bar with ChooseButton + search, data table with sorting/pagination, 13 mock rows, detail/create/edit/delete popups; row click → detail popup → edit or delete)
@@ -64,7 +64,8 @@ vite.config.ts  - Vite configuration
 Pages with full UI implementation:
 - 공지사항 목록 (`/notices`) — Figma-based table list with category/search filters, 8-column sortable table with badges, pagination. Row click navigates to detail page.
 - 공지사항 상세 (`/notices/:id`) — Figma-based detail view with metadata row (분류 badge, 작성자, 등록일, 조회수), title with pinned badge, content body, file attachments list (with download count, size, date), footer buttons (목록/수정/삭제). 수정 button opens edit popup (NoticeEditPopup) pre-populated with notice data (category, title, author, post type, content, existing attachments). Edit popup: 880px modal, same layout as create popup with title "공지사항 수정", footer (취소/임시저장/저장).
-- Q&A 목록 (`/qna`) — Figma-based table list with category filter (전체/이용문의/기술), search scope + keyword, 6-column sortable table (번호/분류/제목/작성자/등록일/상태), status badges (답변완료/답변대기), reply icon on title, pagination, 등록 button. 30 mock rows.
+- Q&A 목록 (`/qna`) — Figma-based table list with category filter (전체/이용문의/기술), search scope + keyword, 6-column sortable table (번호/분류/제목/작성자/등록일/상태), status badges (답변완료/답변대기), reply icon on title, pagination, 등록 button. 30 mock rows. Row click navigates to detail page.
+- Q&A 상세 (`/qna/:id`) — Figma-based detail view with metadata row (분류 badge, 작성자, 등록일, 조회수), title + content body, file attachments list, comment section. No comments → shows Textarea editor + 댓글등록 button. Has comments → shows comment list with content, author/date meta, 수정/삭제 buttons per comment. Footer: 목록 + 삭제 buttons. AlertModal for delete confirmation, Snackbar for success feedback.
 - 요구사항 (`/requirements`) — card list with filter bar (date range, status, search scope + keyword), tabs (All/Personal), chip sort (Update 일시/완료 희망일), pagination, and requirement cards (status circle badge, req ID, title, due date, task, updated time, author with role icon)
 
 All other pages are blank placeholder pages using the shared `BlankPage` component.
