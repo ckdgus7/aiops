@@ -413,7 +413,7 @@ export function NoticeDetailView() {
         open={deleteSnackbarOpen}
         onClose={() => setDeleteSnackbarOpen(false)}
         message="삭제 되었습니다."
-        type="info"
+        type="success"
       />
     </div>
   );
