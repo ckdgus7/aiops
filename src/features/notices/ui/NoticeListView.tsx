@@ -1,4 +1,5 @@
 import { useState, useEffect, type CSSProperties } from "react";
+import { useNavigate } from "react-router";
 import { PageHeader } from "@/shared/ui/PageHeader";
 import { Breadcrumb } from "@/shared/ui/Breadcrumb";
 import { PageTitle } from "@/shared/ui/PageTitle";
@@ -353,6 +354,7 @@ function getCategoryBadgeStyle(category: string): CSSProperties {
 
 export function NoticeListView() {
   const addTab = useMdiStore((st) => st.addTab);
+  const navigate = useNavigate();
   useEffect(() => {
     addTab({ id: "/notices", label: "공지사항", path: "/notices" });
   }, [addTab]);
@@ -573,7 +575,7 @@ export function NoticeListView() {
                   </tr>
                 ) : (
                   pageItems.map((item) => (
-                    <tr key={item.no} style={{ cursor: "pointer" }}>
+                    <tr key={item.no} style={{ cursor: "pointer" }} onClick={() => navigate(`/notices/${item.no}`)}>
                       <td style={s.td}>{item.no}</td>
                       <td style={s.td}>
                         <span style={{ ...s.categoryBadge, ...getCategoryBadgeStyle(item.category) }}>

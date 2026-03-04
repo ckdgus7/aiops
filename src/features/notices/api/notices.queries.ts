@@ -1,6 +1,6 @@
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import type { Notice } from "../model/types";
-import { NOTICE_MOCK_DATA } from "../model/mock-data";
+import { NOTICE_MOCK_DATA, getNoticeDetail } from "../model/mock-data";
 
 interface NoticeListParams {
   category?: string;
@@ -91,5 +91,17 @@ export function useNoticesQuery(params: NoticeListParams) {
     queryKey: keys.list(normalized),
     queryFn: () => Promise.resolve(filterAndSort(normalized)),
     placeholderData: keepPreviousData,
+  });
+}
+
+export function useNoticeDetailQuery(id: number) {
+  return useQuery({
+    queryKey: keys.detail(id),
+    queryFn: () => {
+      const detail = getNoticeDetail(id);
+      if (!detail) throw new Error(`Notice ${id} not found`);
+      return detail;
+    },
+    enabled: id > 0,
   });
 }

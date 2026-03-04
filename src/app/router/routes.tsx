@@ -5,6 +5,9 @@ import { LayoutRoute } from '@/shared/ui/LayoutRoute';
 const NoticeListPage = lazy(() =>
   import('@/pages/notices/NoticeListPage').then(m => ({ default: m.NoticeListPage })),
 );
+const NoticeDetailPage = lazy(() =>
+  import('@/pages/notices/NoticeDetailPage').then(m => ({ default: m.NoticeDetailPage })),
+);
 
 const RequirementsPage = lazy(() =>
   import('@/pages/requirements/RequirementsPage').then(m => ({ default: m.RequirementsPage })),
@@ -130,6 +133,7 @@ export const routes: RouteObject[] = [
       { path: '/features/detail-design', element: withSuspense(DetailFeatureDesignPage) },
 
       { path: '/notices', element: withSuspense(NoticeListPage) },
+      { path: '/notices/:id', element: withSuspense(NoticeDetailPage) },
       { path: '/qna', element: withSuspense(QnaPage) },
 
       { path: '/ssf/domain', element: withSuspense(DomainPage) },

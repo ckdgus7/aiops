@@ -62,7 +62,8 @@ vite.config.ts  - Vite configuration
 - 과제 관리 `/business-info/project`
 
 Pages with full UI implementation:
-- 공지사항 (`/notices`) — Figma-based table list with category/search filters, 8-column sortable table with badges, pagination
+- 공지사항 목록 (`/notices`) — Figma-based table list with category/search filters, 8-column sortable table with badges, pagination. Row click navigates to detail page.
+- 공지사항 상세 (`/notices/:id`) — Figma-based detail view with metadata row (분류 badge, 작성자, 등록일, 조회수), title with pinned badge, content body, file attachments list (with download count, size, date), footer buttons (목록/수정/삭제)
 - 요구사항 (`/requirements`) — card list with filter bar (date range, status, search scope + keyword), tabs (All/Personal), chip sort (Update 일시/완료 희망일), pagination, and requirement cards (status circle badge, req ID, title, due date, task, updated time, author with role icon)
 
 All other pages are blank placeholder pages using the shared `BlankPage` component.

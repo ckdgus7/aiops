@@ -1,4 +1,4 @@
-import type { Notice } from "./types";
+import type { Notice, NoticeDetail } from "./types";
 
 export const NOTICE_MOCK_DATA: Notice[] = [
   { no: 30, category: "공지", title: "AI DevOps 시스템 안내입니다.", isPinned: true, author: "Admin", createdAt: "2026-03-01 10:00", updatedAt: "2026-03-01 10:00", attachments: 2, views: 312 },
@@ -32,3 +32,47 @@ export const NOTICE_MOCK_DATA: Notice[] = [
   { no: 2, category: "일반", title: "프로젝트 관리 도구 사용 안내", isPinned: false, author: "최관리", createdAt: "2026-01-29 11:00", updatedAt: "2026-01-30 10:00", attachments: 1, views: 145 },
   { no: 1, category: "공지", title: "AI DevOps 플랫폼 오픈 안내", isPinned: true, author: "Admin", createdAt: "2026-01-28 09:00", updatedAt: "2026-01-28 09:00", attachments: 0, views: 678 },
 ];
+
+function generateDetailContent(notice: Notice): string {
+  const contents: Record<number, string> = {
+    30: "안녕하세요.\n\nNOVA AI DevOps 시스템 사용에 대한 안내사항을 공유드립니다.\n\n본 시스템은 AI 기반의 DevOps 자동화 플랫폼으로, 요구사항 관리부터 배포까지의 전체 개발 라이프사이클을 지원합니다.\n\n주요 기능:\n1. 요구사항 관리 및 추적\n2. UI/UX 디자인 관리\n3. 기능 설계 및 상세 설계\n4. SSF(Service Structure Framework) 관리\n5. CI/CD 파이프라인 자동화\n\n시스템 사용 중 문의사항이 있으시면 관리자에게 연락해 주시기 바랍니다.\n\n감사합니다.",
+    27: "안녕하세요.\n\n보안 정책이 아래와 같이 변경되었음을 알려드립니다.\n\n변경 사항:\n1. 비밀번호 정책 강화 (최소 12자, 특수문자 2개 이상 포함)\n2. 2단계 인증(2FA) 의무화\n3. 세션 타임아웃 시간 단축 (60분 → 30분)\n4. API 키 로테이션 주기 변경 (90일 → 60일)\n\n변경된 정책은 2026년 3월 1일부터 적용됩니다.\n모든 사용자는 해당 일자까지 비밀번호를 변경해 주시기 바랍니다.\n\n감사합니다.",
+    7: "안녕하세요.\n\n2026년 정보보안 교육 이수에 대한 안내입니다.\n\n교육 대상: 전 직원\n교육 기간: 2026년 2월 4일 ~ 2026년 2월 28일\n교육 방법: 온라인 교육 (LMS 시스템)\n\n미이수 시 시스템 접근이 제한될 수 있으니 반드시 기간 내 이수해 주시기 바랍니다.\n\n감사합니다.",
+    1: "안녕하세요.\n\nNOVA AI DevOps 플랫폼이 정식 오픈되었음을 안내드립니다.\n\n본 플랫폼은 SKT의 AI 기술을 활용하여 소프트웨어 개발 프로세스를 혁신적으로 개선하는 것을 목표로 합니다.\n\n모든 팀원들의 적극적인 참여와 피드백을 부탁드립니다.\n\n감사합니다.",
+  };
+  return contents[notice.no] ?? `안녕하세요.\n\n${notice.title}에 대한 상세 내용입니다.\n\n해당 공지사항의 내용을 확인해 주시기 바랍니다.\n자세한 문의사항은 관리자에게 연락해 주세요.\n\n감사합니다.`;
+}
+
+function generateAttachments(notice: Notice): NoticeDetail["attachments"] {
+  if (notice.attachments === 0) return [];
+  const fileExts = ["ppt", "xlsx", "pdf", "docx", "zip"];
+  const result: NoticeDetail["attachments"] = [];
+  for (let i = 0; i < notice.attachments; i++) {
+    const ext = fileExts[i % fileExts.length];
+    result.push({
+      id: `${notice.no}-file-${i + 1}`,
+      name: `Nova AI DevOps_${String(i + 1).padStart(2, "0")}.${ext}`,
+      size: `${(Math.random() * 30 + 1).toFixed(2)} MB`,
+      downloads: Math.floor(Math.random() * 300 + 10),
+      uploadedAt: notice.createdAt,
+    });
+  }
+  return result;
+}
+
+export function getNoticeDetail(no: number): NoticeDetail | null {
+  const notice = NOTICE_MOCK_DATA.find((n) => n.no === no);
+  if (!notice) return null;
+  return {
+    no: notice.no,
+    category: notice.category,
+    isPinned: notice.isPinned,
+    title: notice.title,
+    content: generateDetailContent(notice),
+    author: notice.author,
+    createdAt: notice.createdAt,
+    updatedAt: notice.updatedAt,
+    views: notice.views,
+    attachments: generateAttachments(notice),
+  };
+}
