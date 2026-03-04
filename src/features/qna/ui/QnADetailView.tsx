@@ -10,6 +10,7 @@ import { Snackbar } from "@/shared/ui/Snackbar";
 import { useMdiStore } from "@/shared/model/mdi.store";
 import { useQnADetailQuery } from "@/features/qna/api/qna.queries";
 import type { QnAComment } from "@/features/qna/model/types";
+import { QnAEditPopup } from "@/features/qna/ui/QnAEditPopup";
 
 const FONT = "'Pretendard', sans-serif";
 
@@ -380,6 +381,7 @@ export function QnADetailView() {
   const addTab = useMdiStore((st) => st.addTab);
   const qnaId = Number(id) || 0;
 
+  const [editPopupOpen, setEditPopupOpen] = useState(false);
   const [deleteAlertOpen, setDeleteAlertOpen] = useState(false);
   const [deleteSnackbarOpen, setDeleteSnackbarOpen] = useState(false);
   const [commentDeleteAlertOpen, setCommentDeleteAlertOpen] = useState(false);
@@ -553,12 +555,21 @@ export function QnADetailView() {
             </Button>
           </div>
           <div style={ds.btnRight}>
+            <Button size="l" variant="outlined" color="info" onClick={() => setEditPopupOpen(true)}>
+              수정
+            </Button>
             <Button size="l" variant="outlined" color="info" onClick={() => setDeleteAlertOpen(true)}>
               삭제
             </Button>
           </div>
         </div>
       </div>
+
+      <QnAEditPopup
+        open={editPopupOpen}
+        onClose={() => setEditPopupOpen(false)}
+        detail={detail}
+      />
 
       <AlertModal
         open={deleteAlertOpen}
