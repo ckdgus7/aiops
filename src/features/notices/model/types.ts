@@ -1,31 +1,16 @@
+export type NoticeCategory = "공지" | "일반";
+
 export interface Notice {
-  id: number;
+  no: number;
+  category: NoticeCategory;
   title: string;
+  isPinned: boolean;
+  author: string;
   createdAt: string;
+  updatedAt: string;
+  attachments: number;
   views: number;
 }
 
-export interface NoticeDetail extends Notice {
-  content: string;
-}
-
-export interface NoticeQuery {
-  title: string;
-  fromDate: string | null;
-  toDate: string | null;
-}
-
-export interface NoticeListParams {
-  title?: string;
-  fromDate?: string;
-  toDate?: string;
-  page?: number;
-  pageSize?: number;
-}
-
-export interface NoticeListResponse {
-  items: Notice[];
-  total: number;
-  page: number;
-  totalPages: number;
-}
+export type NoticeSortKey = "no" | "category" | "title" | "author" | "createdAt" | "updatedAt" | "attachments" | "views";
+export type NoticeSortDir = "asc" | "desc" | null;

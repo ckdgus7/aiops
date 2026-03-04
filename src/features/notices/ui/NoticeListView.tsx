@@ -1,473 +1,602 @@
-import { useEffect } from "react";
-import type { CSSProperties } from "react";
-import { Link } from "react-router";
-import type { Notice } from "../model/types";
-import { Input } from "@/shared/ui/Input";
-import { DatePicker } from "@/shared/ui/DatePicker";
+import { useState, useEffect, type CSSProperties } from "react";
 import { PageHeader } from "@/shared/ui/PageHeader";
 import { Breadcrumb } from "@/shared/ui/Breadcrumb";
 import { PageTitle } from "@/shared/ui/PageTitle";
+import { SelectBox } from "@/shared/ui/SelectBox";
+import { Input } from "@/shared/ui/Input";
+import { Button } from "@/shared/ui/Button";
 import { useMdiStore } from "@/shared/model/mdi.store";
+import { useNoticesQuery } from "@/features/notices/api/notices.queries";
+import type { NoticeSortKey, NoticeSortDir } from "@/features/notices/model/types";
 
-const actionBtnStyle: CSSProperties = {
-  height: 40,
-  padding: "0 20px",
-  borderRadius: 6,
-  border: "none",
-  background: "#222",
-  color: "#fff",
-  fontSize: 16,
-  fontWeight: 600,
-  cursor: "pointer",
-  display: "flex",
-  alignItems: "center",
-  gap: 6,
-  whiteSpace: "nowrap",
-};
+const FONT = "'Pretendard', sans-serif";
+
+function SortIcon({ active, dir }: { active: boolean; dir: NoticeSortDir }) {
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" style={{ flexShrink: 0, cursor: "pointer" }}>
+      <path d="M6 7L9 4L12 7" stroke={active && dir === "asc" ? "#7a5af8" : "#a1a1aa"} strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M6 11L9 14L12 11" stroke={active && dir === "desc" ? "#7a5af8" : "#a1a1aa"} strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function ChevronLeftIcon({ disabled }: { disabled?: boolean }) {
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style={{ opacity: disabled ? 0.4 : 1 }}>
+      <path d="M12 5L7 10L12 15" stroke="#71717a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function ChevronRightIcon({ disabled }: { disabled?: boolean }) {
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style={{ opacity: disabled ? 0.4 : 1 }}>
+      <path d="M8 5L13 10L8 15" stroke="#71717a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function ChevronDoubleLeftIcon({ disabled }: { disabled?: boolean }) {
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style={{ opacity: disabled ? 0.4 : 1 }}>
+      <path d="M11 5L6 10L11 15" stroke="#71717a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M15 5L10 10L15 15" stroke="#71717a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function ChevronDoubleRightIcon({ disabled }: { disabled?: boolean }) {
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" style={{ opacity: disabled ? 0.4 : 1 }}>
+      <path d="M5 5L10 10L5 15" stroke="#71717a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M9 5L14 10L9 15" stroke="#71717a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function DownloadIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+      <path d="M10 3V13M10 13L6 9M10 13L14 9" stroke="#71717a" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M3 15V16C3 16.5523 3.44772 17 4 17H16C16.5523 17 17 16.5523 17 16V15" stroke="#71717a" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+const CATEGORY_OPTIONS = [
+  { label: "전체", value: "전체" },
+  { label: "공지", value: "공지" },
+  { label: "일반", value: "일반" },
+];
+
+const SEARCH_SCOPE_OPTIONS = [
+  { label: "전체", value: "전체" },
+  { label: "제목", value: "제목" },
+  { label: "작성자", value: "작성자" },
+];
+
+const COLUMNS: { key: NoticeSortKey; label: string; width: number | string; align?: "left" | "center" }[] = [
+  { key: "no", label: "번호", width: 80, align: "center" },
+  { key: "category", label: "분류", width: 120, align: "center" },
+  { key: "title", label: "제목", width: "auto", align: "left" },
+  { key: "author", label: "작성자", width: 120, align: "center" },
+  { key: "createdAt", label: "등록일", width: 180, align: "center" },
+  { key: "updatedAt", label: "수정일", width: 180, align: "center" },
+  { key: "attachments", label: "첨부", width: 80, align: "center" },
+  { key: "views", label: "조회수", width: 100, align: "center" },
+];
 
 const s = {
-  outerWrapper: {
+  outer: {
     display: "flex",
     flexDirection: "column",
-    flex: 1,
-    fontFamily: "'Pretendard', sans-serif",
+    width: "100%",
+    minHeight: "100%",
+    fontFamily: FONT,
   } satisfies CSSProperties,
-  wrapper: {
-    padding: "0 32px 20px",
-    fontFamily: "'Pretendard', sans-serif",
+  main: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 16,
+    padding: 32,
     flex: 1,
-    overflow: "auto",
   } satisfies CSSProperties,
-  searchBox: {
-    background: "#fff",
+  filterWrap: {
+    display: "flex",
+    flexWrap: "wrap",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 16,
+    padding: "16px 24px",
+    backgroundColor: "#f8f9fc",
     borderRadius: 8,
-    padding: "14px 20px",
+  } satisfies CSSProperties,
+  filterLeft: {
     display: "flex",
     alignItems: "center",
-    gap: 30,
-    marginBottom: 14,
-  } satisfies CSSProperties,
-  searchFields: {
-    display: "flex",
-    alignItems: "center",
-    gap: 30,
-    flex: 1,
-  } satisfies CSSProperties,
-  searchField: {
-    display: "flex",
-    alignItems: "center",
-    gap: 2,
-    flex: 1,
-  } satisfies CSSProperties,
-  searchFieldFlex: {
-    display: "flex",
-    alignItems: "center",
-    gap: 2,
-    flex: 1,
-  } satisfies CSSProperties,
-  searchLabel: {
-    width: 100,
-    fontSize: 14,
-    fontWeight: 700,
-    color: "#222",
+    gap: 0,
+    width: 92,
     flexShrink: 0,
   } satisfies CSSProperties,
-  searchSelect: {
-    flex: 1,
-    height: 36,
-    border: "1px solid #ddd",
-    borderRadius: 6,
-    padding: "0 8px",
-    fontSize: 14,
-    color: "#999",
-    background: "#fff",
-    outline: "none",
-    appearance: "none",
-    cursor: "pointer",
-  } satisfies CSSProperties,
-  searchBtn: {
-    height: 36,
-    padding: "0 16px",
-    borderRadius: 6,
-    border: "none",
-    background: "#222",
-    color: "#fff",
-    fontSize: 14,
-    fontWeight: 600,
-    cursor: "pointer",
-    display: "flex",
-    alignItems: "center",
-    gap: 6,
-    whiteSpace: "nowrap",
-    flexShrink: 0,
-  } satisfies CSSProperties,
-  gridTitleRow: {
+  filterRight: {
     display: "flex",
     alignItems: "center",
     gap: 8,
-    padding: "12px 0 8px",
+    width: 484,
+    flexShrink: 0,
   } satisfies CSSProperties,
-  gridTitle: {
+  listWrap: {
+    display: "flex",
+    flexDirection: "column",
+    width: "100%",
+  } satisfies CSSProperties,
+  tableFunction: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%",
+    minHeight: 48,
+  } satisfies CSSProperties,
+  tableFuncLeft: {
+    display: "flex",
+    alignItems: "center",
+    gap: 32,
+  } satisfies CSSProperties,
+  badge: {
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "4px 12px",
+    borderRadius: 12,
+    border: "1px solid #71717a",
+    backgroundColor: "#fafafa",
+    fontFamily: FONT,
     fontSize: 14,
-    fontWeight: 700,
-    color: "#000",
+    fontWeight: 500,
+    lineHeight: "16px",
+    color: "#71717a",
+    whiteSpace: "nowrap",
   } satisfies CSSProperties,
-  gridCount: {
+  listAction: {
+    display: "flex",
+    alignItems: "center",
+    gap: 24,
+    paddingBottom: 8,
+  } satisfies CSSProperties,
+  paginationField: {
+    display: "flex",
+    alignItems: "center",
+    gap: 12,
+  } satisfies CSSProperties,
+  paginationLabel: {
+    fontFamily: FONT,
+    fontSize: 14,
+    fontWeight: 500,
+    lineHeight: "18px",
+    color: "#a1a1aa",
+    whiteSpace: "nowrap",
+  } satisfies CSSProperties,
+  itemsSelect: {
+    display: "flex",
+    alignItems: "center",
+    gap: 4,
+    height: 40,
+    padding: "3px 4px",
+    border: "1px solid #e4e7ec",
+    borderRadius: 4,
+    backgroundColor: "white",
+    fontFamily: FONT,
+    fontSize: 14,
+    fontWeight: 400,
+    lineHeight: "20px",
+    color: "#3f3f46",
+    cursor: "pointer",
+    boxSizing: "border-box",
+    outline: "none",
+  } satisfies CSSProperties,
+  indicator: {
+    fontFamily: FONT,
+    fontSize: 14,
+    fontWeight: 400,
+    lineHeight: "20px",
+    color: "#71717a",
+    textAlign: "center",
+    whiteSpace: "nowrap",
+  } satisfies CSSProperties,
+  paginationWrap: {
     display: "flex",
     alignItems: "center",
     gap: 4,
   } satisfies CSSProperties,
-  gridCountLabel: {
-    fontSize: 13,
-    color: "#999",
+  pageBtn: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    border: "none",
+    background: "transparent",
+    cursor: "pointer",
+    padding: 0,
+    borderRadius: 4,
   } satisfies CSSProperties,
-  gridCountBadge: {
-    background: "#d9d9d9",
-    borderRadius: 50,
-    padding: "3px 10px",
-    fontSize: 13,
-    fontWeight: 600,
-    color: "#000",
-    lineHeight: "14px",
+  pageBtnActive: {
+    fontFamily: FONT,
+    fontSize: 14,
+    fontWeight: 500,
+    lineHeight: "20px",
+    color: "#71717a",
+    padding: "0 6px",
+    opacity: 1,
   } satisfies CSSProperties,
-  gridWrapper: {
-    background: "#fff",
-    borderRadius: 8,
-    overflow: "hidden",
+  pageBtnInactive: {
+    fontFamily: FONT,
+    fontSize: 14,
+    fontWeight: 500,
+    lineHeight: "20px",
+    color: "#71717a",
+    padding: "0 6px",
+    opacity: 0.4,
+  } satisfies CSSProperties,
+  downloadBtn: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    border: "none",
+    background: "transparent",
+    cursor: "pointer",
+    padding: 0,
+    borderRadius: 4,
   } satisfies CSSProperties,
   table: {
     width: "100%",
     borderCollapse: "collapse",
+    border: "1px solid #e4e4e7",
+    borderRadius: 4,
+    overflow: "hidden",
+    tableLayout: "fixed",
   } satisfies CSSProperties,
   th: {
-    background: "#f1f1f1",
-    border: "1px solid #d9d7e7",
-    padding: "0 10px",
-    height: 40,
+    backgroundColor: "#f4f4f5",
+    border: "1px solid #e4e4e7",
+    padding: 8,
+    fontFamily: FONT,
     fontSize: 14,
     fontWeight: 400,
-    color: "#222",
+    lineHeight: "20px",
+    color: "black",
     textAlign: "center",
     whiteSpace: "nowrap",
+    minHeight: 36,
+    boxSizing: "border-box",
+  } satisfies CSSProperties,
+  thInner: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 4,
+    width: "100%",
   } satisfies CSSProperties,
   td: {
-    border: "1px solid #d9d7e7",
-    padding: "0 10px",
-    height: 42,
+    backgroundColor: "white",
+    border: "1px solid #e4e4e7",
+    padding: 8,
+    fontFamily: FONT,
     fontSize: 14,
-    fontWeight: 500,
-    color: "#222",
-    textAlign: "center",
-    background: "#fff",
-  } satisfies CSSProperties,
-  tdTitle: {
-    border: "1px solid #d9d7e7",
-    padding: "0 10px",
-    height: 42,
-    fontSize: 14,
-    fontWeight: 500,
-    color: "#222",
-    textAlign: "left",
-    background: "#fff",
-  } satisfies CSSProperties,
-  emptyRow: {
-    textAlign: "center",
-    color: "#999",
-    padding: "40px 0",
-    fontSize: 14,
-  } satisfies CSSProperties,
-  pagination: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 30,
-    padding: "16px 0",
-  } satisfies CSSProperties,
-  pageNumbers: {
-    display: "flex",
-    alignItems: "center",
-    gap: 8,
-  } satisfies CSSProperties,
-  pageBtn: {
-    width: 24,
-    height: 24,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    fontSize: 13,
-    cursor: "pointer",
-    borderRadius: 2,
-    border: "none",
-    background: "transparent",
-    color: "#000",
-    fontWeight: 500,
-    padding: 0,
-  } satisfies CSSProperties,
-  pageBtnActive: {
-    width: 24,
-    height: 24,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    fontSize: 13,
-    cursor: "pointer",
-    borderRadius: 6,
-    border: "1px solid #000",
-    background: "#000",
-    color: "#fff",
     fontWeight: 400,
-    padding: 0,
+    lineHeight: "20px",
+    color: "black",
+    textAlign: "center",
+    minHeight: 40,
+    boxSizing: "border-box",
+    verticalAlign: "middle",
   } satisfies CSSProperties,
-  pageNav: {
-    width: 36,
-    height: 36,
+  tdLeft: {
+    textAlign: "left",
+  } satisfies CSSProperties,
+  titleRow: {
     display: "flex",
+    alignItems: "center",
+    gap: 4,
+  } satisfies CSSProperties,
+  categoryBadge: {
+    display: "inline-flex",
     alignItems: "center",
     justifyContent: "center",
-    cursor: "pointer",
-    background: "transparent",
-    border: "none",
-    fontSize: 16,
-    color: "#666",
-    padding: 0,
-  } satisfies CSSProperties,
-  pageInput: {
-    display: "flex",
-    alignItems: "center",
-    gap: 6,
-  } satisfies CSSProperties,
-  pageInputField: {
-    width: 180,
-    height: 36,
-    border: "1px solid #ddd",
-    borderRadius: 6,
-    padding: "0 12px",
-    fontSize: 14,
-    color: "#000",
-    outline: "none",
-  } satisfies CSSProperties,
-  pageInputLabel: {
-    fontSize: 13,
-    color: "#5b5b6b",
+    padding: "2px 8px",
+    borderRadius: 4,
+    fontFamily: FONT,
+    fontSize: 12,
     fontWeight: 500,
-  } satisfies CSSProperties,
-  dateSeparator: {
-    fontSize: 14,
-    color: "#999",
-    padding: "0 4px",
+    lineHeight: "16px",
+    whiteSpace: "nowrap",
     flexShrink: 0,
+  } satisfies CSSProperties,
+  pinnedBadge: {
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "2px 8px",
+    borderRadius: 4,
+    backgroundColor: "#fef3f2",
+    border: "1px solid #f04438",
+    color: "#f04438",
+    fontFamily: FONT,
+    fontSize: 12,
+    fontWeight: 500,
+    lineHeight: "16px",
+    whiteSpace: "nowrap",
+    flexShrink: 0,
+  } satisfies CSSProperties,
+  titleText: {
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+    cursor: "pointer",
+    color: "black",
   } satisfies CSSProperties,
 };
 
-interface NoticeListViewProps {
-  titleDraft: string;
-  fromDateDraft: string;
-  toDateDraft: string;
-  items: Notice[];
-  total: number;
-  page: number;
-  totalPages: number;
-  loading: boolean;
-  error: boolean;
-  onTitleDraftChange: (v: string) => void;
-  onFromDateDraftChange: (v: string) => void;
-  onToDateDraftChange: (v: string) => void;
-  onReset: () => void;
-  onSearch: () => void;
-  onPageChange: (page: number) => void;
+function getCategoryBadgeStyle(category: string): CSSProperties {
+  if (category === "공지") {
+    return {
+      backgroundColor: "#fafaff",
+      border: "1px solid #7a5af8",
+      color: "#7a5af8",
+    };
+  }
+  return {
+    backgroundColor: "#fafafa",
+    border: "1px solid #a1a1aa",
+    color: "#a1a1aa",
+  };
 }
 
-export function NoticeListView({
-  titleDraft,
-  fromDateDraft,
-  toDateDraft,
-  items,
-  total,
-  page,
-  totalPages,
-  loading,
-  error,
-  onTitleDraftChange,
-  onFromDateDraftChange,
-  onToDateDraftChange,
-  onReset,
-  onSearch,
-  onPageChange,
-}: NoticeListViewProps) {
-  const addTab = useMdiStore((s) => s.addTab);
-
+export function NoticeListView() {
+  const addTab = useMdiStore((st) => st.addTab);
   useEffect(() => {
     addTab({ id: "/notices", label: "공지사항", path: "/notices" });
   }, [addTab]);
 
-  const clampedPage = Math.min(page, totalPages);
-  const startPage = Math.max(1, clampedPage - 4);
-  const endPage = Math.min(totalPages, startPage + 9);
-  const pageNumberList = endPage >= startPage
-    ? Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i)
-    : [1];
+  const [categoryFilter, setCategoryFilter] = useState("전체");
+  const [searchScope, setSearchScope] = useState("전체");
+  const [searchKeywordDraft, setSearchKeywordDraft] = useState("");
+  const [appliedKeyword, setAppliedKeyword] = useState("");
+  const [appliedScope, setAppliedScope] = useState("전체");
+  const [sortKey, setSortKey] = useState<NoticeSortKey | null>(null);
+  const [sortDir, setSortDir] = useState<NoticeSortDir>(null);
+  const [page, setPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+
+  const { data, isLoading } = useNoticesQuery({
+    category: categoryFilter,
+    searchScope: appliedScope,
+    keyword: appliedKeyword,
+    page,
+    pageSize: itemsPerPage,
+    sortKey,
+    sortDir,
+  });
+
+  const totalCount = data?.total ?? 0;
+  const totalPages = data?.totalPages ?? 1;
+  const safePage = data?.page ?? 1;
+  const pageItems = data?.items ?? [];
+  const startIdx = (safePage - 1) * itemsPerPage;
+
+  const handleSort = (key: NoticeSortKey) => {
+    if (sortKey === key) {
+      if (sortDir === "asc") setSortDir("desc");
+      else if (sortDir === "desc") { setSortKey(null); setSortDir(null); }
+      else setSortDir("asc");
+    } else {
+      setSortKey(key);
+      setSortDir("asc");
+    }
+  };
+
+  const handleSearch = () => {
+    setAppliedKeyword(searchKeywordDraft);
+    setAppliedScope(searchScope);
+    setPage(1);
+  };
+
+  const pageNumbers: (number | string)[] = [];
+  if (totalPages <= 7) {
+    for (let i = 1; i <= totalPages; i++) pageNumbers.push(i);
+  } else {
+    pageNumbers.push(1, 2, 3, 4, 5, "...", totalPages);
+  }
 
   return (
-    <div style={s.outerWrapper}>
+    <div style={s.outer}>
       <PageHeader>
         <Breadcrumb items={[{ label: "게시판" }, { label: "공지사항" }]} />
-        <PageTitle
-          title="공지사항"
-          favoriteKey="공지사항"
-          badge="활성"
-          actions={
-            <button style={actionBtnStyle}>
-              <span>✏️</span>
-              <span>글쓰기</span>
-            </button>
-          }
-        />
+        <PageTitle title="공지사항" favoriteKey="공지사항" />
       </PageHeader>
 
-      <div style={s.wrapper}>
-      <div style={s.searchBox}>
-        <div style={s.searchFields}>
-          <div style={s.searchField}>
-            <span style={s.searchLabel}>제목</span>
-            <Input
-              value={titleDraft}
-              onChange={(e) => onTitleDraftChange(e.target.value)}
-              placeholder="입력"
-              onKeyDown={(e) => {
-                if (e.key === "Enter") onSearch();
-              }}
+      <div style={s.main}>
+        <div style={s.filterWrap}>
+          <div style={s.filterLeft}>
+            <SelectBox
+              value={categoryFilter}
+              onChange={(v) => { setCategoryFilter(v); setPage(1); }}
+              options={CATEGORY_OPTIONS}
+              placeholder="분류"
+              wrapperStyle={{ width: 92 }}
             />
           </div>
-          <div style={s.searchFieldFlex}>
-            <span style={s.searchLabel}>등록일</span>
-            <DatePicker value={fromDateDraft} onChange={onFromDateDraftChange} />
-            <span style={s.dateSeparator}>~</span>
-            <DatePicker value={toDateDraft} onChange={onToDateDraftChange} />
+          <div style={s.filterRight}>
+            <SelectBox
+              value={searchScope}
+              onChange={setSearchScope}
+              options={SEARCH_SCOPE_OPTIONS}
+              placeholder="검색범위"
+              wrapperStyle={{ width: 92, flexShrink: 0 }}
+            />
+            <Input
+              value={searchKeywordDraft}
+              onChange={(e) => setSearchKeywordDraft(e.target.value)}
+              placeholder="검색어를 입력하세요."
+              prefix="search"
+              indicator={`${searchKeywordDraft.length}/20`}
+              maxLength={20}
+              style={{ flex: 1 }}
+              onKeyDown={(e) => { if (e.key === "Enter") handleSearch(); }}
+            />
+            <Button
+              size="l"
+              variant="outlined"
+              color="positive"
+              onClick={handleSearch}
+              style={{ flexShrink: 0 }}
+            >
+              검색
+            </Button>
           </div>
         </div>
-        <button style={s.searchBtn} onClick={onSearch}>
-          <span>🔍</span>
-          <span>검색</span>
-        </button>
-      </div>
 
-      <div style={s.gridTitleRow}>
-        <span style={s.gridTitle}>목록</span>
-        <div style={s.gridCount}>
-          <span style={s.gridCountLabel}>총</span>
-          <span style={s.gridCountBadge}>{total}</span>
-        </div>
-      </div>
+        <div style={s.listWrap}>
+          <div style={s.tableFunction}>
+            <div style={s.tableFuncLeft}>
+              <span style={s.badge}>총 {totalCount}개</span>
+            </div>
+            <div style={s.listAction}>
+              <div style={s.paginationField}>
+                <span style={s.paginationLabel}>Items per page:</span>
+                <select
+                  value={itemsPerPage}
+                  onChange={(e) => { setItemsPerPage(Number(e.target.value)); setPage(1); }}
+                  style={s.itemsSelect}
+                >
+                  <option value={10}>10</option>
+                  <option value={20}>20</option>
+                  <option value={50}>50</option>
+                </select>
+              </div>
+              <span style={s.indicator}>
+                {totalCount === 0 ? "0" : `${startIdx + 1}-${Math.min(startIdx + itemsPerPage, totalCount)}`} of {totalCount}
+              </span>
+              <div style={s.paginationWrap}>
+                <button
+                  style={{ ...s.pageBtn, opacity: safePage === 1 ? 0.4 : 1 }}
+                  disabled={safePage === 1}
+                  onClick={() => setPage(1)}
+                >
+                  <ChevronDoubleLeftIcon disabled={safePage === 1} />
+                </button>
+                <button
+                  style={{ ...s.pageBtn, opacity: safePage === 1 ? 0.4 : 1 }}
+                  disabled={safePage === 1}
+                  onClick={() => setPage(Math.max(1, safePage - 1))}
+                >
+                  <ChevronLeftIcon disabled={safePage === 1} />
+                </button>
+                {pageNumbers.map((pn, idx) => (
+                  <button
+                    key={idx}
+                    style={{
+                      ...s.pageBtn,
+                      ...(pn === safePage ? s.pageBtnActive : s.pageBtnInactive),
+                    }}
+                    disabled={pn === "..."}
+                    onClick={() => { if (typeof pn === "number") setPage(pn); }}
+                  >
+                    {pn}
+                  </button>
+                ))}
+                <button
+                  style={{ ...s.pageBtn, opacity: safePage === totalPages ? 0.4 : 1 }}
+                  disabled={safePage === totalPages}
+                  onClick={() => setPage(Math.min(totalPages, safePage + 1))}
+                >
+                  <ChevronRightIcon disabled={safePage === totalPages} />
+                </button>
+                <button
+                  style={{ ...s.pageBtn, opacity: safePage === totalPages ? 0.4 : 1 }}
+                  disabled={safePage === totalPages}
+                  onClick={() => setPage(totalPages)}
+                >
+                  <ChevronDoubleRightIcon disabled={safePage === totalPages} />
+                </button>
+              </div>
+              <button style={s.downloadBtn} title="다운로드">
+                <DownloadIcon />
+              </button>
+              <Button
+                size="m"
+                variant="filled"
+                color="positive"
+              >
+                등록
+              </Button>
+            </div>
+          </div>
 
-      <div style={s.gridWrapper}>
-        {loading && (
-          <div style={{ padding: 40, textAlign: "center", color: "#999" }}>
-            Loading...
-          </div>
-        )}
-        {error && (
-          <div style={{ padding: 40, textAlign: "center", color: "#999" }}>
-            에러가 발생했습니다.
-          </div>
-        )}
-        {!loading && !error && (
-          <>
+          {isLoading ? (
+            <div style={{ padding: 40, textAlign: "center", color: "#a1a1aa", fontFamily: FONT }}>
+              Loading...
+            </div>
+          ) : (
             <table style={s.table}>
+              <colgroup>
+                {COLUMNS.map((col) => (
+                  <col
+                    key={col.key}
+                    style={{ width: typeof col.width === "number" ? col.width : undefined }}
+                  />
+                ))}
+              </colgroup>
               <thead>
                 <tr>
-                  <th style={{ ...s.th, width: 60 }}>번호</th>
-                  <th style={s.th}>제목</th>
-                  <th style={{ ...s.th, width: 140 }}>등록일</th>
-                  <th style={{ ...s.th, width: 100 }}>조회수</th>
+                  {COLUMNS.map((col) => (
+                    <th
+                      key={col.key}
+                      style={s.th}
+                      onClick={() => handleSort(col.key)}
+                    >
+                      <div style={s.thInner}>
+                        <span>{col.label}</span>
+                        <SortIcon active={sortKey === col.key} dir={sortKey === col.key ? sortDir : null} />
+                      </div>
+                    </th>
+                  ))}
                 </tr>
               </thead>
               <tbody>
-                {items.length === 0 ? (
+                {pageItems.length === 0 ? (
                   <tr>
-                    <td style={s.emptyRow} colSpan={4}>
+                    <td colSpan={COLUMNS.length} style={{ ...s.td, padding: 40, color: "#a1a1aa" }}>
                       데이터가 없습니다.
                     </td>
                   </tr>
                 ) : (
-                  items.map((item) => (
-                    <tr key={item.id}>
-                      <td style={s.td}>{item.id}</td>
-                      <td style={s.tdTitle}>
-                        <Link
-                          to={`/notices/${item.id}`}
-                          style={{ color: "#222", textDecoration: "none" }}
-                        >
-                          {item.title}
-                        </Link>
+                  pageItems.map((item) => (
+                    <tr key={item.no} style={{ cursor: "pointer" }}>
+                      <td style={s.td}>{item.no}</td>
+                      <td style={s.td}>
+                        <span style={{ ...s.categoryBadge, ...getCategoryBadgeStyle(item.category) }}>
+                          {item.category}
+                        </span>
                       </td>
+                      <td style={{ ...s.td, ...s.tdLeft }}>
+                        <div style={s.titleRow}>
+                          {item.isPinned && (
+                            <span style={s.pinnedBadge}>필독</span>
+                          )}
+                          <span style={s.titleText}>{item.title}</span>
+                        </div>
+                      </td>
+                      <td style={s.td}>{item.author}</td>
                       <td style={s.td}>{item.createdAt}</td>
+                      <td style={s.td}>{item.updatedAt}</td>
+                      <td style={s.td}>{item.attachments > 0 ? item.attachments : "-"}</td>
                       <td style={s.td}>{item.views}</td>
                     </tr>
                   ))
                 )}
               </tbody>
             </table>
-
-            <div style={s.pagination}>
-              <div style={s.pageNumbers}>
-                <button
-                  style={s.pageNav}
-                  onClick={() => onPageChange(1)}
-                  disabled={page === 1}
-                >
-                  «
-                </button>
-                <button
-                  style={s.pageNav}
-                  onClick={() => onPageChange(Math.max(1, page - 1))}
-                  disabled={page === 1}
-                >
-                  ‹
-                </button>
-                {pageNumberList.map((p) => (
-                  <button
-                    key={p}
-                    style={p === page ? s.pageBtnActive : s.pageBtn}
-                    onClick={() => onPageChange(p)}
-                  >
-                    {p}
-                  </button>
-                ))}
-                <button
-                  style={s.pageNav}
-                  onClick={() => onPageChange(Math.min(totalPages, page + 1))}
-                  disabled={page === totalPages}
-                >
-                  ›
-                </button>
-                <button
-                  style={s.pageNav}
-                  onClick={() => onPageChange(totalPages)}
-                  disabled={page === totalPages}
-                >
-                  »
-                </button>
-              </div>
-              <div style={s.pageInput}>
-                <input
-                  style={s.pageInputField}
-                  type="number"
-                  min={1}
-                  max={totalPages}
-                  defaultValue={page}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      const v = Number((e.target as HTMLInputElement).value);
-                      if (v >= 1 && v <= totalPages) onPageChange(v);
-                    }
-                  }}
-                />
-                <span style={s.pageInputLabel}>/{totalPages}</span>
-              </div>
-            </div>
-          </>
-        )}
-      </div>
+          )}
+        </div>
       </div>
     </div>
   );

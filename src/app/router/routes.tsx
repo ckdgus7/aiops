@@ -3,7 +3,7 @@ import { lazy, Suspense } from 'react';
 import { LayoutRoute } from '@/shared/ui/LayoutRoute';
 
 const NoticeListPage = lazy(() =>
-  import('@/pages/notices/NoticeListPage').then(m => ({ default: m.default })),
+  import('@/pages/notices/NoticeListPage').then(m => ({ default: m.NoticeListPage })),
 );
 
 const RequirementsPage = lazy(() =>

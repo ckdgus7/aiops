@@ -40,7 +40,7 @@ vite.config.ts  - Vite configuration
 - 상세기능 설계 `/features/detail-design`
 
 ### 게시판
-- 공지사항 `/notices` (fully implemented with search/pagination)
+- 공지사항 `/notices` (fully implemented: Figma-based design with category filter SelectBox, search scope SelectBox + keyword search, data table with 8 columns (번호/분류/제목/작성자/등록일/수정일/첨부/조회수), column sorting, category badges (공지/일반), pinned badge (필독), pagination with items-per-page, 30 mock rows, "등록" button)
 - Q&A `/qna`
 
 ### SSF관리
@@ -62,7 +62,7 @@ vite.config.ts  - Vite configuration
 - 과제 관리 `/business-info/project`
 
 Pages with full UI implementation:
-- 공지사항 (`/notices`) — table list with search, pagination
+- 공지사항 (`/notices`) — Figma-based table list with category/search filters, 8-column sortable table with badges, pagination
 - 요구사항 (`/requirements`) — card list with filter bar (date range, status, search scope + keyword), tabs (All/Personal), chip sort (Update 일시/완료 희망일), pagination, and requirement cards (status circle badge, req ID, title, due date, task, updated time, author with role icon)
 
 All other pages are blank placeholder pages using the shared `BlankPage` component.
@@ -95,7 +95,7 @@ All other pages are blank placeholder pages using the shared `BlankPage` compone
 ## Tech Stack
 
 - **React 19** with TypeScript
-- **Vite 5** as the build tool and dev server
+- **Vite 7** as the build tool and dev server
 - **React Router 7** for client-side routing
 - **TanStack React Query 5** for server state management
 - **Zustand 4** for client state management
