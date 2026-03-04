@@ -1,8 +1,8 @@
 import { useState, useRef, useEffect, useCallback, type CSSProperties } from "react";
 import { RadioGroup } from "@/shared/ui/RadioGroup";
 import { Input } from "@/shared/ui/Input";
-import { Textarea } from "@/shared/ui/Textarea";
 import { Button } from "@/shared/ui/Button";
+import { TiptapEditor } from "@/shared/ui/TiptapEditor";
 import type { QnADetail } from "@/features/qna/model/types";
 
 const FONT = "'Pretendard', sans-serif";
@@ -383,14 +383,15 @@ export function QnAEditPopup({ open, onClose, detail }: QnAEditPopupProps) {
             </div>
 
             <div style={ps.fieldGroup}>
-              <Textarea
-                label="내용"
-                required
+              <div style={ps.fieldLabel}>
+                <span style={ps.labelText}>내용</span>
+                <span style={ps.requiredDot} />
+              </div>
+              <TiptapEditor
                 value={content}
-                onChange={(e) => setContent(e.target.value)}
+                onChange={setContent}
                 placeholder="내용을 입력하세요."
-                maxLength={2000}
-                style={{ minHeight: 300 }}
+                minHeight={300}
               />
             </div>
 

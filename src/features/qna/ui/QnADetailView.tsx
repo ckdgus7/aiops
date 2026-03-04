@@ -4,7 +4,7 @@ import { PageHeader } from "@/shared/ui/PageHeader";
 import { Breadcrumb } from "@/shared/ui/Breadcrumb";
 import { PageTitle } from "@/shared/ui/PageTitle";
 import { Button } from "@/shared/ui/Button";
-import { Textarea } from "@/shared/ui/Textarea";
+import { TiptapEditor } from "@/shared/ui/TiptapEditor";
 import { AlertModal } from "@/shared/ui/AlertModal";
 import { Snackbar } from "@/shared/ui/Snackbar";
 import { useMdiStore } from "@/shared/model/mdi.store";
@@ -327,12 +327,11 @@ function CommentEditor({ onSubmit }: CommentEditorProps) {
 
   return (
     <div style={ds.commentEditorWrap}>
-      <Textarea
+      <TiptapEditor
         value={content}
-        onChange={(e) => setContent(e.target.value)}
+        onChange={setContent}
         placeholder="댓글을 입력해주세요."
-        rows={6}
-        maxLength={2000}
+        minHeight={150}
       />
       <div style={ds.commentEditorBtnRow}>
         <Button size="m" variant="filled" color="positive" onClick={handleSubmit}>
