@@ -1,5 +1,5 @@
-import { BlankPage } from "@/shared/ui/BlankPage";
+import { QnAListView } from "@/features/qna/ui/QnAListView";
 
 export function QnaPage() {
-  return <BlankPage title="Q&A" gnbName="게시판" path="/qna" />;
+  return <QnAListView />;
 }
