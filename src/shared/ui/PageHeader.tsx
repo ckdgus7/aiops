@@ -4,6 +4,9 @@ import { MdiTab } from "./MdiTab";
 const siteHeaderStyle: CSSProperties = {
   width: "100%",
   fontFamily: "'Pretendard', sans-serif",
+  position: "sticky",
+  top: 0,
+  zIndex: 10,
 };
 
 const pageTitleWrapStyle: CSSProperties = {
