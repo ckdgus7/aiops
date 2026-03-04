@@ -40,7 +40,7 @@ vite.config.ts  - Vite configuration
 - 상세기능 설계 `/features/detail-design`
 
 ### 게시판
-- 공지사항 `/notices` (fully implemented: Figma-based design with category filter SelectBox, search scope SelectBox + keyword search, data table with 8 columns (번호/분류/제목/작성자/등록일/수정일/첨부/조회수), column sorting, category badges (공지/일반), pinned badge (필독), pagination with items-per-page, 30 mock rows, "등록" button)
+- 공지사항 `/notices` (fully implemented: Figma-based design with category filter SelectBox, search scope SelectBox + keyword search, data table with 8 columns (번호/분류/제목/작성자/등록일/수정일/첨부/조회수), column sorting, category badges (공지/일반), pinned badge (필독), pagination with items-per-page, 30 mock rows, "등록" button opens create popup. Create popup: 880px modal with header (title + close + required indicator), form body (분류 RadioGroup 공지/필독공지/일반, 제목 Input + 작성자 Input row, 게시 RadioGroup 즉시, 내용 Textarea, 첨부 file upload with drag/click), footer (취소/임시저장/등록 buttons))
 - Q&A `/qna`
 
 ### SSF관리

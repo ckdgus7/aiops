@@ -8,6 +8,7 @@ import { Button } from "@/shared/ui/Button";
 import { useMdiStore } from "@/shared/model/mdi.store";
 import { useNoticesQuery } from "@/features/notices/api/notices.queries";
 import type { NoticeSortKey, NoticeSortDir } from "@/features/notices/model/types";
+import { NoticeCreatePopup } from "@/features/notices/ui/NoticeCreatePopup";
 
 const FONT = "'Pretendard', sans-serif";
 
@@ -356,6 +357,7 @@ export function NoticeListView() {
     addTab({ id: "/notices", label: "공지사항", path: "/notices" });
   }, [addTab]);
 
+  const [createPopupOpen, setCreatePopupOpen] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState("전체");
   const [searchScope, setSearchScope] = useState("전체");
   const [searchKeywordDraft, setSearchKeywordDraft] = useState("");
@@ -525,6 +527,7 @@ export function NoticeListView() {
                 size="m"
                 variant="filled"
                 color="positive"
+                onClick={() => setCreatePopupOpen(true)}
               >
                 등록
               </Button>
@@ -598,6 +601,11 @@ export function NoticeListView() {
           )}
         </div>
       </div>
+
+      <NoticeCreatePopup
+        open={createPopupOpen}
+        onClose={() => setCreatePopupOpen(false)}
+      />
     </div>
   );
 }
