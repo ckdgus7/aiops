@@ -4,6 +4,7 @@ import { Input } from "@/shared/ui/Input";
 import { SelectBox } from "@/shared/ui/SelectBox";
 import { RadioGroup } from "@/shared/ui/RadioGroup";
 import { TiptapEditor } from "@/shared/ui/TiptapEditor";
+import { AlertModal } from "@/shared/ui/AlertModal";
 import type { ComponentItem } from "@/features/ssf/model/types";
 import { DOMAIN_MOCK_DATA } from "@/features/ssf/model/mock-data";
 
@@ -876,12 +877,135 @@ function ComponentEditPopup({ open, onClose, item }: ComponentEditPopupProps) {
   );
 }
 
+interface ComponentDeletePopupProps {
+  open: boolean;
+  onClose: () => void;
+  onConfirmDelete: () => void;
+}
+
+function ComponentDeletePopup({ open, onClose, onConfirmDelete }: ComponentDeletePopupProps) {
+  const [reason, setReason] = useState("");
+  const [alertOpen, setAlertOpen] = useState(false);
+
+  useEffect(() => {
+    if (open) {
+      setReason("");
+      setAlertOpen(false);
+    }
+  }, [open]);
+
+  if (!open) return null;
+
+  const canDelete = reason.trim().length > 0;
+
+  const handleDelete = () => {
+    if (!canDelete) return;
+    setAlertOpen(true);
+  };
+
+  const handleConfirmAlert = () => {
+    setAlertOpen(false);
+    onConfirmDelete();
+  };
+
+  return (
+    <div style={{ ...st.overlay, zIndex: 1002 }} onClick={onClose}>
+      <div style={{ ...st.popup, maxHeight: "auto", overflow: "visible" }} onClick={(e) => e.stopPropagation()}>
+        <div style={st.header}>
+          <div style={st.titleRow}>
+            <span style={st.titleText}>삭제 사유</span>
+            <button style={st.closeBtn} onClick={onClose} type="button">
+              <CloseIcon />
+            </button>
+          </div>
+        </div>
+
+        <div style={{ display: "flex", flexDirection: "column", gap: 8, padding: "24px 32px" }}>
+          <div style={st.labelRow}>
+            <span style={{ fontFamily: FONT, fontSize: 15, fontWeight: 500, lineHeight: "18px", color: "#a1a1aa" }}>삭제 사유</span>
+            <div style={st.requiredMark} />
+          </div>
+          <div style={{ position: "relative", width: "100%" }}>
+            <textarea
+              value={reason}
+              onChange={(e) => {
+                if (e.target.value.length <= 300) setReason(e.target.value);
+              }}
+              placeholder="삭제 사유를 입력하세요."
+              maxLength={300}
+              style={{
+                width: "100%",
+                minHeight: 120,
+                padding: "8px 16px",
+                border: "1px solid #e4e7ec",
+                borderRadius: 4,
+                backgroundColor: "#ffffff",
+                fontFamily: FONT,
+                fontSize: 17,
+                fontWeight: 400,
+                lineHeight: "24px",
+                color: "#3f3f46",
+                resize: "vertical",
+                boxSizing: "border-box",
+                outline: "none",
+              }}
+            />
+            <div style={{
+              display: "flex",
+              justifyContent: "flex-end",
+              padding: "4px 8px 0 0",
+            }}>
+              <span style={{
+                fontFamily: FONT,
+                fontSize: 13,
+                fontWeight: 400,
+                lineHeight: "18px",
+                color: "#a1a1aa",
+              }}>{reason.length}/300</span>
+            </div>
+          </div>
+        </div>
+
+        <div style={st.footer}>
+          <div style={st.footerLeft}>
+            <Button size="l" variant="outlined" color="info" onClick={onClose}>
+              닫기
+            </Button>
+          </div>
+          <div style={st.footerRight}>
+            <Button
+              size="l"
+              variant="filled"
+              color="negative"
+              disabled={!canDelete}
+              onClick={handleDelete}
+            >
+              삭제
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      <AlertModal
+        open={alertOpen}
+        onClose={() => setAlertOpen(false)}
+        type="info"
+        message="삭제되었습니다."
+        confirmLabel="확인"
+        onConfirm={handleConfirmAlert}
+      />
+    </div>
+  );
+}
+
 export function ComponentDetailPopup({ open, onClose, item }: ComponentDetailPopupProps) {
   const [editOpen, setEditOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
 
   useEffect(() => {
     if (!open) {
       setEditOpen(false);
+      setDeleteOpen(false);
     }
   }, [open]);
 
@@ -1008,6 +1132,9 @@ export function ComponentDetailPopup({ open, onClose, item }: ComponentDetailPop
               </Button>
             </div>
             <div style={st.footerRight}>
+              <Button size="l" variant="filled" color="negative" onClick={() => setDeleteOpen(true)}>
+                삭제
+              </Button>
               <Button size="l" variant="filled" color="positive" onClick={() => setEditOpen(true)}>
                 수정
               </Button>
@@ -1020,6 +1147,15 @@ export function ComponentDetailPopup({ open, onClose, item }: ComponentDetailPop
         open={editOpen}
         onClose={() => setEditOpen(false)}
         item={item}
+      />
+
+      <ComponentDeletePopup
+        open={deleteOpen}
+        onClose={() => setDeleteOpen(false)}
+        onConfirmDelete={() => {
+          setDeleteOpen(false);
+          onClose();
+        }}
       />
     </>
   );
