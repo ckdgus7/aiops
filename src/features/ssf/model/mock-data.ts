@@ -1,4 +1,4 @@
-import type { DomainItem } from "./types";
+import type { DomainItem, ComponentItem } from "./types";
 
 export const DOMAIN_MOCK_DATA: DomainItem[] = [
   { no: 13, abbr: "MKT", nameKo: "마케팅", nameEn: "Marketing", description: "마케팅 관련 업무 도메인으로, 캠페인 관리, 프로모션 기획 및 실행, 고객 분석 등을 포함합니다.", useYn: "사용" },
@@ -15,3 +15,36 @@ export const DOMAIN_MOCK_DATA: DomainItem[] = [
   { no: 2, abbr: "RPT", nameKo: "리포팅", nameEn: "Reporting", description: "리포팅 도메인으로, 각종 통계 및 보고서 생성, 대시보드 관리 등을 포함합니다.", useYn: "사용" },
   { no: 1, abbr: "COM", nameKo: "공통", nameEn: "Common", description: "공통 업무 도메인으로, 범용적으로 사용되는 기능 및 기준 정보를 포함합니다.", useYn: "사용" },
 ];
+
+const DOMAIN_NAMES = ["마케팅 & 오퍼링", "재무/회계", "인사관리", "공급망관리", "고객관계관리", "상품관리", "주문관리", "청구/정산", "네트워크", "서비스운영", "시스템관리", "리포팅", "공통"];
+const COMP_NAMES_KO = ["공통 플랫폼 관리", "캠페인 관리", "프로모션 기획", "예산 관리", "결산 처리", "채용 관리", "평가 관리", "구매 관리", "물류 관리", "고객 정보 관리", "상담 이력 관리", "상품 등록 관리", "가격 정책 관리", "주문 접수 관리", "배송 관리", "요금 산출", "청구서 발행", "망 구성 관리", "장비 관리", "서비스 개통", "서비스 변경", "권한 관리", "코드 관리", "통계 보고서", "대시보드 관리", "기준 정보 관리", "사용자 인증", "데이터 분석", "API 연동 관리", "모니터링 관리"];
+const COMP_NAMES_EN = ["Common Platform Mgmt", "Campaign Mgmt", "Promotion Planning", "Budget Mgmt", "Settlement Processing", "Recruitment Mgmt", "Evaluation Mgmt", "Procurement Mgmt", "Logistics Mgmt", "Customer Info Mgmt", "Consultation History", "Product Registration", "Pricing Policy Mgmt", "Order Reception Mgmt", "Delivery Mgmt", "Fee Calculation", "Invoice Issuance", "Network Config Mgmt", "Equipment Mgmt", "Service Activation", "Service Modification", "Authority Mgmt", "Code Mgmt", "Statistics Report", "Dashboard Mgmt", "Reference Info Mgmt", "User Authentication", "Data Analysis", "API Integration Mgmt", "Monitoring Mgmt"];
+const DESCRIPTIONS = [
+  "서비스 제공을 위해 플랫폼 전반적으로 사용되는 공통 기능들의 관리 활동 전체를 말합니다.",
+  "마케팅 캠페인의 기획, 실행, 성과 분석 등 전체 캠페인 라이프사이클을 관리합니다.",
+  "다양한 프로모션의 기획부터 실행까지의 전체 프로세스를 관리합니다.",
+  "조직의 예산 편성, 집행, 모니터링 등 예산 관련 전체 업무를 관리합니다.",
+  "회계 결산 관련 업무 처리 및 재무제표 작성을 관리합니다.",
+  "인재 채용 프로세스 전반을 관리하고 지원자 추적 및 평가를 수행합니다.",
+  "직원 성과 평가 프로세스를 관리하고 평가 결과를 분석합니다.",
+  "자재 및 서비스 구매 요청부터 발주까지의 전체 프로세스를 관리합니다.",
+  "물류 운송, 창고 관리, 배송 추적 등 물류 전반을 관리합니다.",
+  "고객 기본 정보 및 이력 정보를 통합 관리합니다.",
+];
+const LEADERS_PLAN = ["이택규", "김민수", "박지영", "최현우", "정수진", "한동석", "윤서연", "오승현", "장미라", "송태현"];
+const LEADERS_DESIGN = ["조우찬", "이서준", "김하은", "박도현", "최지우", "정민기", "한예슬", "오지훈", "장서윤", "송민재"];
+
+export const COMPONENT_MOCK_DATA: ComponentItem[] = Array.from({ length: 64 }, (_, i) => {
+  const idx = i;
+  return {
+    no: 64 - i,
+    componentId: `SKNC${String(idx + 1).padStart(3, "0")}`,
+    nameKo: COMP_NAMES_KO[idx % COMP_NAMES_KO.length],
+    nameEn: COMP_NAMES_EN[idx % COMP_NAMES_EN.length],
+    description: DESCRIPTIONS[idx % DESCRIPTIONS.length],
+    domainNameKo: DOMAIN_NAMES[idx % DOMAIN_NAMES.length],
+    planLeader: LEADERS_PLAN[idx % LEADERS_PLAN.length],
+    designLeader: LEADERS_DESIGN[idx % LEADERS_DESIGN.length],
+    useYn: idx % 7 === 0 ? "미사용" : "사용",
+  };
+});

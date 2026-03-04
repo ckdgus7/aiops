@@ -45,7 +45,7 @@ vite.config.ts  - Vite configuration
 
 ### SSF관리
 - 도메인(L1)정보 관리 `/ssf/domain` (fully implemented: filter bar with ChooseButton + search, data table with sorting/pagination, 13 mock rows, detail/create/edit/delete popups; row click → detail popup → edit or delete)
-- 컴포넌트(L2)정보 관리 `/ssf/component`
+- 컴포넌트(L2)정보 관리 `/ssf/component` (fully implemented: filter bar with ChooseButton (전체/사용/미사용) + 도메인(L1) SelectBox + 검색범위 SelectBox (컴포넌트(L2)명/컴포넌트ID/담당자명) + search input, data table with 9 columns (No/컴포넌트 ID/컴포넌트(한글)/컴포넌트(영문)/컴포넌트 설명/도메인(한글)/L2기획리더/L2설계리더/사용여부), column sorting, 사용여부 badges, pagination with items-per-page, 64 mock rows, 등록 button)
 - 업무(L3)정보 관리 `/ssf/business`
 - 기능(L4)정보 관리 `/ssf/function`
 - SSF탐색기 `/ssf/explorer`

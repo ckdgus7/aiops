@@ -1,5 +1,5 @@
-import { BlankPage } from "@/shared/ui/BlankPage";
+import { ComponentInfoListView } from "@/features/ssf/ui/ComponentInfoListView";
 
 export function ComponentInfoPage() {
-  return <BlankPage title="컴포넌트(L2)정보 관리" gnbName="SSF관리" path="/ssf/component" />;
+  return <ComponentInfoListView />;
 }
