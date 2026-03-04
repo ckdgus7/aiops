@@ -3,6 +3,7 @@ import { ChooseButton } from "@/shared/ui/ChooseButton";
 import { SelectBox } from "@/shared/ui/SelectBox";
 import { Input } from "@/shared/ui/Input";
 import { Button } from "@/shared/ui/Button";
+import { Snackbar } from "@/shared/ui/Snackbar";
 import { useMdiStore } from "@/shared/model/mdi.store";
 import { usePageHeader } from "@/shared/hooks/usePageHeader";
 import type { ComponentSortKey, SortDir, ComponentItem } from "@/features/ssf/model/types";
@@ -335,6 +336,7 @@ export function ComponentInfoListView() {
 
   const [createPopupOpen, setCreatePopupOpen] = useState(false);
   const [detailItem, setDetailItem] = useState<ComponentItem | null>(null);
+  const [deleteSnackbarOpen, setDeleteSnackbarOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState("전체");
   const [domainFilter, setDomainFilter] = useState("");
   const [searchKey, setSearchKey] = useState("컴포넌트(L2)명");
@@ -620,6 +622,16 @@ export function ComponentInfoListView() {
         open={detailItem !== null}
         onClose={() => setDetailItem(null)}
         item={detailItem}
+        onDeleted={() => {
+          setDeleteSnackbarOpen(true);
+        }}
+      />
+
+      <Snackbar
+        open={deleteSnackbarOpen}
+        onClose={() => setDeleteSnackbarOpen(false)}
+        type="success"
+        message="삭제되었습니다."
       />
     </div>
   );

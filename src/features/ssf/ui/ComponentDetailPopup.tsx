@@ -4,17 +4,10 @@ import { Input } from "@/shared/ui/Input";
 import { SelectBox } from "@/shared/ui/SelectBox";
 import { RadioGroup } from "@/shared/ui/RadioGroup";
 import { TiptapEditor } from "@/shared/ui/TiptapEditor";
-import { AlertModal } from "@/shared/ui/AlertModal";
 import type { ComponentItem } from "@/features/ssf/model/types";
 import { DOMAIN_MOCK_DATA } from "@/features/ssf/model/mock-data";
 
 const FONT = "'Pretendard', sans-serif";
-
-interface ComponentDetailPopupProps {
-  open: boolean;
-  onClose: () => void;
-  item: ComponentItem | null;
-}
 
 function CloseIcon() {
   return (
@@ -885,12 +878,10 @@ interface ComponentDeletePopupProps {
 
 function ComponentDeletePopup({ open, onClose, onConfirmDelete }: ComponentDeletePopupProps) {
   const [reason, setReason] = useState("");
-  const [alertOpen, setAlertOpen] = useState(false);
 
   useEffect(() => {
     if (open) {
       setReason("");
-      setAlertOpen(false);
     }
   }, [open]);
 
@@ -900,11 +891,6 @@ function ComponentDeletePopup({ open, onClose, onConfirmDelete }: ComponentDelet
 
   const handleDelete = () => {
     if (!canDelete) return;
-    setAlertOpen(true);
-  };
-
-  const handleConfirmAlert = () => {
-    setAlertOpen(false);
     onConfirmDelete();
   };
 
@@ -985,20 +971,18 @@ function ComponentDeletePopup({ open, onClose, onConfirmDelete }: ComponentDelet
           </div>
         </div>
       </div>
-
-      <AlertModal
-        open={alertOpen}
-        onClose={() => setAlertOpen(false)}
-        type="info"
-        message="삭제되었습니다."
-        confirmLabel="확인"
-        onConfirm={handleConfirmAlert}
-      />
     </div>
   );
 }
 
-export function ComponentDetailPopup({ open, onClose, item }: ComponentDetailPopupProps) {
+interface ComponentDetailPopupProps {
+  open: boolean;
+  onClose: () => void;
+  item: ComponentItem | null;
+  onDeleted?: () => void;
+}
+
+export function ComponentDetailPopup({ open, onClose, item, onDeleted }: ComponentDetailPopupProps) {
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
 
@@ -1155,6 +1139,7 @@ export function ComponentDetailPopup({ open, onClose, item }: ComponentDetailPop
         onConfirmDelete={() => {
           setDeleteOpen(false);
           onClose();
+          onDeleted?.();
         }}
       />
     </>
