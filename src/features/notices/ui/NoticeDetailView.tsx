@@ -1,4 +1,4 @@
-import { useEffect, type CSSProperties } from "react";
+import { useState, useEffect, type CSSProperties } from "react";
 import { useParams, useNavigate } from "react-router";
 import { PageHeader } from "@/shared/ui/PageHeader";
 import { Breadcrumb } from "@/shared/ui/Breadcrumb";
@@ -6,6 +6,7 @@ import { PageTitle } from "@/shared/ui/PageTitle";
 import { Button } from "@/shared/ui/Button";
 import { useMdiStore } from "@/shared/model/mdi.store";
 import { useNoticeDetailQuery } from "@/features/notices/api/notices.queries";
+import { NoticeEditPopup } from "@/features/notices/ui/NoticeEditPopup";
 
 const FONT = "'Pretendard', sans-serif";
 
@@ -221,6 +222,7 @@ export function NoticeDetailView() {
   const addTab = useMdiStore((st) => st.addTab);
   const noticeId = Number(id) || 0;
 
+  const [editPopupOpen, setEditPopupOpen] = useState(false);
   const { data: notice, isLoading, isError } = useNoticeDetailQuery(noticeId);
 
   useEffect(() => {
@@ -369,7 +371,7 @@ export function NoticeDetailView() {
             </Button>
           </div>
           <div style={ds.btnRight}>
-            <Button size="l" variant="outlined" color="info">
+            <Button size="l" variant="outlined" color="info" onClick={() => setEditPopupOpen(true)}>
               수정
             </Button>
             <Button size="l" variant="outlined" color="info">
@@ -378,6 +380,12 @@ export function NoticeDetailView() {
           </div>
         </div>
       </div>
+
+      <NoticeEditPopup
+        open={editPopupOpen}
+        onClose={() => setEditPopupOpen(false)}
+        notice={notice}
+      />
     </div>
   );
 }

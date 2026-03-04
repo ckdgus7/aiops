@@ -468,7 +468,7 @@ export function LNB({ activeItem = "Q&A", activeGnb = "게시판", onItemClick }
         </div>
         {favorites.length === 0 ? (
           <div style={s.favEmpty}>
-            즐겨찾기에 등록한 화면이 없습니다.
+            즐겨찾기에<br />등록한 화면이 없습니다.
           </div>
         ) : (
           <div style={{ display: "flex", flexWrap: "wrap" }}>
