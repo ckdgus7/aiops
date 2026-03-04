@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import type { CSSProperties } from "react";
-import { PageHeader } from "@/shared/ui/PageHeader";
-import { Breadcrumb } from "@/shared/ui/Breadcrumb";
-import { PageTitle } from "@/shared/ui/PageTitle";
 import { useMdiStore } from "@/shared/model/mdi.store";
+import { usePageHeader } from "@/shared/hooks/usePageHeader";
 import { generateMockRequirements } from "../model/mock-data";
 import type { Requirement } from "../model/types";
 
@@ -573,13 +571,14 @@ export function RequirementListView() {
   const startItem = totalItems === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1;
   const endItem = Math.min(currentPage * itemsPerPage, totalItems);
 
+  usePageHeader({
+    breadcrumbItems: [{ label: "요구관리" }, { label: "요구사항" }],
+    title: "요구사항",
+    favoriteKey: "요구사항",
+  });
+
   return (
     <div style={s.outer}>
-      <PageHeader>
-        <Breadcrumb items={[{ label: "요구관리" }, { label: "요구사항" }]} />
-        <PageTitle title="요구사항" favoriteKey="요구사항" />
-      </PageHeader>
-
       <div style={s.main}>
         <div style={s.tableSection}>
           <div style={s.filterWrap}>

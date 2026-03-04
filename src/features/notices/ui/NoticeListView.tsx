@@ -1,12 +1,10 @@
 import { useState, useEffect, type CSSProperties } from "react";
 import { useNavigate } from "react-router";
-import { PageHeader } from "@/shared/ui/PageHeader";
-import { Breadcrumb } from "@/shared/ui/Breadcrumb";
-import { PageTitle } from "@/shared/ui/PageTitle";
 import { SelectBox } from "@/shared/ui/SelectBox";
 import { Input } from "@/shared/ui/Input";
 import { Button } from "@/shared/ui/Button";
 import { useMdiStore } from "@/shared/model/mdi.store";
+import { usePageHeader } from "@/shared/hooks/usePageHeader";
 import { useNoticesQuery } from "@/features/notices/api/notices.queries";
 import type { NoticeSortKey, NoticeSortDir } from "@/features/notices/model/types";
 import { NoticeCreatePopup } from "@/features/notices/ui/NoticeCreatePopup";
@@ -410,13 +408,14 @@ export function NoticeListView() {
     pageNumbers.push(1, 2, 3, 4, 5, "...", totalPages);
   }
 
+  usePageHeader({
+    breadcrumbItems: [{ label: "게시판" }, { label: "공지사항" }],
+    title: "공지사항",
+    favoriteKey: "공지사항",
+  });
+
   return (
     <div style={s.outer}>
-      <PageHeader>
-        <Breadcrumb items={[{ label: "게시판" }, { label: "공지사항" }]} />
-        <PageTitle title="공지사항" favoriteKey="공지사항" />
-      </PageHeader>
-
       <div style={s.main}>
         <div style={s.filterWrap}>
           <div style={s.filterLeft}>

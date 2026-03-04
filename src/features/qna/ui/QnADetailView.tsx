@@ -1,9 +1,7 @@
 import { useState, useEffect, type CSSProperties } from "react";
 import { useParams, useNavigate } from "react-router";
-import { PageHeader } from "@/shared/ui/PageHeader";
-import { Breadcrumb } from "@/shared/ui/Breadcrumb";
-import { PageTitle } from "@/shared/ui/PageTitle";
 import { Button } from "@/shared/ui/Button";
+import { usePageHeader } from "@/shared/hooks/usePageHeader";
 import { TiptapEditor } from "@/shared/ui/TiptapEditor";
 import { AlertModal } from "@/shared/ui/AlertModal";
 import { Snackbar } from "@/shared/ui/Snackbar";
@@ -389,6 +387,12 @@ export function QnADetailView() {
   const [_pendingDeleteComment, setPendingDeleteComment] = useState<QnAComment | null>(null);
   const { data: detail, isLoading, isError } = useQnADetailQuery(qnaId);
 
+  usePageHeader({
+    breadcrumbItems: [{ label: "게시판" }, { label: "Q&A" }, { label: "상세" }],
+    title: "Q&A",
+    favoriteKey: "Q&A",
+  });
+
   useEffect(() => {
     if (detail) {
       addTab({
@@ -429,10 +433,6 @@ export function QnADetailView() {
   if (isError || !detail) {
     return (
       <div style={ds.outer}>
-        <PageHeader>
-          <Breadcrumb items={[{ label: "게시판" }, { label: "Q&A" }, { label: "상세" }]} />
-          <PageTitle title="Q&A" favoriteKey="Q&A" />
-        </PageHeader>
         <div style={{ padding: 40, textAlign: "center", color: "#a1a1aa", fontFamily: FONT }}>
           Q&A를 찾을 수 없습니다.
         </div>
@@ -449,11 +449,6 @@ export function QnADetailView() {
 
   return (
     <div style={ds.outer}>
-      <PageHeader>
-        <Breadcrumb items={[{ label: "게시판" }, { label: "Q&A" }, { label: "상세" }]} />
-        <PageTitle title="Q&A" favoriteKey="Q&A" />
-      </PageHeader>
-
       <div style={ds.main}>
         <div style={ds.contentWrap}>
           <div style={ds.metaRow}>

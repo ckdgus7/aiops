@@ -1,11 +1,9 @@
 import { useState, useEffect, type CSSProperties } from "react";
-import { PageHeader } from "@/shared/ui/PageHeader";
-import { Breadcrumb } from "@/shared/ui/Breadcrumb";
-import { PageTitle } from "@/shared/ui/PageTitle";
 import { ChooseButton } from "@/shared/ui/ChooseButton";
 import { Input } from "@/shared/ui/Input";
 import { Button } from "@/shared/ui/Button";
 import { useMdiStore } from "@/shared/model/mdi.store";
+import { usePageHeader } from "@/shared/hooks/usePageHeader";
 import type { SortKey, SortDir, DomainItem } from "@/features/ssf/model/types";
 import { DOMAIN_MOCK_DATA } from "@/features/ssf/model/mock-data";
 import { DomainFormPopup } from "@/features/ssf/ui/DomainFormPopup";
@@ -382,13 +380,14 @@ export function DomainListView() {
     setPage(1);
   };
 
+  usePageHeader({
+    breadcrumbItems: [{ label: "SSF관리" }, { label: "도메인(L1)정보 관리" }],
+    title: "도메인(L1)정보 관리",
+    favoriteKey: "도메인(L1)정보 관리",
+  });
+
   return (
     <div style={s.outer}>
-      <PageHeader>
-        <Breadcrumb items={[{ label: "SSF관리" }, { label: "도메인(L1)정보 관리" }]} />
-        <PageTitle title="도메인(L1)정보 관리" favoriteKey="도메인(L1)정보 관리" />
-      </PageHeader>
-
       <div style={s.main}>
         <div style={s.filterWrap}>
           <div style={s.filterLeft}>

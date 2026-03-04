@@ -1,9 +1,7 @@
 import { useState, useEffect, type CSSProperties } from "react";
 import { useParams, useNavigate } from "react-router";
-import { PageHeader } from "@/shared/ui/PageHeader";
-import { Breadcrumb } from "@/shared/ui/Breadcrumb";
-import { PageTitle } from "@/shared/ui/PageTitle";
 import { Button } from "@/shared/ui/Button";
+import { usePageHeader } from "@/shared/hooks/usePageHeader";
 import { AlertModal } from "@/shared/ui/AlertModal";
 import { Snackbar } from "@/shared/ui/Snackbar";
 import { useMdiStore } from "@/shared/model/mdi.store";
@@ -229,6 +227,12 @@ export function NoticeDetailView() {
   const [deleteSnackbarOpen, setDeleteSnackbarOpen] = useState(false);
   const { data: notice, isLoading, isError } = useNoticeDetailQuery(noticeId);
 
+  usePageHeader({
+    breadcrumbItems: [{ label: "게시판" }, { label: "공지사항" }, { label: "상세" }],
+    title: "공지사항",
+    favoriteKey: "공지사항",
+  });
+
   useEffect(() => {
     if (notice) {
       addTab({
@@ -256,10 +260,6 @@ export function NoticeDetailView() {
   if (isError || !notice) {
     return (
       <div style={ds.outer}>
-        <PageHeader>
-          <Breadcrumb items={[{ label: "게시판" }, { label: "공지사항" }, { label: "상세" }]} />
-          <PageTitle title="공지사항" favoriteKey="공지사항" />
-        </PageHeader>
         <div style={{ padding: 40, textAlign: "center", color: "#a1a1aa", fontFamily: FONT }}>
           공지사항을 찾을 수 없습니다.
         </div>
@@ -274,11 +274,6 @@ export function NoticeDetailView() {
 
   return (
     <div style={ds.outer}>
-      <PageHeader>
-        <Breadcrumb items={[{ label: "게시판" }, { label: "공지사항" }, { label: "상세" }]} />
-        <PageTitle title="공지사항" favoriteKey="공지사항" />
-      </PageHeader>
-
       <div style={ds.main}>
         <div style={ds.contentWrap}>
           <div style={ds.metaRow}>

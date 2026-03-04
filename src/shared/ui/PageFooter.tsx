@@ -8,8 +8,6 @@ const st = {
     padding: "16px 32px",
     boxSizing: "border-box",
     flexShrink: 0,
-    position: "sticky",
-    bottom: 0,
     zIndex: 10,
   } satisfies CSSProperties,
   row: {

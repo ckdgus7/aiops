@@ -2,6 +2,7 @@ import { Outlet, useLocation } from "react-router";
 import { useEffect, useState } from "react";
 import type { CSSProperties } from "react";
 import { LNB } from "./LNB";
+import { PageHeader } from "./PageHeader";
 import { PageFooter } from "./PageFooter";
 import { useMenuStore } from "@/shared/model/menu.store";
 
@@ -12,7 +13,14 @@ const styles = {
     width: "100%",
     fontFamily: "'Pretendard', sans-serif",
   } satisfies CSSProperties,
-  content: {
+  rightColumn: {
+    flex: 1,
+    display: "flex",
+    flexDirection: "column",
+    overflow: "hidden",
+    minWidth: 0,
+  } satisfies CSSProperties,
+  scrollArea: {
     flex: 1,
     overflow: "auto",
     background: "#f5f5f5",
@@ -54,10 +62,13 @@ export function LayoutRoute() {
   return (
     <div style={styles.container}>
       <LNB activeItem={activeLnb} activeGnb={activeGnb} />
-      <main style={styles.content}>
-        <Outlet />
+      <div style={styles.rightColumn}>
+        <PageHeader />
+        <div style={styles.scrollArea}>
+          <Outlet />
+        </div>
         <PageFooter />
-      </main>
+      </div>
     </div>
   );
 }

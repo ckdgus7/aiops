@@ -1,9 +1,7 @@
 import { useEffect } from "react";
 import type { CSSProperties } from "react";
-import { PageHeader } from "./PageHeader";
-import { Breadcrumb } from "./Breadcrumb";
-import { PageTitle } from "./PageTitle";
 import { useMdiStore } from "@/shared/model/mdi.store";
+import { usePageHeader } from "@/shared/hooks/usePageHeader";
 
 const styles = {
   outer: {
@@ -40,16 +38,18 @@ interface BlankPageProps {
 export function BlankPage({ title, gnbName, path }: BlankPageProps) {
   const addTab = useMdiStore((st) => st.addTab);
 
+  usePageHeader({
+    breadcrumbItems: [{ label: gnbName }, { label: title }],
+    title,
+    favoriteKey: title,
+  });
+
   useEffect(() => {
     addTab({ id: path, label: title, path });
   }, [addTab, path, title]);
 
   return (
     <div style={styles.outer}>
-      <PageHeader>
-        <Breadcrumb items={[{ label: gnbName }, { label: title }]} />
-        <PageTitle title={title} favoriteKey={title} />
-      </PageHeader>
       <div style={styles.content}>
         <div style={styles.placeholder}>
           페이지 준비 중입니다.

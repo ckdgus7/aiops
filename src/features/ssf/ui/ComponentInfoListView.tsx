@@ -1,12 +1,10 @@
 import { useState, useEffect, useMemo, type CSSProperties } from "react";
-import { PageHeader } from "@/shared/ui/PageHeader";
-import { Breadcrumb } from "@/shared/ui/Breadcrumb";
-import { PageTitle } from "@/shared/ui/PageTitle";
 import { ChooseButton } from "@/shared/ui/ChooseButton";
 import { SelectBox } from "@/shared/ui/SelectBox";
 import { Input } from "@/shared/ui/Input";
 import { Button } from "@/shared/ui/Button";
 import { useMdiStore } from "@/shared/model/mdi.store";
+import { usePageHeader } from "@/shared/hooks/usePageHeader";
 import type { ComponentSortKey, SortDir, ComponentItem } from "@/features/ssf/model/types";
 import { COMPONENT_MOCK_DATA, DOMAIN_MOCK_DATA } from "@/features/ssf/model/mock-data";
 
@@ -410,13 +408,14 @@ export function ComponentInfoListView() {
     pageNumbers.push(1, 2, 3, 4, 5, "...", totalPages);
   }
 
+  usePageHeader({
+    breadcrumbItems: [{ label: "SSF관리" }, { label: "컴포넌트(L2)정보 관리" }],
+    title: "컴포넌트(L2)정보 관리",
+    favoriteKey: "컴포넌트(L2)정보 관리",
+  });
+
   return (
     <div style={s.outer}>
-      <PageHeader>
-        <Breadcrumb items={[{ label: "SSF관리" }, { label: "컴포넌트(L2)정보 관리" }]} />
-        <PageTitle title="컴포넌트(L2)정보 관리" favoriteKey="컴포넌트(L2)정보 관리" />
-      </PageHeader>
-
       <div style={s.main}>
         <div style={s.filterWrap}>
           <div style={s.filterLeft}>

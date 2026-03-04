@@ -1,12 +1,10 @@
 import { useState, useEffect, type CSSProperties } from "react";
 import { useNavigate } from "react-router";
-import { PageHeader } from "@/shared/ui/PageHeader";
-import { Breadcrumb } from "@/shared/ui/Breadcrumb";
-import { PageTitle } from "@/shared/ui/PageTitle";
 import { SelectBox } from "@/shared/ui/SelectBox";
 import { Input } from "@/shared/ui/Input";
 import { Button } from "@/shared/ui/Button";
 import { useMdiStore } from "@/shared/model/mdi.store";
+import { usePageHeader } from "@/shared/hooks/usePageHeader";
 import { useQnAListQuery } from "@/features/qna/api/qna.queries";
 import type { QnASortKey, QnASortDir } from "@/features/qna/model/types";
 import { QnACreatePopup } from "@/features/qna/ui/QnACreatePopup";
@@ -403,13 +401,14 @@ export function QnAListView() {
     pageNumbers.push(1, 2, 3, 4, 5, "...", totalPages);
   }
 
+  usePageHeader({
+    breadcrumbItems: [{ label: "게시판" }, { label: "Q&A" }],
+    title: "Q&A",
+    favoriteKey: "Q&A",
+  });
+
   return (
     <div style={s.outer}>
-      <PageHeader>
-        <Breadcrumb items={[{ label: "게시판" }, { label: "Q&A" }]} />
-        <PageTitle title="Q&A" favoriteKey="Q&A" />
-      </PageHeader>
-
       <div style={s.main}>
         <div style={s.filterWrap}>
           <div style={s.filterLeft}>
