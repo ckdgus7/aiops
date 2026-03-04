@@ -4,6 +4,8 @@ import { PageHeader } from "@/shared/ui/PageHeader";
 import { Breadcrumb } from "@/shared/ui/Breadcrumb";
 import { PageTitle } from "@/shared/ui/PageTitle";
 import { Button } from "@/shared/ui/Button";
+import { AlertModal } from "@/shared/ui/AlertModal";
+import { Snackbar } from "@/shared/ui/Snackbar";
 import { useMdiStore } from "@/shared/model/mdi.store";
 import { useNoticeDetailQuery } from "@/features/notices/api/notices.queries";
 import { NoticeEditPopup } from "@/features/notices/ui/NoticeEditPopup";
@@ -223,6 +225,8 @@ export function NoticeDetailView() {
   const noticeId = Number(id) || 0;
 
   const [editPopupOpen, setEditPopupOpen] = useState(false);
+  const [deleteAlertOpen, setDeleteAlertOpen] = useState(false);
+  const [deleteSnackbarOpen, setDeleteSnackbarOpen] = useState(false);
   const { data: notice, isLoading, isError } = useNoticeDetailQuery(noticeId);
 
   useEffect(() => {
@@ -374,7 +378,7 @@ export function NoticeDetailView() {
             <Button size="l" variant="outlined" color="info" onClick={() => setEditPopupOpen(true)}>
               수정
             </Button>
-            <Button size="l" variant="outlined" color="info">
+            <Button size="l" variant="outlined" color="info" onClick={() => setDeleteAlertOpen(true)}>
               삭제
             </Button>
           </div>
@@ -385,6 +389,31 @@ export function NoticeDetailView() {
         open={editPopupOpen}
         onClose={() => setEditPopupOpen(false)}
         notice={notice}
+      />
+
+      <AlertModal
+        open={deleteAlertOpen}
+        onClose={() => setDeleteAlertOpen(false)}
+        type="warning"
+        message={
+          <>
+            등록된 정보를 삭제하시겠습니까?
+            <br />
+            이 작업은 복구할 수 없습니다.
+          </>
+        }
+        showCancel
+        cancelLabel="취소"
+        confirmLabel="삭제"
+        onCancel={() => setDeleteAlertOpen(false)}
+        onConfirm={() => setDeleteSnackbarOpen(true)}
+      />
+
+      <Snackbar
+        open={deleteSnackbarOpen}
+        onClose={() => setDeleteSnackbarOpen(false)}
+        message="삭제 되었습니다."
+        type="info"
       />
     </div>
   );
