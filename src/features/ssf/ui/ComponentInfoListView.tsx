@@ -7,6 +7,7 @@ import { useMdiStore } from "@/shared/model/mdi.store";
 import { usePageHeader } from "@/shared/hooks/usePageHeader";
 import type { ComponentSortKey, SortDir, ComponentItem } from "@/features/ssf/model/types";
 import { COMPONENT_MOCK_DATA, DOMAIN_MOCK_DATA } from "@/features/ssf/model/mock-data";
+import { ComponentCreatePopup } from "@/features/ssf/ui/ComponentCreatePopup";
 
 const FONT = "'Pretendard', sans-serif";
 
@@ -331,6 +332,7 @@ export function ComponentInfoListView() {
     addTab({ id: "/ssf/component", label: "컴포넌트(L2)정보 관리", path: "/ssf/component" });
   }, [addTab]);
 
+  const [createPopupOpen, setCreatePopupOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState("전체");
   const [domainFilter, setDomainFilter] = useState("");
   const [searchKey, setSearchKey] = useState("컴포넌트(L2)명");
@@ -540,7 +542,7 @@ export function ComponentInfoListView() {
                 size="m"
                 variant="filled"
                 color="positive"
-                onClick={() => {}}
+                onClick={() => setCreatePopupOpen(true)}
               >
                 등록
               </Button>
@@ -605,6 +607,11 @@ export function ComponentInfoListView() {
           </table>
         </div>
       </div>
+
+      <ComponentCreatePopup
+        open={createPopupOpen}
+        onClose={() => setCreatePopupOpen(false)}
+      />
     </div>
   );
 }
