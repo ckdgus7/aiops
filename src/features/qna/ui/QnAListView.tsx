@@ -8,6 +8,7 @@ import { Button } from "@/shared/ui/Button";
 import { useMdiStore } from "@/shared/model/mdi.store";
 import { useQnAListQuery } from "@/features/qna/api/qna.queries";
 import type { QnASortKey, QnASortDir } from "@/features/qna/model/types";
+import { QnACreatePopup } from "@/features/qna/ui/QnACreatePopup";
 
 const FONT = "'Pretendard', sans-serif";
 
@@ -347,6 +348,7 @@ export function QnAListView() {
     addTab({ id: "/qna", label: "Q&A", path: "/qna" });
   }, [addTab]);
 
+  const [createPopupOpen, setCreatePopupOpen] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState("전체");
   const [searchScope, setSearchScope] = useState("전체");
   const [searchKeywordDraft, setSearchKeywordDraft] = useState("");
@@ -518,6 +520,7 @@ export function QnAListView() {
                 size="m"
                 variant="filled"
                 color="positive"
+                onClick={() => setCreatePopupOpen(true)}
               >
                 등록
               </Button>
@@ -589,6 +592,10 @@ export function QnAListView() {
           )}
         </div>
       </div>
+      <QnACreatePopup
+        open={createPopupOpen}
+        onClose={() => setCreatePopupOpen(false)}
+      />
     </div>
   );
 }
