@@ -1,4 +1,4 @@
-import { useState, useRef, type CSSProperties } from "react";
+import { useState, useRef, useCallback, type CSSProperties } from "react";
 import { RadioGroup } from "@/shared/ui/RadioGroup";
 import { Input } from "@/shared/ui/Input";
 import { Textarea } from "@/shared/ui/Textarea";
@@ -172,6 +172,11 @@ const ps = {
     backgroundColor: "#fafafa",
     cursor: "pointer",
     padding: 24,
+    transition: "border-color 0.15s, background-color 0.15s",
+  } satisfies CSSProperties,
+  uploadAreaDragging: {
+    border: "2px dashed #7a5af8",
+    backgroundColor: "#f5f3ff",
   } satisfies CSSProperties,
   uploadText: {
     fontFamily: FONT,
@@ -262,7 +267,17 @@ export function NoticeCreatePopup({ open, onClose }: NoticeCreatePopupProps) {
   const [postType, setPostType] = useState("즉시");
   const [content, setContent] = useState("");
   const [files, setFiles] = useState<UploadedFile[]>([]);
+  const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const dragCounterRef = useRef(0);
+
+  const addFiles = useCallback((fileList: FileList) => {
+    const newFiles: UploadedFile[] = Array.from(fileList).map((f) => ({
+      id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
+      name: f.name,
+    }));
+    setFiles((prev) => [...prev, ...newFiles]);
+  }, []);
 
   if (!open) return null;
 
@@ -277,16 +292,45 @@ export function NoticeCreatePopup({ open, onClose }: NoticeCreatePopupProps) {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = e.target.files;
     if (!selectedFiles) return;
-    const newFiles: UploadedFile[] = Array.from(selectedFiles).map((f) => ({
-      id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
-      name: f.name,
-    }));
-    setFiles((prev) => [...prev, ...newFiles]);
+    addFiles(selectedFiles);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const handleFileDelete = (id: string) => {
     setFiles((prev) => prev.filter((f) => f.id !== id));
+  };
+
+  const handleDragEnter = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dragCounterRef.current += 1;
+    if (e.dataTransfer.types.includes("Files")) {
+      setIsDragging(true);
+    }
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dragCounterRef.current -= 1;
+    if (dragCounterRef.current === 0) {
+      setIsDragging(false);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dragCounterRef.current = 0;
+    setIsDragging(false);
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      addFiles(e.dataTransfer.files);
+    }
   };
 
   const handleReset = () => {
@@ -388,8 +432,12 @@ export function NoticeCreatePopup({ open, onClose }: NoticeCreatePopupProps) {
                 onChange={handleFileChange}
               />
               <div
-                style={ps.uploadArea}
+                style={isDragging ? { ...ps.uploadArea, ...ps.uploadAreaDragging } : ps.uploadArea}
                 onClick={handleFileSelect}
+                onDragEnter={handleDragEnter}
+                onDragLeave={handleDragLeave}
+                onDragOver={handleDragOver}
+                onDrop={handleDrop}
               >
                 <UploadIcon />
                 <span style={ps.uploadText}>
