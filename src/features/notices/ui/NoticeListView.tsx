@@ -117,7 +117,7 @@ const s = {
     display: "flex",
     alignItems: "center",
     gap: 0,
-    width: 92,
+    width: 140,
     flexShrink: 0,
   } satisfies CSSProperties,
   filterRight: {
@@ -425,7 +425,7 @@ export function NoticeListView() {
               onChange={(v) => { setCategoryFilter(v); setPage(1); }}
               options={CATEGORY_OPTIONS}
               placeholder="분류"
-              wrapperStyle={{ width: 92 }}
+              wrapperStyle={{ width: 140 }}
             />
           </div>
           <div style={s.filterRight}>
@@ -434,7 +434,7 @@ export function NoticeListView() {
               onChange={setSearchScope}
               options={SEARCH_SCOPE_OPTIONS}
               placeholder="검색범위"
-              wrapperStyle={{ width: 92, flexShrink: 0 }}
+              wrapperStyle={{ width: 140, flexShrink: 0 }}
             />
             <Input
               value={searchKeywordDraft}
