@@ -2,8 +2,7 @@ import { useState, useEffect, type CSSProperties } from "react";
 import { Button } from "@/shared/ui/Button";
 import { Textarea } from "@/shared/ui/Textarea";
 import { AlertModal } from "@/shared/ui/AlertModal";
-
-const FONT = "'Pretendard', sans-serif";
+import { FONT, popupStyles } from "@/shared/ui/styles";
 
 interface DomainDeletePopupProps {
   open: boolean;
@@ -22,25 +21,14 @@ function CloseIcon() {
 
 const s = {
   overlay: {
-    position: "fixed",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
+    ...popupStyles.overlay,
     zIndex: 1000,
   } satisfies CSSProperties,
   popup: {
-    width: 880,
-    backgroundColor: "#ffffff",
-    borderRadius: 16,
+    ...popupStyles.popup,
+    maxHeight: undefined,
     boxShadow: "0 4px 24px rgba(0, 0, 0, 0.12)",
-    display: "flex",
-    flexDirection: "column",
-    overflow: "hidden",
+    fontFamily: undefined,
   } satisfies CSSProperties,
   header: {
     display: "flex",
@@ -52,30 +40,16 @@ const s = {
     paddingBottom: 16,
   } satisfies CSSProperties,
   titleRow: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
+    ...popupStyles.titleRow,
+    marginBottom: undefined,
     width: "100%",
   } satisfies CSSProperties,
   titleText: {
-    fontFamily: FONT,
+    ...popupStyles.titleText,
     fontSize: 25,
-    fontWeight: 700,
-    lineHeight: "32px",
     color: "#52525b",
   } satisfies CSSProperties,
-  closeBtn: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    width: 32,
-    height: 32,
-    border: "none",
-    background: "transparent",
-    cursor: "pointer",
-    borderRadius: 4,
-    padding: 0,
-  } satisfies CSSProperties,
+  closeBtn: popupStyles.closeBtn,
   main: {
     display: "flex",
     flexDirection: "column",
@@ -83,9 +57,9 @@ const s = {
     padding: "24px 32px",
   } satisfies CSSProperties,
   footer: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
+    ...popupStyles.footer,
+    padding: undefined,
+    borderTop: undefined,
     paddingTop: 16,
     paddingBottom: 32,
     paddingLeft: 32,

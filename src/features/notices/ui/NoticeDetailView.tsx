@@ -7,8 +7,7 @@ import { Snackbar } from "@/shared/ui/Snackbar";
 import { useMdiStore } from "@/shared/model/mdi.store";
 import { useNoticeDetailQuery } from "@/features/notices/api/notices.queries";
 import { NoticeEditPopup } from "@/features/notices/ui/NoticeEditPopup";
-
-const FONT = "'Pretendard', sans-serif";
+import { FONT, detailStyles } from "@/shared/ui/styles";
 
 function FileIcon() {
   return (
@@ -26,180 +25,6 @@ function BackIcon() {
     </svg>
   );
 }
-
-const ds = {
-  outer: {
-    display: "flex",
-    flexDirection: "column",
-    width: "100%",
-    minHeight: "100%",
-    fontFamily: FONT,
-  } satisfies CSSProperties,
-  main: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 24,
-    padding: 32,
-    flex: 1,
-  } satisfies CSSProperties,
-  contentWrap: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 32,
-  } satisfies CSSProperties,
-  metaRow: {
-    display: "flex",
-    alignItems: "flex-start",
-    gap: 32,
-    flexWrap: "wrap",
-  } satisfies CSSProperties,
-  metaItem: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 4,
-  } satisfies CSSProperties,
-  metaLabel: {
-    fontFamily: FONT,
-    fontSize: 10,
-    fontWeight: 400,
-    lineHeight: "16px",
-    color: "#a1a1aa",
-    whiteSpace: "nowrap",
-  } satisfies CSSProperties,
-  metaValue: {
-    fontFamily: FONT,
-    fontSize: 14,
-    fontWeight: 400,
-    lineHeight: "20px",
-    color: "#3f3f46",
-    whiteSpace: "nowrap",
-  } satisfies CSSProperties,
-  categoryBadge: {
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: "2px 8px",
-    borderRadius: 4,
-    fontFamily: FONT,
-    fontSize: 12,
-    fontWeight: 500,
-    lineHeight: "16px",
-    whiteSpace: "nowrap",
-  } satisfies CSSProperties,
-  contentSection: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 4,
-  } satisfies CSSProperties,
-  contentLabel: {
-    fontFamily: FONT,
-    fontSize: 14,
-    fontWeight: 500,
-    lineHeight: "18px",
-    color: "#a1a1aa",
-  } satisfies CSSProperties,
-  contentBody: {
-    fontFamily: FONT,
-    fontSize: 14,
-    fontWeight: 400,
-    lineHeight: "22px",
-    color: "#3f3f46",
-    whiteSpace: "pre-wrap",
-    minHeight: 100,
-    padding: "12px 0",
-  } satisfies CSSProperties,
-  attachSection: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 4,
-  } satisfies CSSProperties,
-  attachLabel: {
-    fontFamily: FONT,
-    fontSize: 14,
-    fontWeight: 500,
-    lineHeight: "18px",
-    color: "#a1a1aa",
-  } satisfies CSSProperties,
-  fileList: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 4,
-  } satisfies CSSProperties,
-  fileItem: {
-    display: "flex",
-    alignItems: "center",
-    gap: 8,
-    minHeight: 40,
-    padding: "8px 12px 8px 8px",
-    backgroundColor: "#ffffff",
-    border: "1px solid #e4e4e7",
-    borderRadius: 4,
-    boxSizing: "border-box",
-    cursor: "pointer",
-  } satisfies CSSProperties,
-  fileNameWrap: {
-    display: "flex",
-    flex: 1,
-    alignItems: "center",
-    gap: 4,
-    minWidth: 0,
-  } satisfies CSSProperties,
-  fileName: {
-    fontFamily: FONT,
-    fontSize: 14,
-    fontWeight: 400,
-    lineHeight: "20px",
-    color: "#3f3f46",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    whiteSpace: "nowrap",
-    flex: 1,
-  } satisfies CSSProperties,
-  fileMeta: {
-    display: "flex",
-    alignItems: "center",
-    gap: 12,
-    flexShrink: 0,
-  } satisfies CSSProperties,
-  fileMetaItem: {
-    display: "flex",
-    alignItems: "center",
-    gap: 4,
-  } satisfies CSSProperties,
-  fileMetaLabel: {
-    fontFamily: FONT,
-    fontSize: 10,
-    fontWeight: 400,
-    lineHeight: "16px",
-    color: "#a1a1aa",
-    whiteSpace: "nowrap",
-  } satisfies CSSProperties,
-  fileMetaValue: {
-    fontFamily: FONT,
-    fontSize: 14,
-    fontWeight: 400,
-    lineHeight: "20px",
-    color: "#3f3f46",
-    whiteSpace: "nowrap",
-  } satisfies CSSProperties,
-  btnRow: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: 16,
-  } satisfies CSSProperties,
-  btnLeft: {
-    display: "flex",
-    alignItems: "center",
-    flex: 1,
-  } satisfies CSSProperties,
-  btnRight: {
-    display: "flex",
-    alignItems: "center",
-    gap: 16,
-    flexShrink: 0,
-  } satisfies CSSProperties,
-};
 
 function getCategoryBadgeStyle(category: string): CSSProperties {
   if (category === "공지") {
@@ -249,7 +74,7 @@ export function NoticeDetailView() {
 
   if (isLoading) {
     return (
-      <div style={ds.outer}>
+      <div style={detailStyles.outer}>
         <div style={{ padding: 40, textAlign: "center", color: "#a1a1aa", fontFamily: FONT }}>
           Loading...
         </div>
@@ -259,7 +84,7 @@ export function NoticeDetailView() {
 
   if (isError || !notice) {
     return (
-      <div style={ds.outer}>
+      <div style={detailStyles.outer}>
         <div style={{ padding: 40, textAlign: "center", color: "#a1a1aa", fontFamily: FONT }}>
           공지사항을 찾을 수 없습니다.
         </div>
@@ -273,32 +98,32 @@ export function NoticeDetailView() {
   }
 
   return (
-    <div style={ds.outer}>
-      <div style={ds.main}>
-        <div style={ds.contentWrap}>
-          <div style={ds.metaRow}>
-            <div style={ds.metaItem}>
-              <span style={ds.metaLabel}>분류</span>
-              <span style={{ ...ds.categoryBadge, ...getCategoryBadgeStyle(notice.category) }}>
+    <div style={detailStyles.outer}>
+      <div style={detailStyles.main}>
+        <div style={detailStyles.contentWrap}>
+          <div style={detailStyles.metaRow}>
+            <div style={detailStyles.metaItem}>
+              <span style={detailStyles.metaLabel}>분류</span>
+              <span style={{ ...detailStyles.categoryBadge, ...getCategoryBadgeStyle(notice.category) }}>
                 {notice.category}
               </span>
             </div>
-            <div style={ds.metaItem}>
-              <span style={ds.metaLabel}>작성자</span>
-              <span style={ds.metaValue}>{notice.author}</span>
+            <div style={detailStyles.metaItem}>
+              <span style={detailStyles.metaLabel}>작성자</span>
+              <span style={detailStyles.metaValue}>{notice.author}</span>
             </div>
-            <div style={ds.metaItem}>
-              <span style={ds.metaLabel}>등록일</span>
-              <span style={ds.metaValue}>{notice.createdAt}</span>
+            <div style={detailStyles.metaItem}>
+              <span style={detailStyles.metaLabel}>등록일</span>
+              <span style={detailStyles.metaValue}>{notice.createdAt}</span>
             </div>
-            <div style={ds.metaItem}>
-              <span style={ds.metaLabel}>조회수</span>
-              <span style={ds.metaValue}>{notice.views}</span>
+            <div style={detailStyles.metaItem}>
+              <span style={detailStyles.metaLabel}>조회수</span>
+              <span style={detailStyles.metaValue}>{notice.views}</span>
             </div>
           </div>
 
-          <div style={ds.contentSection}>
-            <span style={ds.contentLabel}>제목</span>
+          <div style={detailStyles.contentSection}>
+            <span style={detailStyles.contentLabel}>제목</span>
             <div style={{
               fontFamily: FONT,
               fontSize: 16,
@@ -327,33 +152,33 @@ export function NoticeDetailView() {
               )}
               {notice.title}
             </div>
-            <div style={ds.contentBody}>
+            <div style={detailStyles.contentBody}>
               {notice.content}
             </div>
           </div>
 
           {notice.attachments.length > 0 && (
-            <div style={ds.attachSection}>
-              <span style={ds.attachLabel}>첨부</span>
-              <div style={ds.fileList}>
+            <div style={detailStyles.attachSection}>
+              <span style={detailStyles.attachLabel}>첨부</span>
+              <div style={detailStyles.fileList}>
                 {notice.attachments.map((file) => (
-                  <div key={file.id} style={ds.fileItem}>
-                    <div style={ds.fileNameWrap}>
+                  <div key={file.id} style={detailStyles.fileItem}>
+                    <div style={detailStyles.fileNameWrap}>
                       <FileIcon />
-                      <span style={ds.fileName}>{file.name}</span>
+                      <span style={detailStyles.fileName}>{file.name}</span>
                     </div>
-                    <div style={ds.fileMeta}>
-                      <div style={ds.fileMetaItem}>
-                        <span style={ds.fileMetaLabel}>Download</span>
-                        <span style={ds.fileMetaValue}>{file.downloads}</span>
+                    <div style={detailStyles.fileMeta}>
+                      <div style={detailStyles.fileMetaItem}>
+                        <span style={detailStyles.fileMetaLabel}>Download</span>
+                        <span style={detailStyles.fileMetaValue}>{file.downloads}</span>
                       </div>
-                      <div style={ds.fileMetaItem}>
-                        <span style={ds.fileMetaLabel}>Size</span>
-                        <span style={ds.fileMetaValue}>{file.size}</span>
+                      <div style={detailStyles.fileMetaItem}>
+                        <span style={detailStyles.fileMetaLabel}>Size</span>
+                        <span style={detailStyles.fileMetaValue}>{file.size}</span>
                       </div>
-                      <div style={ds.fileMetaItem}>
-                        <span style={ds.fileMetaLabel}>등록일시</span>
-                        <span style={ds.fileMetaValue}>{file.uploadedAt}</span>
+                      <div style={detailStyles.fileMetaItem}>
+                        <span style={detailStyles.fileMetaLabel}>등록일시</span>
+                        <span style={detailStyles.fileMetaValue}>{file.uploadedAt}</span>
                       </div>
                     </div>
                   </div>
@@ -363,13 +188,13 @@ export function NoticeDetailView() {
           )}
         </div>
 
-        <div style={ds.btnRow}>
-          <div style={ds.btnLeft}>
+        <div style={detailStyles.btnRow}>
+          <div style={detailStyles.btnLeft}>
             <Button size="l" variant="outlined" color="info" leadingIcon={<BackIcon />} onClick={handleGoList}>
               목록
             </Button>
           </div>
-          <div style={ds.btnRight}>
+          <div style={detailStyles.btnRight}>
             <Button size="l" variant="outlined" color="info" onClick={() => setEditPopupOpen(true)}>
               수정
             </Button>

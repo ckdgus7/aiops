@@ -6,8 +6,7 @@ import { RadioGroup } from "@/shared/ui/RadioGroup";
 import { TiptapEditor } from "@/shared/ui/TiptapEditor";
 import type { ComponentItem } from "@/features/ssf/model/types";
 import { DOMAIN_MOCK_DATA } from "@/features/ssf/model/mock-data";
-
-const FONT = "'Pretendard', sans-serif";
+import { FONT, popupStyles } from "@/shared/ui/styles";
 
 function CloseIcon() {
   return (
@@ -105,26 +104,13 @@ interface LeaderItem {
 
 const st = {
   overlay: {
-    position: "fixed",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
+    ...popupStyles.overlay,
     zIndex: 1000,
   } satisfies CSSProperties,
   popup: {
-    width: 880,
-    maxHeight: "90vh",
-    backgroundColor: "#ffffff",
-    borderRadius: 16,
+    ...popupStyles.popup,
     boxShadow: "0 4px 24px rgba(0, 0, 0, 0.12)",
-    display: "flex",
-    flexDirection: "column",
-    overflow: "hidden",
+    fontFamily: undefined,
   } satisfies CSSProperties,
   header: {
     display: "flex",
@@ -140,49 +126,28 @@ const st = {
     flexShrink: 0,
   } satisfies CSSProperties,
   titleRow: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
+    ...popupStyles.titleRow,
+    marginBottom: undefined,
     width: "100%",
     gap: 10,
   } satisfies CSSProperties,
   titleText: {
-    fontFamily: FONT,
-    fontSize: 24,
-    fontWeight: 700,
-    lineHeight: "32px",
+    ...popupStyles.titleText,
     color: "#52525b",
     flex: 1,
   } satisfies CSSProperties,
-  closeBtn: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    width: 32,
-    height: 32,
-    border: "none",
-    background: "transparent",
-    cursor: "pointer",
-    borderRadius: 4,
-    padding: 0,
-  } satisfies CSSProperties,
+  closeBtn: popupStyles.closeBtn,
   requiredRow: {
-    display: "flex",
-    alignItems: "center",
+    ...popupStyles.requiredRow,
     gap: 4,
   } satisfies CSSProperties,
   requiredMark: {
-    width: 6,
-    height: 6,
+    ...popupStyles.requiredDot,
     borderRadius: 3,
-    backgroundColor: "#36bffa",
-    flexShrink: 0,
   } satisfies CSSProperties,
   requiredText: {
-    fontFamily: FONT,
+    ...popupStyles.requiredText,
     fontSize: 14,
-    fontWeight: 400,
-    lineHeight: "18px",
     color: "#52525b",
   } satisfies CSSProperties,
   main: {
@@ -464,32 +429,22 @@ const st = {
     whiteSpace: "nowrap",
   } satisfies CSSProperties,
   footer: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
+    ...popupStyles.footer,
     padding: "16px 32px 32px 32px",
-    flexShrink: 0,
+    borderTop: undefined,
   } satisfies CSSProperties,
   footerLeft: {
     display: "flex",
     alignItems: "center",
   } satisfies CSSProperties,
-  footerRight: {
-    display: "flex",
-    alignItems: "center",
-    gap: 12,
-  } satisfies CSSProperties,
+  footerRight: popupStyles.footerRight,
   fieldRow: {
     display: "flex",
     flexDirection: "column",
     gap: 8,
     width: "100%",
   } satisfies CSSProperties,
-  labelRow: {
-    display: "flex",
-    alignItems: "center",
-    gap: 4,
-  } satisfies CSSProperties,
+  labelRow: popupStyles.fieldLabel,
   inputWithBtn: {
     display: "flex",
     gap: 10,
