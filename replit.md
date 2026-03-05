@@ -96,6 +96,9 @@ All other pages are blank placeholder pages using the shared `BlankPage` compone
 - When composing screens, import and use the common components (such as Button, Input, Datepicker, SelectBox, RadioGroup, Checkbox, TiptapEditor, etc.) that are defined in `shared/ui`.
 - **All styles use inline CSSProperties** (no CSS files, no Tailwind). Pretendard font family.
 
+### Service Components (`src/shared/ui/service/`)
+- **BpmnViewer** (`src/shared/ui/service/BpmnViewer.tsx`): BPMN 2.0 diagram viewer using `bpmn-js` NavigatedViewer (mouse drag + zoom). Props: `xml` (BPMN XML string), `onLoading`, `onError`, `onImport` (warnings callback), `onElementClick` (element click handler), `fitOnImport` (default true), `width`/`height`/`style`/`className`. Built-in toolbar: zoom in/out, fit viewport, reset 1:1. Inline styles, border 1px solid #e4e7ec, borderRadius 8px.
+
 
 ## Tech Stack
 
@@ -104,6 +107,7 @@ All other pages are blank placeholder pages using the shared `BlankPage` compone
 - **React Router 7** for client-side routing
 - **TanStack React Query 5** for server state management
 - **Zustand 4** for client state management
+- **bpmn-js** for BPMN 2.0 diagram rendering (NavigatedViewer)
 
 ## Running the App
 
