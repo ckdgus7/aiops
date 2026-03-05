@@ -1,9 +1,14 @@
 import { useState, useMemo, useEffect, type CSSProperties } from "react";
 import { useParams, useNavigate } from "react-router";
 import { Button } from "@/shared/ui/Button";
+import { Input } from "@/shared/ui/Input";
+import { SelectBox } from "@/shared/ui/SelectBox";
+import { RadioGroup } from "@/shared/ui/RadioGroup";
+import { TiptapEditor } from "@/shared/ui/TiptapEditor";
 import { useMdiStore } from "@/shared/model/mdi.store";
 import { usePageHeader } from "@/shared/hooks/usePageHeader";
-import { BUSINESS_MOCK_DATA, COMPONENT_MOCK_DATA } from "@/features/ssf/model/mock-data";
+import { BUSINESS_MOCK_DATA, COMPONENT_MOCK_DATA, DOMAIN_MOCK_DATA } from "@/features/ssf/model/mock-data";
+import type { BusinessItem } from "@/features/ssf/model/types";
 
 const FONT = "'Pretendard', sans-serif";
 
@@ -137,12 +142,398 @@ const L3_ITEMS = [
   { id: "BZ-EPCTMFC006-0012", text: "제휴사 연동 포맷 관리", hasBpd: false },
 ];
 
+const USE_YN_OPTIONS = [
+  { label: "사용", value: "사용" },
+  { label: "미사용", value: "미사용" },
+];
+
+function CloseIcon() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M6 6L18 18" stroke="#71717a" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M18 6L6 18" stroke="#71717a" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+const ps = {
+  overlay: {
+    position: "fixed",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 1000,
+  } satisfies CSSProperties,
+  popup: {
+    width: 880,
+    maxHeight: "90vh",
+    backgroundColor: "#ffffff",
+    borderRadius: 16,
+    boxShadow: "0 4px 24px rgba(0, 0, 0, 0.12)",
+    display: "flex",
+    flexDirection: "column",
+    overflow: "hidden",
+  } satisfies CSSProperties,
+  header: {
+    display: "flex",
+    flexDirection: "column",
+    padding: "32px 32px 16px 32px",
+    gap: 12,
+    flexShrink: 0,
+  } satisfies CSSProperties,
+  titleRow: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%",
+  } satisfies CSSProperties,
+  titleText: {
+    fontFamily: FONT,
+    fontSize: 24,
+    fontWeight: 700,
+    lineHeight: "32px",
+    color: "#52525b",
+  } satisfies CSSProperties,
+  closeBtn: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: 32,
+    height: 32,
+    border: "none",
+    background: "transparent",
+    cursor: "pointer",
+    borderRadius: 4,
+    padding: 0,
+  } satisfies CSSProperties,
+  requiredRow: {
+    display: "flex",
+    alignItems: "center",
+    gap: 4,
+  } satisfies CSSProperties,
+  requiredMark: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: "#36bffa",
+    flexShrink: 0,
+  } satisfies CSSProperties,
+  requiredText: {
+    fontFamily: FONT,
+    fontSize: 14,
+    fontWeight: 400,
+    lineHeight: "18px",
+    color: "#52525b",
+  } satisfies CSSProperties,
+  main: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 24,
+    padding: "24px 32px",
+    overflowY: "auto",
+    flex: 1,
+  } satisfies CSSProperties,
+  fieldRow2: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 8,
+    width: "100%",
+  } satisfies CSSProperties,
+  labelRow: {
+    display: "flex",
+    alignItems: "center",
+    gap: 4,
+  } satisfies CSSProperties,
+  label: {
+    fontFamily: FONT,
+    fontSize: 14,
+    fontWeight: 500,
+    lineHeight: "18px",
+    color: "#a1a1aa",
+    whiteSpace: "nowrap",
+  } satisfies CSSProperties,
+  disabledInput: {
+    fontFamily: FONT,
+    fontSize: 16,
+    fontWeight: 400,
+    lineHeight: "24px",
+    color: "#a1a1aa",
+    backgroundColor: "#f4f4f5",
+    border: "1px solid #e4e7ec",
+    borderRadius: 4,
+    padding: "8px 16px",
+    height: 40,
+    width: "100%",
+    boxSizing: "border-box",
+  } satisfies CSSProperties,
+  charCount: {
+    fontFamily: FONT,
+    fontSize: 12,
+    fontWeight: 400,
+    lineHeight: "16px",
+    color: "#a1a1aa",
+    textAlign: "right",
+    marginTop: 4,
+  } satisfies CSSProperties,
+  footer: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: "16px 32px 32px 32px",
+    flexShrink: 0,
+  } satisfies CSSProperties,
+  footerLeft: {
+    display: "flex",
+    alignItems: "center",
+  } satisfies CSSProperties,
+  footerRight: {
+    display: "flex",
+    alignItems: "center",
+    gap: 12,
+  } satisfies CSSProperties,
+};
+
+interface BusinessEditPopupProps {
+  open: boolean;
+  onClose: () => void;
+  item: BusinessItem;
+}
+
+function BusinessEditPopup({ open, onClose, item }: BusinessEditPopupProps) {
+  const [domainNameKo, setDomainNameKo] = useState("");
+  const [componentNameKo, setComponentNameKo] = useState("");
+  const [nameKo, setNameKo] = useState("");
+  const [designLeader, setDesignLeader] = useState("");
+  const [description, setDescription] = useState("");
+  const [useYn, setUseYn] = useState("사용");
+
+  useEffect(() => {
+    if (open) {
+      setDomainNameKo(item.domainNameKo);
+      setComponentNameKo(item.componentNameKo);
+      setNameKo(item.nameKo);
+      setDesignLeader(item.designLeader);
+      setDescription(item.description);
+      setUseYn(item.useYn);
+    }
+  }, [open, item]);
+
+  const handleDomainChange = (val: string) => {
+    setDomainNameKo(val);
+    setComponentNameKo("");
+  };
+
+  const domainOptions = useMemo(() => {
+    const base = DOMAIN_MOCK_DATA.filter((d) => d.useYn === "사용").map((d) => ({
+      label: d.nameKo,
+      value: d.nameKo,
+    }));
+    if (domainNameKo && !base.some((o) => o.value === domainNameKo)) {
+      return [{ label: domainNameKo, value: domainNameKo }, ...base];
+    }
+    return base;
+  }, [domainNameKo]);
+
+  const componentOptions = useMemo(() => {
+    if (!domainNameKo) return [];
+    const opts = COMPONENT_MOCK_DATA.filter(
+      (c) => c.domainNameKo === domainNameKo && c.useYn === "사용",
+    ).map((c) => ({ label: c.nameKo, value: c.nameKo }));
+    if (componentNameKo && !opts.some((o) => o.value === componentNameKo)) {
+      return [{ label: componentNameKo, value: componentNameKo }, ...opts];
+    }
+    return opts;
+  }, [domainNameKo, componentNameKo]);
+
+  const l2PlanLeader = useMemo(() => {
+    if (!componentNameKo) return "";
+    const comp = COMPONENT_MOCK_DATA.find(
+      (c) => c.nameKo === componentNameKo && c.domainNameKo === domainNameKo,
+    );
+    return comp?.planLeader ?? item.planLeader ?? "";
+  }, [componentNameKo, domainNameKo, item.planLeader]);
+
+  const designLeaderOptions = useMemo(() => {
+    const leaders = [...new Set(BUSINESS_MOCK_DATA.map((b) => b.designLeader))];
+    const opts = leaders.map((l) => ({ label: l, value: l }));
+    if (designLeader && !opts.some((o) => o.value === designLeader)) {
+      return [{ label: designLeader, value: designLeader }, ...opts];
+    }
+    return opts;
+  }, [designLeader]);
+
+  if (!open) return null;
+
+  const descPlainLength = description.replace(/<[^>]*>/g, "").length;
+
+  const isValid =
+    domainNameKo &&
+    componentNameKo &&
+    nameKo.trim() &&
+    l2PlanLeader &&
+    designLeader &&
+    descPlainLength > 0 &&
+    descPlainLength <= 3000 &&
+    !!useYn;
+
+  const handleDescChange = (val: string) => {
+    const plainLen = val.replace(/<[^>]*>/g, "").length;
+    if (plainLen <= 3000) {
+      setDescription(val);
+    }
+  };
+
+  const handleSave = () => {
+    if (!isValid) return;
+    onClose();
+  };
+
+  return (
+    <div style={ps.overlay} onClick={onClose}>
+      <div style={ps.popup} onClick={(e) => e.stopPropagation()}>
+        <div style={ps.header}>
+          <div style={ps.titleRow}>
+            <span style={ps.titleText}>업무(L3) 수정</span>
+            <button style={ps.closeBtn} onClick={onClose} type="button">
+              <CloseIcon />
+            </button>
+          </div>
+          <div style={ps.requiredRow}>
+            <div style={ps.requiredMark} />
+            <span style={ps.requiredText}>표시는 필수로 입력하세요.</span>
+          </div>
+        </div>
+
+        <div style={ps.main}>
+          <div style={ps.fieldRow2}>
+            <SelectBox
+              label="도메인(한글) 명"
+              required
+              value={domainNameKo}
+              onChange={handleDomainChange}
+              options={domainOptions}
+              placeholder="도메인(한글) 명을 선택하세요."
+            />
+          </div>
+
+          <div style={ps.fieldRow2}>
+            <SelectBox
+              label="컴포넌트(한글) 명"
+              required
+              value={componentNameKo}
+              onChange={setComponentNameKo}
+              options={componentOptions}
+              placeholder="컴포넌트(한글) 명을 선택하세요."
+              disabled={!domainNameKo}
+            />
+          </div>
+
+          <div style={ps.fieldRow2}>
+            <div style={ps.labelRow}>
+              <span style={ps.label}>L2기획리더</span>
+              <div style={ps.requiredMark} />
+            </div>
+            <div style={ps.disabledInput}>
+              {l2PlanLeader || "컴포넌트(L2) 선택 시 출력됩니다."}
+            </div>
+          </div>
+
+          <div style={ps.fieldRow2}>
+            <SelectBox
+              label="L3설계리더"
+              required
+              value={designLeader}
+              onChange={setDesignLeader}
+              options={designLeaderOptions}
+              placeholder="L3설계리더를 선택하세요."
+            />
+          </div>
+
+          <div style={ps.fieldRow2}>
+            <Input
+              label="업무(L3) 명"
+              required
+              value={nameKo}
+              onChange={(e) => setNameKo(e.target.value)}
+              placeholder="업무(L3) 명을 입력하세요."
+              maxLength={70}
+              indicator={`${nameKo.length}/70`}
+            />
+          </div>
+
+          <div style={ps.fieldRow2}>
+            <div style={ps.labelRow}>
+              <span style={ps.label}>업무 설명</span>
+              <div style={ps.requiredMark} />
+            </div>
+            <TiptapEditor
+              value={description}
+              onChange={handleDescChange}
+              placeholder="과제 개요를 입력하세요."
+              minHeight={300}
+            />
+            <div style={ps.charCount}>{descPlainLength}/3000</div>
+          </div>
+
+          <div style={ps.fieldRow2}>
+            <div style={ps.labelRow}>
+              <span style={ps.label}>사용여부</span>
+              <div style={ps.requiredMark} />
+            </div>
+            <RadioGroup
+              value={useYn}
+              onChange={setUseYn}
+              options={USE_YN_OPTIONS}
+              size="l"
+              direction="horizontal"
+              gap={32}
+            />
+          </div>
+        </div>
+
+        <div style={ps.footer}>
+          <div style={ps.footerLeft}>
+            <Button size="l" variant="outlined" color="info" onClick={onClose}>
+              닫기
+            </Button>
+          </div>
+          <div style={ps.footerRight}>
+            <Button
+              size="l"
+              variant="filled"
+              color="positive"
+              disabled={!isValid}
+              onClick={handleSave}
+            >
+              저장
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function EditIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <path d="M11.5 2.5L13.5 4.5L5 13H3V11L11.5 2.5Z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
 export function BusinessDetailView() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const addTab = useMdiStore((st) => st.addTab);
   const [historyOpen, setHistoryOpen] = useState(true);
   const [ssfAccordionOpen, setSsfAccordionOpen] = useState(true);
+  const [editOpen, setEditOpen] = useState(false);
 
   useEffect(() => {
     addTab({
@@ -191,14 +582,25 @@ export function BusinessDetailView() {
               <SectionHeader
                 title="업무(L3) 기준 정보"
                 right={
-                  <button
-                    style={s.historyBtn}
-                    type="button"
-                    onClick={() => setHistoryOpen(!historyOpen)}
-                  >
-                    <HistoryIcon />
-                    <span style={s.historyBtnText}>3 History</span>
-                  </button>
+                  <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                    <Button
+                      size="s"
+                      variant="outlined"
+                      color="positive"
+                      leadingIcon={<EditIcon />}
+                      onClick={() => setEditOpen(true)}
+                    >
+                      수정
+                    </Button>
+                    <button
+                      style={s.historyBtn}
+                      type="button"
+                      onClick={() => setHistoryOpen(!historyOpen)}
+                    >
+                      <HistoryIcon />
+                      <span style={s.historyBtnText}>3 History</span>
+                    </button>
+                  </div>
                 }
               />
               <div style={s.mainFields}>
@@ -442,6 +844,11 @@ export function BusinessDetailView() {
           </div>
         </div>
       </div>
+      <BusinessEditPopup
+        open={editOpen}
+        onClose={() => setEditOpen(false)}
+        item={item}
+      />
     </div>
   );
 }
