@@ -23,3 +23,18 @@ export interface ComponentItem {
 }
 
 export type ComponentSortKey = keyof ComponentItem;
+
+export interface BusinessItem {
+  no: number;
+  businessId: string;
+  nameKo: string;
+  nameEn: string;
+  description: string;
+  domainNameKo: string;
+  componentNameKo: string;
+  planLeader: string;
+  designLeader: string;
+  useYn: string;
+}
+
+export type BusinessSortKey = keyof BusinessItem;

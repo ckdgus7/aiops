@@ -1,5 +1,5 @@
-import { BlankPage } from "@/shared/ui/BlankPage";
+import { BusinessInfoListView } from "@/features/ssf/ui/BusinessInfoListView";
 
 export function BusinessInfoPage() {
-  return <BlankPage title="업무(L3)정보 관리" gnbName="SSF관리" path="/ssf/business" />;
+  return <BusinessInfoListView />;
 }

@@ -1,4 +1,4 @@
-import type { DomainItem, ComponentItem } from "./types";
+import type { DomainItem, ComponentItem, BusinessItem } from "./types";
 
 export const DOMAIN_MOCK_DATA: DomainItem[] = [
   { no: 13, abbr: "MKT", nameKo: "마케팅", nameEn: "Marketing", description: "마케팅 관련 업무 도메인으로, 캠페인 관리, 프로모션 기획 및 실행, 고객 분석 등을 포함합니다.", useYn: "사용" },
@@ -46,5 +46,38 @@ export const COMPONENT_MOCK_DATA: ComponentItem[] = Array.from({ length: 64 }, (
     planLeader: LEADERS_PLAN[idx % LEADERS_PLAN.length],
     designLeader: LEADERS_DESIGN[idx % LEADERS_DESIGN.length],
     useYn: idx % 7 === 0 ? "미사용" : "사용",
+  };
+});
+
+const BIZ_NAMES_KO = ["대리점정보관리", "파트너사정보관리", "제휴서비스관리", "마케팅분석관리", "고객세분화관리", "예산편성관리", "결산업무처리", "원가분석관리", "채용프로세스관리", "성과평가관리", "급여관리", "교육훈련관리", "구매요청관리", "발주관리", "재고관리", "고객상담관리", "충성도프로그램", "상품등록관리", "가격정책관리", "상품분류관리", "주문접수처리", "배송추적관리", "반품교환관리", "요금산출관리", "청구서발행", "수납관리", "망구성관리", "장비관리", "품질모니터링", "서비스개통관리"];
+const BIZ_NAMES_EN = ["Dealer Info Mgmt", "Partner Info Mgmt", "Alliance Service Mgmt", "Marketing Analysis", "Customer Segmentation", "Budget Planning", "Settlement Processing", "Cost Analysis", "Recruitment Process", "Performance Evaluation", "Payroll Mgmt", "Training Mgmt", "Purchase Request Mgmt", "Order Placement Mgmt", "Inventory Mgmt", "Customer Counseling", "Loyalty Program", "Product Registration", "Pricing Policy Mgmt", "Product Category Mgmt", "Order Receipt Processing", "Delivery Tracking", "Return Exchange Mgmt", "Fee Calculation Mgmt", "Invoice Issuance", "Collection Mgmt", "Network Config Mgmt", "Equipment Mgmt", "Quality Monitoring", "Service Activation Mgmt"];
+const BIZ_DESCRIPTIONS = [
+  "대리점 기본 정보 및 계약 정보를 관리하는 업무입니다.",
+  "파트너사 정보 등록, 변경, 해지 등 전체 라이프사이클을 관리합니다.",
+  "제휴 서비스 기획, 운영, 정산 등의 업무를 관리합니다.",
+  "마케팅 데이터 분석 및 인사이트 도출 업무를 관리합니다.",
+  "고객 세분화 기준 설정 및 세그먼트 관리 업무입니다.",
+  "연간 예산 편성 및 배분, 조정 업무를 관리합니다.",
+  "월별/분기별 결산 업무 처리 및 보고 업무입니다.",
+  "원가 구성요소 분석 및 원가 절감 관련 업무를 관리합니다.",
+  "채용 공고 등록부터 최종 합격까지 전체 프로세스를 관리합니다.",
+  "직원 성과 목표 설정, 중간 점검, 최종 평가를 관리합니다.",
+];
+
+export const BUSINESS_MOCK_DATA: BusinessItem[] = Array.from({ length: 120 }, (_, i) => {
+  const idx = i;
+  const domainIdx = idx % DOMAIN_NAMES.length;
+  const compIdx = idx % COMP_NAMES_KO.length;
+  return {
+    no: 120 - i,
+    businessId: `BZ-PTYTMFC${String(idx + 1).padStart(3, "0")}`,
+    nameKo: BIZ_NAMES_KO[idx % BIZ_NAMES_KO.length],
+    nameEn: BIZ_NAMES_EN[idx % BIZ_NAMES_EN.length],
+    description: BIZ_DESCRIPTIONS[idx % BIZ_DESCRIPTIONS.length],
+    domainNameKo: DOMAIN_NAMES[domainIdx],
+    componentNameKo: COMP_NAMES_KO[compIdx],
+    planLeader: LEADERS_PLAN[idx % LEADERS_PLAN.length],
+    designLeader: LEADERS_DESIGN[idx % LEADERS_DESIGN.length],
+    useYn: idx % 9 === 0 ? "미사용" : "사용",
   };
 });
