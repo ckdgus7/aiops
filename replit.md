@@ -162,7 +162,7 @@ src/
 * Use components and utilities, library, ui from the `shared` directory when constructing pages.
 * When modifying a screen, do not make any changes to other domains unless explicitly requested.
 * Please conduct a code review and verify that the build completes successfully, and check for any errors.
-* When creating a page, always follow the folder structure rules and organize it under `features/ssf` with the appropriate `api`, `model`, and `ui` folders.
+
 
 ---
 
