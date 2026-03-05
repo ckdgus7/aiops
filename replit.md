@@ -170,6 +170,7 @@ src/
 * Props must be defined using an `interface`.
 * `export default` is prohibited (use named exports only).
 * Use components and utilities, library, ui from the `shared` directory when constructing pages.
+* When constructing a screen, use shared/ui/styles.ts for styling, and if a style does not exist, add it and import it for use.
 * When modifying a screen, do not make any changes to other domains unless explicitly requested.
 * Please conduct a code review and verify that the build completes successfully, and check for any errors.
 
