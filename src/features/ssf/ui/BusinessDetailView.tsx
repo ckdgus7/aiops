@@ -207,10 +207,240 @@ const L3_ITEMS = [
   { id: "BZ-SKNC001-003", text: "고객 중심 서비스 뷰" },
 ];
 
+const BPD_ITEMS = [
+  {
+    id: "bpd-1",
+    name: "Biz Process Diagram 01",
+    version: "v 2.11.029",
+    status: "Deployed" as const,
+    url: "https://aidevops.nova.com/bizasset/asset/bpd/XSyRe1g6UOdG9FChcYmacQ",
+  },
+  {
+    id: "bpd-2",
+    name: "Biz Process Diagram 02",
+    version: "v 1.02.000.01",
+    status: "Deployed" as const,
+    url: "https://aidevops.nova.com/bizasset/asset/bpd/XSyRe1g6UOdG9FChcYmacQ",
+    history: [
+      { version: "v 1.02.000.01", status: "Deployed" as const, user: "전우치", date: "2025-11-28 15:24", active: true },
+      { version: "v 1.02.000", status: "Retired" as const, user: "전우치", date: "2025-11-28 15:24", active: false },
+      { version: "v 1.01.000", status: "Retired" as const, user: "전우치", date: "2025-11-28 15:24", active: false },
+      { version: "v 1.00.000", status: "Retired" as const, user: "전우치", date: "2025-11-28 15:24", active: false },
+    ],
+    spec: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+  },
+];
+
+function BpdIcon() {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path d="M4 5C4 4.44772 4.44772 4 5 4H9L11 6H19C19.5523 6 20 6.44772 20 7V10H4V5Z" fill="white" fillOpacity="0.9" />
+      <path d="M4 10H20V19C20 19.5523 19.5523 20 19 20H5C4.44772 20 4 19.5523 4 19V10Z" fill="white" fillOpacity="0.7" />
+      <path d="M9 14H15" stroke="white" strokeOpacity="0.9" strokeWidth="1.2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function PlusIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+      <path d="M10 4V16M4 10H16" stroke="#7a5af8" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function ExpandIcon({ expanded }: { expanded: boolean }) {
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+      <path
+        d={expanded ? "M14 12L10 8L6 12" : "M6 8L10 12L14 8"}
+        stroke="#3f3f46"
+        strokeWidth="1.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function ZoomInIcon() {
+  return (
+    <svg width="18" height="24" viewBox="0 0 18 24" fill="none">
+      <circle cx="8" cy="12" r="5" stroke="#71717a" strokeWidth="1.2" />
+      <path d="M12 16L15 19" stroke="#71717a" strokeWidth="1.2" strokeLinecap="round" />
+      <path d="M8 10V14M6 12H10" stroke="#71717a" strokeWidth="1.2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function ZoomOutIcon() {
+  return (
+    <svg width="18" height="24" viewBox="0 0 18 24" fill="none">
+      <circle cx="8" cy="12" r="5" stroke="#71717a" strokeWidth="1.2" />
+      <path d="M12 16L15 19" stroke="#71717a" strokeWidth="1.2" strokeLinecap="round" />
+      <path d="M6 12H10" stroke="#71717a" strokeWidth="1.2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function FitIcon() {
+  return (
+    <svg width="18" height="24" viewBox="0 0 18 24" fill="none">
+      <rect x="3" y="8" width="12" height="8" rx="1" stroke="#71717a" strokeWidth="1.2" />
+      <path d="M6 8V7M12 8V7M6 16V17M12 16V17" stroke="#71717a" strokeWidth="1.2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function EditIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+      <path d="M12.5 3.5L14.5 5.5L5.5 14.5H3.5V12.5L12.5 3.5Z" stroke="#7a5af8" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function VersionBadge({ status }: { status: "Deployed" | "Retired" }) {
+  const isDeployed = status === "Deployed";
+  return (
+    <span style={{
+      ...s.versionBadge,
+      color: isDeployed ? "#1ac057" : "#a1a1aa",
+      backgroundColor: isDeployed ? "#f2fdf5" : "#fafafa",
+      borderColor: isDeployed ? "#1ac057" : "#a1a1aa",
+    }}>
+      {status}
+    </span>
+  );
+}
+
+interface BpdVersionItemProps {
+  version: string;
+  status: "Deployed" | "Retired";
+  user: string;
+  date: string;
+  isFirst: boolean;
+  isLast: boolean;
+  active: boolean;
+}
+
+function BpdVersionItem({ version, status, user, date, isFirst, isLast, active }: BpdVersionItemProps) {
+  return (
+    <div style={s.bpdVerRow}>
+      <div style={s.historyMark}>
+        {!isFirst && <div style={s.historyLineTop} />}
+        <div style={{ ...s.historyDot, backgroundColor: active ? "#7a5af8" : "#d4d4d8" }} />
+        {!isLast && <div style={s.historyLineBottom} />}
+      </div>
+      <div style={s.bpdVerContent}>
+        <span style={s.bpdVersionText}>{version}</span>
+        <VersionBadge status={status} />
+        <span style={s.bpdVerUser}>{user}</span>
+        <span style={s.bpdVerDate}>{date}</span>
+      </div>
+    </div>
+  );
+}
+
+interface AssetAccordionProps {
+  name: string;
+  version: string;
+  status: "Deployed" | "Retired";
+  url: string;
+  history?: BpdVersionItemProps[] | typeof BPD_ITEMS[1]["history"];
+  spec?: string;
+  expanded: boolean;
+  onToggle: () => void;
+}
+
+function AssetAccordion({ name, version, status, url, history, spec, expanded, onToggle }: AssetAccordionProps) {
+  return (
+    <div style={s.assetAccordion}>
+      <div style={s.assetHeader}>
+        <div style={s.assetIconWrap}>
+          <BpdIcon />
+        </div>
+        <div style={s.assetInfo}>
+          <div style={s.assetLabelRow}>
+            <VersionBadge status={status} />
+            <span style={s.assetVersion}>{version}</span>
+            <span style={s.assetName}>{name}</span>
+          </div>
+          <div style={s.assetUrlRow}>
+            <a href={url} target="_blank" rel="noopener noreferrer" style={s.assetUrl}>{url}</a>
+          </div>
+        </div>
+        <button type="button" style={s.lvToggleBtn} onClick={onToggle}>
+          <ExpandIcon expanded={expanded} />
+        </button>
+      </div>
+
+      {expanded && (
+        <div style={s.assetMain}>
+          {history && history.length > 0 && (
+            <div style={s.assetHistoryCol}>
+              {history.map((h, i) => (
+                <BpdVersionItem
+                  key={`${h.version}-${i}`}
+                  version={h.version}
+                  status={h.status}
+                  user={h.user}
+                  date={h.date}
+                  isFirst={i === 0}
+                  isLast={i === history.length - 1}
+                  active={h.active}
+                />
+              ))}
+            </div>
+          )}
+          <div style={s.assetBpdInfo}>
+            <div style={s.bpdViewerContainer}>
+              <div style={s.bpdToolbar}>
+                <div style={s.bpdToolbarLeft}>
+                  <button type="button" style={s.bpdToolBtn}><ZoomInIcon /></button>
+                  <button type="button" style={s.bpdToolBtn}><ZoomOutIcon /></button>
+                  <button type="button" style={s.bpdToolBtn}><FitIcon /></button>
+                </div>
+              </div>
+              <div style={s.bpdViewerArea}>
+                <div style={s.bpdPlaceholder}>
+                  <span style={s.bpdPlaceholderText}>BPD Viewer</span>
+                </div>
+              </div>
+            </div>
+            <div style={s.bpdSeparator} />
+            {spec && (
+              <div style={s.bpdSpecSection}>
+                <div style={s.bpdSpecHeader}>
+                  <div style={s.bpdSpecLabelRow}>
+                    <span style={s.fieldLabel}>BPD 명세</span>
+                    <button style={s.historyBtn} type="button">
+                      <HistoryIcon />
+                      <span style={s.historyBtnText}>3 History</span>
+                    </button>
+                  </div>
+                </div>
+                <p style={s.bpdSpecText}>{spec}</p>
+                <div style={s.bpdSpecActions}>
+                  <button type="button" style={s.bpdEditBtn}>
+                    <EditIcon />
+                    <span style={s.bpdEditBtnText}>편집</span>
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export function BusinessDetailView() {
   const { id } = useParams<{ id: string }>();
   const addTab = useMdiStore((st) => st.addTab);
   const [historyOpen, setHistoryOpen] = useState(true);
+  const [expandedBpd, setExpandedBpd] = useState<string | null>("bpd-2");
 
   const item = BUSINESS_MOCK_DATA.find((b) => b.businessId === id);
 
@@ -333,7 +563,25 @@ export function BusinessDetailView() {
           <div style={s.bpdContainer}>
             <div style={s.bpdInner}>
               <SectionHeader title="BPD 관리" />
-              <NoDataArea />
+              <button type="button" style={s.bpdAddBtn}>
+                <PlusIcon />
+                <span style={s.bpdAddBtnText}>BPD 추가</span>
+              </button>
+              <div style={s.bpdList}>
+                {BPD_ITEMS.map((bpd) => (
+                  <AssetAccordion
+                    key={bpd.id}
+                    name={bpd.name}
+                    version={bpd.version}
+                    status={bpd.status}
+                    url={bpd.url}
+                    history={"history" in bpd ? bpd.history : undefined}
+                    spec={"spec" in bpd ? bpd.spec : undefined}
+                    expanded={expandedBpd === bpd.id}
+                    onToggle={() => setExpandedBpd(expandedBpd === bpd.id ? null : bpd.id)}
+                  />
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -534,7 +782,8 @@ const s = {
     paddingTop: 3,
     paddingBottom: 3,
     borderRadius: 12,
-    border: "1px solid",
+    borderWidth: 1,
+    borderStyle: "solid",
     backgroundColor: "#ffffff",
   } satisfies CSSProperties,
   lvDot: {
@@ -671,7 +920,8 @@ const s = {
     fontSize: 10,
     fontWeight: 500,
     lineHeight: "12px",
-    border: "1px solid",
+    borderWidth: 1,
+    borderStyle: "solid",
     borderRadius: 12,
     padding: "3px 10px",
     alignSelf: "flex-start",
@@ -701,7 +951,276 @@ const s = {
     padding: "24px 32px",
     display: "flex",
     flexDirection: "column",
+    gap: 24,
+  } satisfies CSSProperties,
+  bpdAddBtn: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
+    padding: 6,
+    border: "1px solid #7a5af8",
+    borderRadius: 4,
+    background: "#ffffff",
+    cursor: "pointer",
+    alignSelf: "flex-start",
+  } satisfies CSSProperties,
+  bpdAddBtnText: {
+    fontFamily: FONT,
+    fontSize: 14,
+    fontWeight: 500,
+    lineHeight: "20px",
+    color: "#7a5af8",
+  } satisfies CSSProperties,
+  bpdList: {
+    display: "flex",
+    flexDirection: "column",
     gap: 16,
+  } satisfies CSSProperties,
+  assetAccordion: {
+    border: "1px solid #e4e4e7",
+    borderRadius: 8,
+    backgroundColor: "#ffffff",
+    overflow: "hidden",
+  } satisfies CSSProperties,
+  assetHeader: {
+    display: "flex",
+    alignItems: "center",
+    gap: 8,
+    padding: 8,
+    cursor: "pointer",
+  } satisfies CSSProperties,
+  assetIconWrap: {
+    width: 32,
+    height: 32,
+    borderRadius: 5,
+    backgroundColor: "#7a5af8",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexShrink: 0,
+  } satisfies CSSProperties,
+  assetInfo: {
+    flex: 1,
+    display: "flex",
+    flexDirection: "column",
+    minWidth: 0,
+  } satisfies CSSProperties,
+  assetLabelRow: {
+    display: "flex",
+    alignItems: "center",
+    gap: 10,
+    width: "100%",
+  } satisfies CSSProperties,
+  assetVersion: {
+    fontFamily: FONT,
+    fontSize: 12,
+    fontWeight: 700,
+    lineHeight: "18px",
+    color: "#3f3f46",
+    whiteSpace: "nowrap",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+  } satisfies CSSProperties,
+  assetName: {
+    fontFamily: FONT,
+    fontSize: 12,
+    fontWeight: 400,
+    lineHeight: "18px",
+    color: "#3f3f46",
+    flex: 1,
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+    minWidth: 0,
+  } satisfies CSSProperties,
+  assetUrlRow: {
+    display: "flex",
+    alignItems: "center",
+    width: "100%",
+  } satisfies CSSProperties,
+  assetUrl: {
+    fontFamily: FONT,
+    fontSize: 10,
+    fontWeight: 400,
+    lineHeight: "16px",
+    color: "#0ba5ec",
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+    flex: 1,
+    minWidth: 0,
+    textDecoration: "none",
+  } satisfies CSSProperties,
+  assetMain: {
+    borderTop: "1px solid #e4e4e7",
+    display: "flex",
+    padding: 16,
+    gap: 0,
+  } satisfies CSSProperties,
+  assetHistoryCol: {
+    display: "flex",
+    flexDirection: "column",
+    width: 142,
+    flexShrink: 0,
+  } satisfies CSSProperties,
+  assetBpdInfo: {
+    flex: 1,
+    display: "flex",
+    flexDirection: "column",
+    gap: 16,
+    minWidth: 0,
+  } satisfies CSSProperties,
+  versionBadge: {
+    fontFamily: FONT,
+    fontSize: 10,
+    fontWeight: 500,
+    lineHeight: "12px",
+    borderWidth: 1,
+    borderStyle: "solid",
+    borderRadius: 12,
+    padding: "3px 10px",
+    whiteSpace: "nowrap",
+    flexShrink: 0,
+  } satisfies CSSProperties,
+  bpdVerRow: {
+    display: "flex",
+    gap: 8,
+    alignItems: "flex-start",
+  } satisfies CSSProperties,
+  bpdVerContent: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 4,
+    paddingBottom: 16,
+  } satisfies CSSProperties,
+  bpdVersionText: {
+    fontFamily: FONT,
+    fontSize: 12,
+    fontWeight: 700,
+    lineHeight: "18px",
+    color: "#3f3f46",
+  } satisfies CSSProperties,
+  bpdVerUser: {
+    fontFamily: FONT,
+    fontSize: 12,
+    fontWeight: 400,
+    lineHeight: "18px",
+    color: "#3f3f46",
+  } satisfies CSSProperties,
+  bpdVerDate: {
+    fontFamily: FONT,
+    fontSize: 12,
+    fontWeight: 400,
+    lineHeight: "18px",
+    color: "#a1a1aa",
+  } satisfies CSSProperties,
+  bpdViewerContainer: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 10,
+    width: "100%",
+  } satisfies CSSProperties,
+  bpdToolbar: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+  } satisfies CSSProperties,
+  bpdToolbarLeft: {
+    display: "flex",
+    alignItems: "center",
+    gap: 8,
+  } satisfies CSSProperties,
+  bpdToolBtn: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: 24,
+    height: 30,
+    border: "1px solid #71717a",
+    borderRadius: 4,
+    background: "#ffffff",
+    cursor: "pointer",
+    padding: 3,
+  } satisfies CSSProperties,
+  bpdViewerArea: {
+    width: "100%",
+    minHeight: 300,
+    border: "1px solid #e4e4e7",
+    borderRadius: 4,
+    backgroundColor: "#fafafa",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    overflow: "hidden",
+  } satisfies CSSProperties,
+  bpdPlaceholder: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+    height: "100%",
+    minHeight: 300,
+  } satisfies CSSProperties,
+  bpdPlaceholderText: {
+    fontFamily: FONT,
+    fontSize: 14,
+    fontWeight: 400,
+    color: "#a1a1aa",
+  } satisfies CSSProperties,
+  bpdSeparator: {
+    width: "100%",
+    height: 1,
+    backgroundColor: "#e4e4e7",
+  } satisfies CSSProperties,
+  bpdSpecSection: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 8,
+    width: "100%",
+  } satisfies CSSProperties,
+  bpdSpecHeader: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%",
+  } satisfies CSSProperties,
+  bpdSpecLabelRow: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: "100%",
+  } satisfies CSSProperties,
+  bpdSpecText: {
+    fontFamily: FONT,
+    fontSize: 14,
+    fontWeight: 400,
+    lineHeight: "20px",
+    color: "#3f3f46",
+    margin: 0,
+  } satisfies CSSProperties,
+  bpdSpecActions: {
+    display: "flex",
+    alignItems: "center",
+    gap: 0,
+  } satisfies CSSProperties,
+  bpdEditBtn: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 3,
+    padding: 3,
+    border: "1px solid #7a5af8",
+    borderRadius: 4,
+    background: "#ffffff",
+    cursor: "pointer",
+  } satisfies CSSProperties,
+  bpdEditBtnText: {
+    fontFamily: FONT,
+    fontSize: 12,
+    fontWeight: 400,
+    lineHeight: "18px",
+    color: "#7a5af8",
   } satisfies CSSProperties,
 
   rightCol: {
@@ -764,7 +1283,8 @@ const s = {
     fontSize: 10,
     fontWeight: 500,
     lineHeight: "12px",
-    border: "1px solid",
+    borderWidth: 1,
+    borderStyle: "solid",
     borderRadius: 12,
     padding: "3px 10px",
     whiteSpace: "nowrap",
