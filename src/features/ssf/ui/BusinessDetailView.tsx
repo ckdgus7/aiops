@@ -1,30 +1,24 @@
 import { useState, useEffect, type CSSProperties, type ReactNode } from "react";
 import { useParams } from "react-router";
-import { Button } from "@/shared/ui/Button";
 import { useMdiStore } from "@/shared/model/mdi.store";
 import { usePageHeader } from "@/shared/hooks/usePageHeader";
 import { BUSINESS_MOCK_DATA, COMPONENT_MOCK_DATA } from "@/features/ssf/model/mock-data";
 
 const FONT = "'Pretendard', sans-serif";
 
-function HistoryIcon() {
-  return (
-    <svg width="20" height="24" viewBox="0 0 20 24" fill="none">
-      <path
-        d="M10 4C6.13 4 3 7.13 3 11C3 14.87 6.13 18 10 18C13.87 18 17 14.87 17 11"
-        stroke="#71717a"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-      <path d="M10 7V11L13 13" stroke="#71717a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
 function ChevronIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
       <path d="M6.75 4.5L11.25 9L6.75 13.5" stroke="#71717a" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function HistoryIcon() {
+  return (
+    <svg width="20" height="24" viewBox="0 0 20 24" fill="none">
+      <path d="M10 4C6.13 4 3 7.13 3 11C3 14.87 6.13 18 10 18C13.87 18 17 14.87 17 11" stroke="#71717a" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M10 7V11L13 13" stroke="#71717a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -39,19 +33,16 @@ function NoDataIcon() {
   );
 }
 
-function AccordionChevron({ open }: { open: boolean }) {
+function AccordionToggle({ open }: { open: boolean }) {
   return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 16 16"
-      fill="none"
-      style={{
-        transform: open ? "rotate(180deg)" : "rotate(0deg)",
-        transition: "transform 0.2s",
-      }}
-    >
-      <path d="M4 6L8 10L12 6" stroke="#71717a" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path
+        d={open ? "M16 14L12 10L8 14" : "M8 10L12 14L16 10"}
+        stroke="#71717a"
+        strokeWidth="1.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }
@@ -59,11 +50,12 @@ function AccordionChevron({ open }: { open: boolean }) {
 interface LabelValueProps {
   label: string;
   value: ReactNode;
+  fullWidth?: boolean;
 }
 
-function LabelValue({ label, value }: LabelValueProps) {
+function LabelValue({ label, value, fullWidth }: LabelValueProps) {
   return (
-    <div style={s.fieldCol}>
+    <div style={{ ...s.fieldCol, ...(fullWidth ? { width: "100%" } : {}) }}>
       <span style={s.fieldLabel}>{label}</span>
       <span style={s.fieldValue}>{value}</span>
     </div>
@@ -81,31 +73,17 @@ function ListItemRow({ badge, badgeColor, badgeBg, text }: ListItemRowProps) {
   return (
     <div style={s.listItem}>
       <div style={s.listItemLeft}>
-        <span
-          style={{
-            ...s.listBadge,
-            color: badgeColor,
-            borderColor: badgeColor,
-            backgroundColor: badgeBg || "transparent",
-          }}
-        >
+        <span style={{ ...s.listBadge, color: badgeColor, borderColor: badgeColor, backgroundColor: badgeBg || "transparent" }}>
           {badge}
         </span>
         <span style={s.listText}>{text}</span>
       </div>
-      <button type="button" style={s.listArrowBtn}>
-        <ChevronIcon />
-      </button>
+      <button type="button" style={s.listArrowBtn}><ChevronIcon /></button>
     </div>
   );
 }
 
-interface SectionHeaderProps {
-  title: string;
-  right?: ReactNode;
-}
-
-function SectionHeader({ title, right }: SectionHeaderProps) {
+function SectionHeader({ title, right }: { title: string; right?: ReactNode }) {
   return (
     <div style={s.sectionHeader}>
       <span style={s.sectionTitle}>{title}</span>
@@ -123,26 +101,85 @@ function NoDataArea() {
   );
 }
 
-interface MiniPaginationProps {
-  current: number;
-  total: number;
-  perPage: number;
-}
-
-function MiniPagination({ current, total, perPage }: MiniPaginationProps) {
+function MiniPagination({ current, total, perPage }: { current: number; total: number; perPage: number }) {
   return (
     <div style={s.miniPagination}>
       <span style={s.paginationLabel}>Items per page:</span>
-      <select style={s.paginationSelect} defaultValue={perPage}>
-        <option>{perPage}</option>
-      </select>
-      <span style={s.paginationLabel}>
-        {(current - 1) * perPage + 1}-{Math.min(current * perPage, total)} of {total}
-      </span>
+      <select style={s.paginationSelect} defaultValue={perPage}><option>{perPage}</option></select>
+      <span style={s.paginationLabel}>{(current - 1) * perPage + 1}-{Math.min(current * perPage, total)} of {total}</span>
       <span style={s.paginationNav}>{"< "}{current}{" >"}</span>
     </div>
   );
 }
+
+interface LevelBadgeProps {
+  level: string;
+  code: string;
+  color: string;
+  active?: boolean;
+}
+
+function LevelBadge({ level, code, color, active }: LevelBadgeProps) {
+  return (
+    <div style={{
+      ...s.lvCard,
+      ...(active ? { border: `1px solid #7a5af8` } : {}),
+      ...(!active ? { opacity: 0.5 } : {}),
+    }}>
+      <div style={s.lvBadgeWrap}>
+        <div style={{ ...s.lvBadgeBase, borderColor: color }}>
+          <span style={{ ...s.lvDot, backgroundColor: color }}>
+            <span style={s.lvDotText}>{level}</span>
+          </span>
+          <span style={{ ...s.lvBadgeText, color }}>{code}</span>
+        </div>
+      </div>
+      <div style={s.lvNameRow}>
+        <span style={s.lvName}>{code === "EPC" ? "엔터프라이즈 상품 카탈로그" : "서비스 카탈로그 관리"}</span>
+        <button type="button" style={s.lvToggleBtn}>
+          <AccordionToggle open={active || false} />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+interface HistoryItemProps {
+  type: string;
+  typeColor: string;
+  typeBg: string;
+  typeBorderColor: string;
+  user: string;
+  date: string;
+  isFirst?: boolean;
+  isLast?: boolean;
+  active?: boolean;
+}
+
+function HistoryItem({ type, typeColor, typeBg, typeBorderColor, user, date, isFirst, isLast, active }: HistoryItemProps) {
+  return (
+    <div style={s.historyItem}>
+      <div style={s.historyMark}>
+        {!isFirst && <div style={s.historyLineTop} />}
+        <div style={{ ...s.historyDot, backgroundColor: active ? "#7a5af8" : "#d4d4d8" }} />
+        {!isLast && <div style={s.historyLineBottom} />}
+      </div>
+      <div style={s.historyContent}>
+        <span style={{ ...s.historyBadge, color: typeColor, backgroundColor: typeBg, borderColor: typeBorderColor }}>
+          {type}
+        </span>
+        <span style={s.historyUser}>{user}</span>
+        <span style={s.historyDate}>{date}</span>
+      </div>
+    </div>
+  );
+}
+
+const HISTORY_DATA = [
+  { type: "수정", typeColor: "#f79009", typeBg: "#fffaeb", typeBorderColor: "#f79009", user: "전우치", date: "2025-11-28 15:24", active: true },
+  { type: "수정", typeColor: "#f79009", typeBg: "#fffaeb", typeBorderColor: "#f79009", user: "홍길동", date: "2025-11-20 09:15", active: false },
+  { type: "저장", typeColor: "#1ac057", typeBg: "#f2fdf5", typeBorderColor: "#1ac057", user: "이순신", date: "2025-11-15 14:30", active: false },
+];
 
 const FLOW_ITEMS = [
   { id: "B0001", text: "고객인증" },
@@ -164,44 +201,30 @@ const PROJECT_ITEMS = [
   { id: "PJ-0004", text: "보안 체계 강화" },
 ];
 
-const L4_ITEMS = [
-  { id: "FN-001", type: "Composite", text: "미납 이벤트 생성" },
-  { id: "FN-002", type: "Orchestration", text: "미납 원부 조회" },
-  { id: "FN-003", type: "Composite", text: "미납 알림 발송" },
-  { id: "FN-004", type: "Orchestration", text: "채권 상태 변경" },
-  { id: "FN-005", type: "Composite", text: "미납 이력 관리" },
+const L3_ITEMS = [
+  { id: "BZ-SKNC001-001", text: "서비스 카탈로그 조회" },
+  { id: "BZ-SKNC001-002", text: "서비스 사양 관리" },
+  { id: "BZ-SKNC001-003", text: "고객 중심 서비스 뷰" },
 ];
 
 export function BusinessDetailView() {
   const { id } = useParams<{ id: string }>();
   const addTab = useMdiStore((st) => st.addTab);
-  const [ssfAccordionOpen, setSsfAccordionOpen] = useState(true);
+  const [historyOpen, setHistoryOpen] = useState(true);
 
   const item = BUSINESS_MOCK_DATA.find((b) => b.businessId === id);
 
   useEffect(() => {
-    addTab({
-      id: `/ssf/business/${id}`,
-      label: "업무(L3)정보 상세",
-      path: `/ssf/business/${id}`,
-    });
+    addTab({ id: `/ssf/business/${id}`, label: "업무(L3)정보 상세", path: `/ssf/business/${id}` });
   }, [id, addTab]);
 
   usePageHeader({
-    breadcrumbItems: [
-      { label: "SSF관리" },
-      { label: "업무(L3)정보 관리" },
-      { label: "업무(L3)정보 상세" },
-    ],
+    breadcrumbItems: [{ label: "SSF관리" }, { label: "업무(L3)정보 관리" }, { label: "업무(L3)정보 상세" }],
     title: "업무(L3)정보 상세",
   });
 
   if (!item) {
-    return (
-      <div style={s.outer}>
-        <NoDataArea />
-      </div>
-    );
+    return <div style={s.outer}><NoDataArea /></div>;
   }
 
   const comp = COMPONENT_MOCK_DATA.find(
@@ -211,13 +234,15 @@ export function BusinessDetailView() {
   return (
     <div style={s.outer}>
       <div style={s.row}>
+        {/* Left Column */}
         <div style={s.leftCol}>
+          {/* historyWrap: container + history panel */}
           <div style={s.historyWrap}>
-            <div style={s.container}>
+            <div style={{ ...s.container, flex: 1 }}>
               <SectionHeader
                 title="업무(L3) 기준 정보"
                 right={
-                  <button style={s.historyBtn} type="button">
+                  <button style={s.historyBtn} type="button" onClick={() => setHistoryOpen(!historyOpen)}>
                     <HistoryIcon />
                     <span style={s.historyBtnText}>3 History</span>
                   </button>
@@ -234,107 +259,109 @@ export function BusinessDetailView() {
                   <LabelValue label="저장일시" value="2025-11-28 15:24" />
                   <LabelValue label="마지막 수정일시" value="2025-11-28 15:24" />
                 </div>
-                <div style={{ ...s.fieldCol, width: "100%" }}>
-                  <span style={s.fieldLabel}>업무(L3) 설명</span>
-                  <span style={{ ...s.fieldValue, lineHeight: "24px" }}>
-                    {item.description}
-                  </span>
-                </div>
+                <LabelValue label="업무(L3) 설명" value={item.description} fullWidth />
 
+                {/* SSF 정보 */}
                 <div style={s.ssfSection}>
                   <span style={s.ssfLabel}>SSF 정보</span>
-                  <div style={s.accordion}>
-                    <button
-                      type="button"
-                      style={s.accordionHeader}
-                      onClick={() => setSsfAccordionOpen(!ssfAccordionOpen)}
-                    >
-                      <div style={s.accordionLeft}>
-                        <span style={s.accordionBadge}>{comp?.componentId || "SKNC001"}</span>
-                        <span style={s.accordionTitle}>{item.componentNameKo}</span>
+                  <div style={s.lvAccordion}>
+                    {/* L1→L2 hierarchy bar */}
+                    <div style={s.lvHierarchy}>
+                      <LevelBadge level="L1" code="EPC" color="#3e1c96" />
+                      <LevelBadge level="L2" code={comp?.componentId || "TMFC006"} color="#5925dc" active />
+                    </div>
+
+                    {/* Expanded content */}
+                    <div style={s.lvContent}>
+                      <div style={s.lvFieldRow}>
+                        <LabelValue label="Component ID" value={comp?.componentId || "TMFC006"} />
+                        <LabelValue label="Component(한글)" value={item.componentNameKo} />
+                        <LabelValue label="Component명" value={comp?.nameEn || "Service Catalog Management"} />
                       </div>
-                      <AccordionChevron open={ssfAccordionOpen} />
-                    </button>
-                    {ssfAccordionOpen && (
-                      <div style={s.accordionBody}>
-                        <div style={s.accordionRow}>
-                          <span style={s.accordionFieldLabel}>도메인</span>
-                          <span style={s.accordionFieldValue}>{item.domainNameKo}</span>
+                      <div style={s.lvFieldRow}>
+                        <LabelValue label="L2기획리더" value={comp?.planLeader || item.planLeader} />
+                        <LabelValue label="L2설계리더" value={comp?.designLeader || item.designLeader} />
+                      </div>
+                      <LabelValue
+                        label="Component 설명"
+                        value={comp?.description || "서비스 카탈로그 관리 구성 요소는 수행 가능한 모든 서비스 요구 사항을 식별하고 정의하는 서비스 사양 모음을 구성하는 역할을 합니다."}
+                        fullWidth
+                      />
+
+                      {/* 연관 업무(L3) */}
+                      <div style={s.relSection}>
+                        <div style={s.relHeaderRow}>
+                          <span style={{ ...s.fieldLabel, fontSize: 14 }}>연관 업무(L3)</span>
+                          <MiniPagination current={1} total={L3_ITEMS.length} perPage={5} />
                         </div>
-                        <div style={s.accordionRow}>
-                          <span style={s.accordionFieldLabel}>L2기획리더</span>
-                          <span style={s.accordionFieldValue}>{comp?.planLeader || item.planLeader}</span>
-                        </div>
-                        <div style={s.accordionRow}>
-                          <span style={s.accordionFieldLabel}>L2설계리더</span>
-                          <span style={s.accordionFieldValue}>{comp?.designLeader || item.designLeader}</span>
+                        <div style={s.relList}>
+                          {L3_ITEMS.map((l3) => (
+                            <ListItemRow key={l3.id} badge={l3.id} badgeColor="#7a5af8" badgeBg="rgba(122,90,248,0.05)" text={l3.text} />
+                          ))}
                         </div>
                       </div>
-                    )}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
+
+            {/* History Panel */}
+            {historyOpen && (
+              <div style={s.historyPanel}>
+                <div style={s.historyList}>
+                  {HISTORY_DATA.map((h, i) => (
+                    <HistoryItem
+                      key={i}
+                      type={h.type}
+                      typeColor={h.typeColor}
+                      typeBg={h.typeBg}
+                      typeBorderColor={h.typeBorderColor}
+                      user={h.user}
+                      date={h.date}
+                      isFirst={i === 0}
+                      isLast={i === HISTORY_DATA.length - 1}
+                      active={h.active}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
+          {/* BPD 관리 */}
           <div style={s.bpdContainer}>
             <div style={s.bpdInner}>
-              <Button size="m" variant="filled" color="positive">
-                BPD 등록
-              </Button>
-              <div style={{ marginTop: 16 }}>
-                <NoDataArea />
-              </div>
+              <SectionHeader title="BPD 관리" />
+              <NoDataArea />
             </div>
           </div>
         </div>
 
+        {/* Right Column */}
         <div style={s.rightCol}>
           <SectionHeader title="연관 정보" />
-
           <div style={s.rightMain}>
+            {/* 기능(L4) - empty state */}
             <div style={s.relSection}>
               <div style={s.relHeaderRow}>
                 <span style={s.relLabel}>기능(L4)</span>
-                <MiniPagination current={1} total={L4_ITEMS.length} perPage={5} />
+                <MiniPagination current={1} total={0} perPage={5} />
               </div>
-              <div style={s.relList}>
-                {L4_ITEMS.map((item) => (
-                  <div key={item.id} style={s.listItem}>
-                    <div style={s.listItemLeft}>
-                      <span
-                        style={{
-                          ...s.l4Badge,
-                          backgroundColor: item.type === "Composite" ? "#9b8afb" : "#36bffa",
-                        }}
-                      >
-                        {item.type}
-                      </span>
-                      <span style={s.listText}>{item.text}</span>
-                    </div>
-                    <button type="button" style={s.listArrowBtn}>
-                      <ChevronIcon />
-                    </button>
-                  </div>
-                ))}
-              </div>
+              <NoDataArea />
             </div>
 
+            {/* 업무Flow */}
             <div style={s.relSection}>
               <span style={s.relLabel}>업무Flow</span>
               <div style={s.relList}>
                 {FLOW_ITEMS.map((f) => (
-                  <ListItemRow
-                    key={f.id}
-                    badge={f.id}
-                    badgeColor="#12b76a"
-                    badgeBg="rgba(18,183,106,0.05)"
-                    text={f.text}
-                  />
+                  <ListItemRow key={f.id} badge={f.id} badgeColor="#12b76a" badgeBg="rgba(18,183,106,0.05)" text={f.text} />
                 ))}
               </div>
             </div>
 
+            {/* 요구사항 */}
             <div style={s.relSection}>
               <div style={s.relHeaderRow}>
                 <span style={s.relLabel}>요구사항</span>
@@ -342,16 +369,12 @@ export function BusinessDetailView() {
               </div>
               <div style={s.relList}>
                 {REQ_ITEMS.map((r) => (
-                  <ListItemRow
-                    key={r.id}
-                    badge={r.id}
-                    badgeColor="#36bffa"
-                    text={r.text}
-                  />
+                  <ListItemRow key={r.id} badge={r.id} badgeColor="#36bffa" text={r.text} />
                 ))}
               </div>
             </div>
 
+            {/* 연관 과제 */}
             <div style={s.relSection}>
               <div style={s.relHeaderRow}>
                 <span style={s.relLabel}>연관 과제</span>
@@ -359,12 +382,7 @@ export function BusinessDetailView() {
               </div>
               <div style={s.relList}>
                 {PROJECT_ITEMS.map((p) => (
-                  <ListItemRow
-                    key={p.id}
-                    badge={p.id}
-                    badgeColor="#a1a1aa"
-                    text={p.text}
-                  />
+                  <ListItemRow key={p.id} badge={p.id} badgeColor="#a1a1aa" text={p.text} />
                 ))}
               </div>
             </div>
@@ -397,7 +415,7 @@ const s = {
   } satisfies CSSProperties,
   historyWrap: {
     display: "flex",
-    flexDirection: "column",
+    flexDirection: "row",
   } satisfies CSSProperties,
   container: {
     padding: "24px 32px",
@@ -476,72 +494,201 @@ const s = {
     color: "#a1a1aa",
     marginBottom: 4,
   } satisfies CSSProperties,
-  accordion: {
+
+  lvAccordion: {
     border: "1px solid #e4e4e7",
-    borderRadius: 4,
+    borderRadius: 8,
     overflow: "hidden",
     width: "100%",
+    boxShadow: "0px 4px 8px 0px rgba(0,0,0,0.1)",
+    backgroundColor: "#ffffff",
   } satisfies CSSProperties,
-  accordionHeader: {
+  lvHierarchy: {
     display: "flex",
     alignItems: "center",
-    justifyContent: "space-between",
-    width: "100%",
+    padding: 8,
+    gap: 0,
+  } satisfies CSSProperties,
+  lvCard: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 4,
+    alignItems: "flex-start",
+    justifyContent: "center",
     padding: "12px 16px",
-    background: "#fafafa",
-    border: "none",
-    cursor: "pointer",
-    boxSizing: "border-box",
+    borderRadius: 4,
+    backgroundColor: "#ffffff",
+    flexShrink: 0,
   } satisfies CSSProperties,
-  accordionLeft: {
+  lvBadgeWrap: {
+    display: "flex",
+    alignItems: "flex-start",
+  } satisfies CSSProperties,
+  lvBadgeBase: {
     display: "flex",
     alignItems: "center",
-    gap: 8,
+    justifyContent: "center",
+    gap: 2,
+    paddingLeft: 3,
+    paddingRight: 10,
+    paddingTop: 3,
+    paddingBottom: 3,
+    borderRadius: 12,
+    border: "1px solid",
+    backgroundColor: "#ffffff",
   } satisfies CSSProperties,
-  accordionBadge: {
+  lvDot: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: 12,
+    height: 12,
+    borderRadius: 8,
+  } satisfies CSSProperties,
+  lvDotText: {
+    fontFamily: FONT,
+    fontSize: 8,
+    fontWeight: 700,
+    color: "#ffffff",
+    textAlign: "center",
+    lineHeight: "8px",
+  } satisfies CSSProperties,
+  lvBadgeText: {
     fontFamily: FONT,
     fontSize: 10,
     fontWeight: 500,
     lineHeight: "12px",
-    color: "#7a5af8",
-    backgroundColor: "rgba(122,90,248,0.08)",
-    border: "1px solid #7a5af8",
-    borderRadius: 12,
-    padding: "3px 10px",
     whiteSpace: "nowrap",
   } satisfies CSSProperties,
-  accordionTitle: {
+  lvNameRow: {
+    display: "flex",
+    alignItems: "center",
+    gap: 4,
+  } satisfies CSSProperties,
+  lvName: {
+    fontFamily: FONT,
+    fontSize: 16,
+    fontWeight: 400,
+    lineHeight: "24px",
+    color: "#3f3f46",
+    maxWidth: 140,
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+  } satisfies CSSProperties,
+  lvToggleBtn: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    border: "none",
+    background: "transparent",
+    cursor: "pointer",
+    padding: 0,
+  } satisfies CSSProperties,
+
+  lvContent: {
+    borderTop: "1px solid #e4e4e7",
+    display: "flex",
+    flexDirection: "column",
+    gap: 16,
+    padding: "16px 16px 24px",
+  } satisfies CSSProperties,
+  lvFieldRow: {
+    display: "flex",
+    gap: 32,
+    width: "100%",
+  } satisfies CSSProperties,
+
+  historyBtn: {
+    display: "flex",
+    alignItems: "center",
+    gap: 4,
+    border: "none",
+    background: "transparent",
+    cursor: "pointer",
+    padding: "0 4px",
+  } satisfies CSSProperties,
+  historyBtnText: {
     fontFamily: FONT,
     fontSize: 14,
     fontWeight: 500,
     lineHeight: "20px",
-    color: "#3f3f46",
+    color: "#71717a",
   } satisfies CSSProperties,
-  accordionBody: {
-    padding: "12px 16px",
+
+  historyPanel: {
+    width: 190,
+    flexShrink: 0,
+    backgroundColor: "#fafafa",
+    borderLeft: "1px solid #e4e4e7",
+    padding: 24,
+  } satisfies CSSProperties,
+  historyList: {
     display: "flex",
     flexDirection: "column",
-    gap: 8,
-    borderTop: "1px solid #e4e4e7",
   } satisfies CSSProperties,
-  accordionRow: {
+  historyItem: {
     display: "flex",
+    gap: 8,
+    alignItems: "flex-start",
+    minWidth: 142,
+  } satisfies CSSProperties,
+  historyMark: {
+    display: "flex",
+    flexDirection: "column",
     alignItems: "center",
-    gap: 16,
+    alignSelf: "stretch",
+    width: 20,
+    flexShrink: 0,
+    position: "relative",
   } satisfies CSSProperties,
-  accordionFieldLabel: {
+  historyLineTop: {
+    width: 1,
+    height: 6,
+    backgroundColor: "#e4e4e7",
+    flexShrink: 0,
+  } satisfies CSSProperties,
+  historyDot: {
+    width: 8,
+    height: 8,
+    borderRadius: "50%",
+    flexShrink: 0,
+  } satisfies CSSProperties,
+  historyLineBottom: {
+    width: 1,
+    flex: 1,
+    backgroundColor: "#e4e4e7",
+  } satisfies CSSProperties,
+  historyContent: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 4,
+    paddingBottom: 16,
+    minWidth: 100,
+  } satisfies CSSProperties,
+  historyBadge: {
     fontFamily: FONT,
-    fontSize: 12,
+    fontSize: 10,
     fontWeight: 500,
-    lineHeight: "16px",
-    color: "#a1a1aa",
-    minWidth: 70,
+    lineHeight: "12px",
+    border: "1px solid",
+    borderRadius: 12,
+    padding: "3px 10px",
+    alignSelf: "flex-start",
+    whiteSpace: "nowrap",
   } satisfies CSSProperties,
-  accordionFieldValue: {
+  historyUser: {
+    fontFamily: FONT,
+    fontSize: 14,
+    fontWeight: 400,
+    lineHeight: "20px",
+    color: "#3f3f46",
+  } satisfies CSSProperties,
+  historyDate: {
     fontFamily: FONT,
     fontSize: 12,
     fontWeight: 400,
-    lineHeight: "16px",
+    lineHeight: "18px",
     color: "#3f3f46",
   } satisfies CSSProperties,
 
@@ -554,24 +701,7 @@ const s = {
     padding: "24px 32px",
     display: "flex",
     flexDirection: "column",
-  } satisfies CSSProperties,
-
-  historyBtn: {
-    display: "flex",
-    alignItems: "center",
-    gap: 4,
-    border: "none",
-    background: "transparent",
-    cursor: "pointer",
-    padding: "0 4px",
-    borderRadius: 36,
-  } satisfies CSSProperties,
-  historyBtnText: {
-    fontFamily: FONT,
-    fontSize: 14,
-    fontWeight: 500,
-    lineHeight: "20px",
-    color: "#71717a",
+    gap: 16,
   } satisfies CSSProperties,
 
   rightCol: {
@@ -635,17 +765,6 @@ const s = {
     fontWeight: 500,
     lineHeight: "12px",
     border: "1px solid",
-    borderRadius: 12,
-    padding: "3px 10px",
-    whiteSpace: "nowrap",
-    flexShrink: 0,
-  } satisfies CSSProperties,
-  l4Badge: {
-    fontFamily: FONT,
-    fontSize: 10,
-    fontWeight: 500,
-    lineHeight: "12px",
-    color: "#fafafa",
     borderRadius: 12,
     padding: "3px 10px",
     whiteSpace: "nowrap",
