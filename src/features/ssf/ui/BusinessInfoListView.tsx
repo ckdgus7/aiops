@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, type CSSProperties } from "react";
+import { useNavigate } from "react-router";
 import { SelectBox } from "@/shared/ui/SelectBox";
 import { Input } from "@/shared/ui/Input";
 import { Button } from "@/shared/ui/Button";
@@ -747,6 +748,7 @@ const COLUMNS: ColumnDef[] = [
 
 export function BusinessInfoListView() {
   const addTab = useMdiStore((st) => st.addTab);
+  const navigate = useNavigate();
   useEffect(() => {
     addTab({ id: "/ssf/business", label: "업무(L3)정보 관리", path: "/ssf/business" });
   }, [addTab]);
@@ -1051,6 +1053,7 @@ export function BusinessInfoListView() {
                   <tr
                     key={item.no}
                     style={{ cursor: "pointer" }}
+                    onClick={() => navigate(`/ssf/business/${item.businessId}`)}
                   >
                     <td style={s.td}>
                       <div

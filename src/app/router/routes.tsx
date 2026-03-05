@@ -70,6 +70,9 @@ const ComponentInfoPage = lazy(() =>
 const BusinessInfoPage = lazy(() =>
   import('@/pages/ssf/BusinessInfoPage').then(m => ({ default: m.BusinessInfoPage })),
 );
+const BusinessDetailPage = lazy(() =>
+  import('@/pages/ssf/BusinessDetailPage').then(m => ({ default: m.BusinessDetailPage })),
+);
 const FunctionInfoPage = lazy(() =>
   import('@/pages/ssf/FunctionInfoPage').then(m => ({ default: m.FunctionInfoPage })),
 );
@@ -143,6 +146,7 @@ export const routes: RouteObject[] = [
       { path: '/ssf/domain', element: withSuspense(DomainPage) },
       { path: '/ssf/component', element: withSuspense(ComponentInfoPage) },
       { path: '/ssf/business', element: withSuspense(BusinessInfoPage) },
+      { path: '/ssf/business/:id', element: withSuspense(BusinessDetailPage) },
       { path: '/ssf/function', element: withSuspense(FunctionInfoPage) },
       { path: '/ssf/explorer', element: withSuspense(SsfExplorerPage) },
 
