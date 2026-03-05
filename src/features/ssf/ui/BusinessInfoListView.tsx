@@ -736,13 +736,12 @@ const COLUMNS: ColumnDef[] = [
   { key: "_checkbox", label: "", width: 36, align: "center", sortable: false },
   { key: "no", label: "No", width: 46, align: "center" },
   { key: "businessId", label: "업무 ID", width: 140, align: "center" },
-  { key: "nameKo", label: "업무(한글)", width: 100, align: "center" },
-  { key: "nameEn", label: "업무(영문)", width: 130, align: "center" },
+  { key: "nameKo", label: "업무명", width: 115, align: "center" },
   { key: "description", label: "업무 설명", width: "auto", align: "left" },
-  { key: "domainNameKo", label: "도메인(한글)", width: 90, align: "center" },
-  { key: "componentNameKo", label: "컴포넌트(한글)", width: 100, align: "center" },
-  { key: "planLeader", label: "L3기획리더", width: 80, align: "center" },
-  { key: "designLeader", label: "L3설계리더", width: 80, align: "center" },
+  { key: "domainNameKo", label: "컴포넌트(L2) ID", width: 105, align: "center" },
+  { key: "componentNameKo", label: "컴포넌트명", width: 115, align: "center" },
+  { key: "planLeader", label: "L2기획리더", width: 90, align: "center" },
+  { key: "designLeader", label: "L3설계리더", width: 90, align: "center" },
   { key: "useYn", label: "사용여부", width: 80, align: "center" },
 ];
 
@@ -1066,7 +1065,6 @@ export function BusinessInfoListView() {
                     <td style={s.td}>{item.no}</td>
                     <td style={s.td}>{item.businessId}</td>
                     <td style={s.td}>{item.nameKo}</td>
-                    <td style={s.td}>{item.nameEn}</td>
                     <td style={{ ...s.td, ...s.tdLeft }}>{item.description}</td>
                     <td style={s.td}>{item.domainNameKo}</td>
                     <td style={s.td}>{item.componentNameKo}</td>
