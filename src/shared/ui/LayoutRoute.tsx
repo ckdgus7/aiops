@@ -23,7 +23,8 @@ const styles = {
   scrollArea: {
     flex: 1,
     overflow: "auto",
-    background: "#f5f5f5",
+    // background: "#f5f5f5",
+    background: "#ffffff",
     position: "relative",
     display: "flex",
     flexDirection: "column",
@@ -43,12 +44,20 @@ export function LayoutRoute() {
 
   useEffect(() => {
     const path = location.pathname;
-    let bestMatch: { gnbName: string; lnbName: string; pathLen: number } | null = null;
+    let bestMatch: {
+      gnbName: string;
+      lnbName: string;
+      pathLen: number;
+    } | null = null;
     for (const gnb of menuItems) {
       for (const lnb of gnb.lnb) {
         if (path === lnb.path || path.startsWith(lnb.path + "/")) {
           if (!bestMatch || lnb.path.length > bestMatch.pathLen) {
-            bestMatch = { gnbName: gnb.gnbName, lnbName: lnb.name, pathLen: lnb.path.length };
+            bestMatch = {
+              gnbName: gnb.gnbName,
+              lnbName: lnb.name,
+              pathLen: lnb.path.length,
+            };
           }
         }
       }

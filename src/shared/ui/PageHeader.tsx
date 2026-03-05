@@ -9,6 +9,7 @@ const siteHeaderStyle: CSSProperties = {
   fontFamily: "'Pretendard', sans-serif",
   flexShrink: 0,
   zIndex: 10,
+  borderBottom: "1px solid #e4e4e7",
 };
 
 const pageTitleWrapStyle: CSSProperties = {
