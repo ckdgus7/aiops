@@ -257,7 +257,6 @@ const s = {
     width: "100%",
     borderCollapse: "collapse",
     border: "1px solid #e4e4e7",
-    borderRadius: 4,
     overflow: "hidden",
     tableLayout: "fixed",
   } satisfies CSSProperties,
