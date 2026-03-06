@@ -69,9 +69,9 @@ const CATEGORY_OPTIONS = [
 ];
 
 const SEARCH_SCOPE_OPTIONS = [
-  { label: "전체", value: "전체" },
-  { label: "제목", value: "제목" },
-  { label: "작성자", value: "작성자" },
+  { label: "공통", value: "공통" },
+  { label: "서비스", value: "서비스" },
+  { label: "업무", value: "업무" },
 ];
 
 const COLUMNS: { key: NoticeSortKey; label: string; width: number | string; align?: "left" | "center" }[] = [
@@ -137,10 +137,10 @@ export function NoticeListView() {
 
   const [createPopupOpen, setCreatePopupOpen] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState("");
-  const [searchScope, setSearchScope] = useState("전체");
+  const [searchScope, setSearchScope] = useState("");
   const [searchKeywordDraft, setSearchKeywordDraft] = useState("");
   const [appliedKeyword, setAppliedKeyword] = useState("");
-  const [appliedScope, setAppliedScope] = useState("전체");
+  const [appliedScope, setAppliedScope] = useState("");
   const [sortKey, setSortKey] = useState<NoticeSortKey | null>(null);
   const [sortDir, setSortDir] = useState<NoticeSortDir>(null);
   const [page, setPage] = useState(1);
@@ -210,7 +210,7 @@ export function NoticeListView() {
               value={searchScope}
               onChange={setSearchScope}
               options={SEARCH_SCOPE_OPTIONS}
-              placeholder="검색범위"
+              placeholder="전체"
               wrapperStyle={{ width: 140, flexShrink: 0 }}
             />
             <Input
