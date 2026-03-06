@@ -1,11 +1,10 @@
-import { useState } from "react";
 import type { CSSProperties } from "react";
 import { MdiTab } from "./MdiTab";
 import { TopUtil } from "./TopUtil";
-import { MyInfo } from "./MyInfo";
 import { Breadcrumb } from "./Breadcrumb";
 import { PageTitle } from "./PageTitle";
 import { usePageHeaderStore } from "@/shared/model/pageHeader.store";
+import { useMyInfoStore } from "@/shared/model/myInfo.store";
 
 const siteHeaderStyle: CSSProperties = {
   width: "100%",
@@ -41,21 +40,6 @@ const pageTitleInnerStyle: CSSProperties = {
   boxSizing: "border-box",
 };
 
-const MOCK_USER_INFO = {
-  employeeId: "P12345678",
-  name: "김선경",
-  company: "SK텔레콤",
-  department: "BSS Architect팀",
-  email: "skkim@sktelecom.com",
-  phone: "010-1234-5678",
-};
-
-const MOCK_ROLE_GROUPS = [
-  { id: "1", level: "L3" as const, name: "L3 기획 리더", status: "신청" as const, appliedAt: "2025-12-19 10:45" },
-  { id: "2", level: "L3" as const, name: "L3 Application 설계 리더" },
-  { id: "3", level: "L4" as const, name: "L4 Application 설계 리더", status: "승인" as const, appliedAt: "2025-12-19 10:45", approvedAt: "2025-12-19 17:21" },
-];
-
 export function PageHeader() {
   const breadcrumbItems = usePageHeaderStore((s) => s.breadcrumbItems);
   const title = usePageHeaderStore((s) => s.title);
@@ -67,8 +51,7 @@ export function PageHeader() {
   const showRefresh = usePageHeaderStore((s) => s.showRefresh);
   const onRefresh = usePageHeaderStore((s) => s.onRefresh);
 
-  const [myInfoOpen, setMyInfoOpen] = useState(false);
-  const [language, setLanguage] = useState("en");
+  const toggleMyInfo = useMyInfoStore((s) => s.toggle);
 
   return (
     <div style={siteHeaderStyle}>
@@ -77,7 +60,7 @@ export function PageHeader() {
         <TopUtil
           bellNotification
           chatNotification
-          onUserClick={() => setMyInfoOpen((prev) => !prev)}
+          onUserClick={toggleMyInfo}
         />
       </div>
       {title && (
@@ -97,15 +80,6 @@ export function PageHeader() {
           </div>
         </div>
       )}
-      <MyInfo
-        open={myInfoOpen}
-        userInfo={MOCK_USER_INFO}
-        roleGroups={MOCK_ROLE_GROUPS}
-        lastLogin="2025-11-28 15:24"
-        language={language}
-        onClose={() => setMyInfoOpen(false)}
-        onLanguageChange={setLanguage}
-      />
     </div>
   );
 }

@@ -35,22 +35,24 @@ interface MyInfoProps {
 }
 
 const s = {
-  overlay: {
-    position: "fixed",
-    top: 0,
-    right: 0,
-    bottom: 0,
+  wrapper: {
     width: 340,
-    zIndex: 100,
+    minWidth: 340,
+    height: "100%",
+    flexShrink: 0,
     fontFamily: FONT,
+    display: "flex",
+    flexDirection: "column",
+    borderLeft: "1px solid #e4e4e7",
+    background: "#98a2b3",
+    boxSizing: "border-box",
+    overflow: "hidden",
   } satisfies CSSProperties,
   container: {
     display: "flex",
     flexDirection: "column",
     width: "100%",
     height: "100%",
-    background: "#98a2b3",
-    borderLeft: "1px solid #e4e4e7",
     boxSizing: "border-box",
     padding: "24px 24px 32px 24px",
     overflowY: "auto",
@@ -357,7 +359,7 @@ export function MyInfo({
   if (!open) return null;
 
   return (
-    <div style={s.overlay}>
+    <div style={s.wrapper}>
       <div style={s.container}>
         <div style={s.col}>
           <div style={s.header}>
