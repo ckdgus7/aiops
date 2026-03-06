@@ -1,5 +1,6 @@
 import { useState, type CSSProperties } from "react";
 import { TermsPopup } from "@/shared/ui/popup/TermsPopup";
+import { PrivacyPopup } from "@/shared/ui/popup/PrivacyPopup";
 
 const st = {
   footer: {
@@ -59,6 +60,7 @@ const st = {
 
 export function PageFooter() {
   const [termsOpen, setTermsOpen] = useState(false);
+  const [privacyOpen, setPrivacyOpen] = useState(false);
 
   return (
     <>
@@ -71,11 +73,12 @@ export function PageFooter() {
           </div>
           <div style={st.right}>
             <span style={st.link} onClick={() => setTermsOpen(true)}>서비스 이용약관</span>
-            <span style={st.linkBold}>개인정보처리방침</span>
+            <span style={st.linkBold} onClick={() => setPrivacyOpen(true)}>개인정보처리방침</span>
           </div>
         </div>
       </footer>
       <TermsPopup open={termsOpen} onClose={() => setTermsOpen(false)} />
+      <PrivacyPopup open={privacyOpen} onClose={() => setPrivacyOpen(false)} />
     </>
   );
 }
