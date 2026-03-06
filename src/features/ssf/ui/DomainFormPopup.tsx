@@ -139,11 +139,7 @@ export function DomainFormPopup({ open, onClose, onSave, onDelete, mode, initial
   };
 
   const handleClose = () => {
-    if (mode === "create") {
-      setCloseAlertOpen(true);
-    } else {
-      onClose();
-    }
+    setCloseAlertOpen(true);
   };
 
   const handleCloseConfirm = () => {
@@ -273,7 +269,7 @@ export function DomainFormPopup({ open, onClose, onSave, onDelete, mode, initial
         open={closeAlertOpen}
         onClose={() => setCloseAlertOpen(false)}
         type="warning"
-        message="입력한 값을 초기화하고 창을 닫습니다."
+        message={mode === "create" ? "입력한 값을 초기화하고 창을 닫습니다." : "변경된 사항을 저장하지 않고 창을 닫습니다."}
         confirmLabel="확인"
         cancelLabel="취소"
         showCancel
