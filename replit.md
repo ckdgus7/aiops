@@ -190,6 +190,7 @@ src/
 * When constructing a screen, use shared/ui/styles.ts for styling, and if a style does not exist, add it and import it for use.
 * When modifying a screen, do not make any changes to other domains unless explicitly requested.
 * Please conduct a code review and verify that the build completes successfully, and check for any errors.
+* When components in the shared/ui/global, shared/ui/service, or shared/ui/popup folders are changed, modified, or deleted, make the same changes, modifications, or deletions in the corresponding stories as well.
 
 
 ---
