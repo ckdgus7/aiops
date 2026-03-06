@@ -47,9 +47,9 @@ function DeleteIcon() {
 }
 
 const CATEGORY_OPTIONS = [
-  { label: "공지", value: "공지" },
-  { label: "필독공지", value: "필독공지" },
-  { label: "일반", value: "일반" },
+  { label: "공통", value: "공통" },
+  { label: "업무", value: "업무" },
+  { label: "서비스", value: "서비스" },
 ];
 
 const POST_TYPE_OPTIONS = [
@@ -62,7 +62,7 @@ interface UploadedFile {
 }
 
 export function NoticeCreatePopup({ open, onClose }: NoticeCreatePopupProps) {
-  const [category, setCategory] = useState("공지");
+  const [category, setCategory] = useState("공통");
   const [title, setTitle] = useState("");
   const [author] = useState("Admin");
   const [postType, setPostType] = useState("즉시");
@@ -135,7 +135,7 @@ export function NoticeCreatePopup({ open, onClose }: NoticeCreatePopupProps) {
   };
 
   const handleReset = () => {
-    setCategory("공지");
+    setCategory("공통");
     setTitle("");
     setPostType("즉시");
     setContent("");

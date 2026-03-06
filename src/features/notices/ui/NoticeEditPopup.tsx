@@ -49,9 +49,9 @@ function DeleteIcon() {
 }
 
 const CATEGORY_OPTIONS = [
-  { label: "공지", value: "공지" },
-  { label: "필독공지", value: "필독공지" },
-  { label: "일반", value: "일반" },
+  { label: "공통", value: "공통" },
+  { label: "업무", value: "업무" },
+  { label: "서비스", value: "서비스" },
 ];
 
 const POST_TYPE_OPTIONS = [
@@ -65,12 +65,11 @@ interface EditFile {
 }
 
 function mapCategoryToRadio(notice: NoticeDetail): string {
-  if (notice.category === "공지" && notice.isPinned) return "필독공지";
   return notice.category;
 }
 
 export function NoticeEditPopup({ open, onClose, notice }: NoticeEditPopupProps) {
-  const [category, setCategory] = useState("공지");
+  const [category, setCategory] = useState("공통");
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("Admin");
   const [postType, setPostType] = useState("즉시");

@@ -27,17 +27,24 @@ function BackIcon() {
 }
 
 function getCategoryBadgeStyle(category: string): CSSProperties {
-  if (category === "공지") {
+  if (category === "공통") {
     return {
       backgroundColor: "#fafaff",
       border: "1px solid #7a5af8",
       color: "#7a5af8",
     };
   }
+  if (category === "업무") {
+    return {
+      backgroundColor: "#eff8ff",
+      border: "1px solid #2e90fa",
+      color: "#2e90fa",
+    };
+  }
   return {
-    backgroundColor: "#fafafa",
-    border: "1px solid #a1a1aa",
-    color: "#a1a1aa",
+    backgroundColor: "#f0fdf4",
+    border: "1px solid #16a34a",
+    color: "#16a34a",
   };
 }
 
@@ -113,7 +120,7 @@ export function NoticeDetailView() {
               <span style={detailStyles.metaValue}>{notice.author}</span>
             </div>
             <div style={detailStyles.metaItem}>
-              <span style={detailStyles.metaLabel}>등록일</span>
+              <span style={detailStyles.metaLabel}>게시일</span>
               <span style={detailStyles.metaValue}>{notice.createdAt}</span>
             </div>
             <div style={detailStyles.metaItem}>
@@ -132,7 +139,7 @@ export function NoticeDetailView() {
               color: "#18181b",
               padding: "4px 0",
             }}>
-              {notice.isPinned && (
+              {notice.isNew && (
                 <span style={{
                   display: "inline-flex",
                   alignItems: "center",
@@ -148,7 +155,7 @@ export function NoticeDetailView() {
                   lineHeight: "16px",
                   marginRight: 8,
                   verticalAlign: "middle",
-                }}>필독</span>
+                }}>NEW</span>
               )}
               {notice.title}
             </div>

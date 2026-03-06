@@ -27,7 +27,7 @@ const keys = {
 
 function filterAndSort(params: NoticeListParams): NoticeListResponse {
   const {
-    category = "전체",
+    category = "",
     searchScope = "전체",
     keyword = "",
     page = 1,
@@ -38,7 +38,7 @@ function filterAndSort(params: NoticeListParams): NoticeListResponse {
 
   let filtered = [...NOTICE_MOCK_DATA];
 
-  if (category && category !== "전체") {
+  if (category) {
     filtered = filtered.filter((item) => item.category === category);
   }
 
@@ -78,7 +78,7 @@ function filterAndSort(params: NoticeListParams): NoticeListResponse {
 
 export function useNoticesQuery(params: NoticeListParams) {
   const normalized: NoticeListParams = {
-    category: params.category ?? "전체",
+    category: params.category ?? "",
     searchScope: params.searchScope ?? "전체",
     keyword: params.keyword ?? "",
     page: params.page ?? 1,

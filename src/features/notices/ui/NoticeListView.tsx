@@ -63,9 +63,9 @@ function DownloadIcon() {
 }
 
 const CATEGORY_OPTIONS = [
-  { label: "전체", value: "전체" },
-  { label: "공지", value: "공지" },
-  { label: "일반", value: "일반" },
+  { label: "공통", value: "공통" },
+  { label: "업무", value: "업무" },
+  { label: "서비스", value: "서비스" },
 ];
 
 const SEARCH_SCOPE_OPTIONS = [
@@ -79,9 +79,7 @@ const COLUMNS: { key: NoticeSortKey; label: string; width: number | string; alig
   { key: "category", label: "분류", width: 120, align: "center" },
   { key: "title", label: "제목", width: "auto", align: "left" },
   { key: "author", label: "작성자", width: 120, align: "center" },
-  { key: "createdAt", label: "등록일", width: 180, align: "center" },
-  { key: "updatedAt", label: "수정일", width: 180, align: "center" },
-  { key: "attachments", label: "첨부", width: 80, align: "center" },
+  { key: "createdAt", label: "게시일", width: 180, align: "center" },
   { key: "views", label: "조회수", width: 100, align: "center" },
 ];
 
@@ -118,18 +116,18 @@ const s = {
     whiteSpace: "nowrap",
     flexShrink: 0,
   } satisfies CSSProperties,
-  pinnedBadge: {
+  newBadge: {
     display: "inline-flex",
     alignItems: "center",
     justifyContent: "center",
-    padding: "2px 8px",
+    padding: "2px 6px",
     borderRadius: 4,
     backgroundColor: "#fef3f2",
     border: "1px solid #f04438",
     color: "#f04438",
     fontFamily: FONT,
-    fontSize: 12,
-    fontWeight: 500,
+    fontSize: 11,
+    fontWeight: 700,
     lineHeight: "16px",
     whiteSpace: "nowrap",
     flexShrink: 0,
@@ -144,17 +142,24 @@ const s = {
 };
 
 function getCategoryBadgeStyle(category: string): CSSProperties {
-  if (category === "공지") {
+  if (category === "공통") {
     return {
       backgroundColor: "#fafaff",
       border: "1px solid #7a5af8",
       color: "#7a5af8",
     };
   }
+  if (category === "업무") {
+    return {
+      backgroundColor: "#eff8ff",
+      border: "1px solid #2e90fa",
+      color: "#2e90fa",
+    };
+  }
   return {
-    backgroundColor: "#fafafa",
-    border: "1px solid #a1a1aa",
-    color: "#a1a1aa",
+    backgroundColor: "#f0fdf4",
+    border: "1px solid #16a34a",
+    color: "#16a34a",
   };
 }
 
@@ -166,7 +171,7 @@ export function NoticeListView() {
   }, [addTab]);
 
   const [createPopupOpen, setCreatePopupOpen] = useState(false);
-  const [categoryFilter, setCategoryFilter] = useState("전체");
+  const [categoryFilter, setCategoryFilter] = useState("");
   const [searchScope, setSearchScope] = useState("전체");
   const [searchKeywordDraft, setSearchKeywordDraft] = useState("");
   const [appliedKeyword, setAppliedKeyword] = useState("");
@@ -231,7 +236,7 @@ export function NoticeListView() {
               value={categoryFilter}
               onChange={(v) => { setCategoryFilter(v); setPage(1); }}
               options={CATEGORY_OPTIONS}
-              placeholder="분류"
+              placeholder="구분"
               wrapperStyle={{ width: 140 }}
             />
           </div>
@@ -391,16 +396,14 @@ export function NoticeListView() {
                       </td>
                       <td style={{ ...listStyles.td, ...listStyles.tdLeft }}>
                         <div style={s.titleRow}>
-                          {item.isPinned && (
-                            <span style={s.pinnedBadge}>필독</span>
+                          {item.isNew && (
+                            <span style={s.newBadge}>NEW</span>
                           )}
                           <span style={s.titleText}>{item.title}</span>
                         </div>
                       </td>
                       <td style={listStyles.td}>{item.author}</td>
                       <td style={listStyles.td}>{item.createdAt}</td>
-                      <td style={listStyles.td}>{item.updatedAt}</td>
-                      <td style={listStyles.td}>{item.attachments > 0 ? item.attachments : "-"}</td>
                       <td style={listStyles.td}>{item.views}</td>
                     </tr>
                   ))
