@@ -1,9 +1,9 @@
 import { useState, useEffect, type CSSProperties } from "react";
 import { useParams, useNavigate } from "react-router";
-import { Button } from "@/shared/ui/Button";
+import { Button } from "@/shared/ui/global/Button";
 import { usePageHeader } from "@/shared/hooks/usePageHeader";
-import { AlertModal } from "@/shared/ui/AlertModal";
-import { Snackbar } from "@/shared/ui/Snackbar";
+import { AlertModal } from "@/shared/ui/global/AlertModal";
+import { Snackbar } from "@/shared/ui/global/Snackbar";
 import { useMdiStore } from "@/shared/model/mdi.store";
 import { useNoticeDetailQuery } from "@/features/notices/api/notices.queries";
 import { NoticeEditPopup } from "@/features/notices/ui/NoticeEditPopup";

@@ -1,10 +1,10 @@
 import { useState, useEffect, type CSSProperties } from "react";
 import { useParams, useNavigate } from "react-router";
-import { Button } from "@/shared/ui/Button";
+import { Button } from "@/shared/ui/global/Button";
 import { usePageHeader } from "@/shared/hooks/usePageHeader";
 import { TiptapEditor } from "@/shared/ui/TiptapEditor";
-import { AlertModal } from "@/shared/ui/AlertModal";
-import { Snackbar } from "@/shared/ui/Snackbar";
+import { AlertModal } from "@/shared/ui/global/AlertModal";
+import { Snackbar } from "@/shared/ui/global/Snackbar";
 import { useMdiStore } from "@/shared/model/mdi.store";
 import { useQnADetailQuery } from "@/features/qna/api/qna.queries";
 import type { QnAComment } from "@/features/qna/model/types";

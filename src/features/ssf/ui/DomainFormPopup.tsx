@@ -1,8 +1,8 @@
 import { useState, useEffect, type CSSProperties } from "react";
-import { Button } from "@/shared/ui/Button";
-import { Input } from "@/shared/ui/Input";
-import { Textarea } from "@/shared/ui/Textarea";
-import { RadioGroup } from "@/shared/ui/RadioGroup";
+import { Button } from "@/shared/ui/global/Button";
+import { Input } from "@/shared/ui/global/Input";
+import { Textarea } from "@/shared/ui/global/Textarea";
+import { RadioGroup } from "@/shared/ui/global/RadioGroup";
 import type { DomainItem } from "@/features/ssf/model/types";
 import { FONT, popupStyles } from "@/shared/ui/styles";
 

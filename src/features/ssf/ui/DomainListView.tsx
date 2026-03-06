@@ -1,7 +1,7 @@
 import { useState, useEffect, type CSSProperties } from "react";
-import { ChooseButton } from "@/shared/ui/ChooseButton";
-import { Input } from "@/shared/ui/Input";
-import { Button } from "@/shared/ui/Button";
+import { ChooseButton } from "@/shared/ui/global/ChooseButton";
+import { Input } from "@/shared/ui/global/Input";
+import { Button } from "@/shared/ui/global/Button";
 import { useMdiStore } from "@/shared/model/mdi.store";
 import { usePageHeader } from "@/shared/hooks/usePageHeader";
 import type { SortKey, SortDir, DomainItem } from "@/features/ssf/model/types";

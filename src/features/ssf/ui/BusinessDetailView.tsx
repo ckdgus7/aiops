@@ -8,8 +8,8 @@ import {
 } from "@/features/ssf/model/mock-data";
 import { BpmnViewer } from "@/shared/ui/service/BpmnViewer";
 import { TiptapEditor } from "@/shared/ui/TiptapEditor";
-import { RadioGroup } from "@/shared/ui/RadioGroup";
-import { Button } from "@/shared/ui/Button";
+import { RadioGroup } from "@/shared/ui/global/RadioGroup";
+import { Button } from "@/shared/ui/global/Button";
 
 const FONT = "'Pretendard', sans-serif";
 

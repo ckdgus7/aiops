@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback } from "react";
-import { RadioGroup } from "@/shared/ui/RadioGroup";
-import { Input } from "@/shared/ui/Input";
-import { Button } from "@/shared/ui/Button";
+import { RadioGroup } from "@/shared/ui/global/RadioGroup";
+import { Input } from "@/shared/ui/global/Input";
+import { Button } from "@/shared/ui/global/Button";
 import { TiptapEditor } from "@/shared/ui/TiptapEditor";
 import { popupStyles as ps } from "@/shared/ui/styles";
 

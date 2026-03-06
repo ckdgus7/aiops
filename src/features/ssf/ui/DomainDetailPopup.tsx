@@ -1,5 +1,5 @@
 import { type CSSProperties } from "react";
-import { Button } from "@/shared/ui/Button";
+import { Button } from "@/shared/ui/global/Button";
 import type { DomainItem } from "@/features/ssf/model/types";
 import { FONT, popupStyles } from "@/shared/ui/styles";
 

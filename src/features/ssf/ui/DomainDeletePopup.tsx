@@ -1,7 +1,7 @@
 import { useState, useEffect, type CSSProperties } from "react";
-import { Button } from "@/shared/ui/Button";
-import { Textarea } from "@/shared/ui/Textarea";
-import { AlertModal } from "@/shared/ui/AlertModal";
+import { Button } from "@/shared/ui/global/Button";
+import { Textarea } from "@/shared/ui/global/Textarea";
+import { AlertModal } from "@/shared/ui/global/AlertModal";
 import { FONT, popupStyles } from "@/shared/ui/styles";
 
 interface DomainDeletePopupProps {

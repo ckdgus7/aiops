@@ -1,9 +1,9 @@
 import { useState, useEffect, useMemo, type CSSProperties } from "react";
-import { ChooseButton } from "@/shared/ui/ChooseButton";
-import { SelectBox } from "@/shared/ui/SelectBox";
-import { Input } from "@/shared/ui/Input";
-import { Button } from "@/shared/ui/Button";
-import { Snackbar } from "@/shared/ui/Snackbar";
+import { ChooseButton } from "@/shared/ui/global/ChooseButton";
+import { SelectBox } from "@/shared/ui/global/SelectBox";
+import { Input } from "@/shared/ui/global/Input";
+import { Button } from "@/shared/ui/global/Button";
+import { Snackbar } from "@/shared/ui/global/Snackbar";
 import { useMdiStore } from "@/shared/model/mdi.store";
 import { usePageHeader } from "@/shared/hooks/usePageHeader";
 import type { ComponentSortKey, SortDir, ComponentItem } from "@/features/ssf/model/types";

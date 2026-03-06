@@ -1,8 +1,8 @@
 import { useState, useEffect, type CSSProperties } from "react";
 import { useNavigate } from "react-router";
-import { SelectBox } from "@/shared/ui/SelectBox";
-import { Input } from "@/shared/ui/Input";
-import { Button } from "@/shared/ui/Button";
+import { SelectBox } from "@/shared/ui/global/SelectBox";
+import { Input } from "@/shared/ui/global/Input";
+import { Button } from "@/shared/ui/global/Button";
 import { useMdiStore } from "@/shared/model/mdi.store";
 import { usePageHeader } from "@/shared/hooks/usePageHeader";
 import { useNoticesQuery } from "@/features/notices/api/notices.queries";

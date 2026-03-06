@@ -1,8 +1,8 @@
 import { useState, useEffect, type CSSProperties } from "react";
-import { Button } from "@/shared/ui/Button";
-import { Input } from "@/shared/ui/Input";
-import { SelectBox } from "@/shared/ui/SelectBox";
-import { RadioGroup } from "@/shared/ui/RadioGroup";
+import { Button } from "@/shared/ui/global/Button";
+import { Input } from "@/shared/ui/global/Input";
+import { SelectBox } from "@/shared/ui/global/SelectBox";
+import { RadioGroup } from "@/shared/ui/global/RadioGroup";
 import { TiptapEditor } from "@/shared/ui/TiptapEditor";
 import { DOMAIN_MOCK_DATA } from "@/features/ssf/model/mock-data";
 import { FONT, popupStyles } from "@/shared/ui/styles";
