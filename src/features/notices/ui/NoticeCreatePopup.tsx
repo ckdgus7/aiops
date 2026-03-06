@@ -2,6 +2,7 @@ import { useState } from "react";
 import { RadioGroup } from "@/shared/ui/global/RadioGroup";
 import { Input } from "@/shared/ui/global/Input";
 import { Button } from "@/shared/ui/global/Button";
+import { DatePicker } from "@/shared/ui/global/DatePicker";
 import { FileUpload } from "@/shared/ui/global/FileUpload";
 import { TiptapEditor } from "@/shared/ui/service/TiptapEditor";
 import { popupStyles as ps } from "@/shared/ui/styles";
@@ -22,12 +23,8 @@ function CloseIcon() {
 
 const CATEGORY_OPTIONS = [
   { label: "공통", value: "공통" },
-  { label: "업무", value: "업무" },
   { label: "서비스", value: "서비스" },
-];
-
-const POST_TYPE_OPTIONS = [
-  { label: "즉시", value: "즉시" },
+  { label: "업무", value: "업무" },
 ];
 
 interface UploadedFile {
@@ -38,10 +35,10 @@ interface UploadedFile {
 export function NoticeCreatePopup({ open, onClose }: NoticeCreatePopupProps) {
   const [category, setCategory] = useState("공통");
   const [title, setTitle] = useState("");
-  const [author] = useState("Admin");
-  const [postType, setPostType] = useState("즉시");
+  const [publishDate, setPublishDate] = useState("");
   const [content, setContent] = useState("");
   const [files, setFiles] = useState<UploadedFile[]>([]);
+  const [pinnedFiles, setPinnedFiles] = useState<UploadedFile[]>([]);
 
   if (!open) return null;
 
@@ -52,9 +49,10 @@ export function NoticeCreatePopup({ open, onClose }: NoticeCreatePopupProps) {
   const handleReset = () => {
     setCategory("공통");
     setTitle("");
-    setPostType("즉시");
+    setPublishDate("");
     setContent("");
     setFiles([]);
+    setPinnedFiles([]);
     onClose();
   };
 
@@ -78,7 +76,7 @@ export function NoticeCreatePopup({ open, onClose }: NoticeCreatePopupProps) {
           <div style={ps.formSection}>
             <div style={ps.fieldGroup}>
               <div style={ps.fieldLabel}>
-                <span style={ps.labelText}>분류</span>
+                <span style={ps.labelText}>공지유형</span>
                 <span style={ps.requiredDot} />
               </div>
               <RadioGroup
@@ -93,7 +91,7 @@ export function NoticeCreatePopup({ open, onClose }: NoticeCreatePopupProps) {
             <div style={ps.fieldRow}>
               <div style={{ flex: 540, minWidth: 0 }}>
                 <Input
-                  label="제목"
+                  label="제목명"
                   required
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
@@ -102,25 +100,22 @@ export function NoticeCreatePopup({ open, onClose }: NoticeCreatePopupProps) {
                 />
               </div>
               <div style={{ flex: 244, minWidth: 0 }}>
-                <Input
-                  label="작성자"
-                  value={author}
-                  readOnly
+                <DatePicker
+                  label="게시일"
+                  required
+                  value={publishDate}
+                  onChange={setPublishDate}
                 />
               </div>
             </div>
 
             <div style={ps.fieldGroup}>
               <div style={ps.fieldLabel}>
-                <span style={ps.labelText}>게시</span>
-                <span style={ps.requiredDot} />
+                <span style={ps.labelText}>상단고정</span>
               </div>
-              <RadioGroup
-                value={postType}
-                onChange={setPostType}
-                options={POST_TYPE_OPTIONS}
-                size="m"
-                gap={16}
+              <FileUpload
+                value={pinnedFiles}
+                onChange={setPinnedFiles}
               />
             </div>
 
