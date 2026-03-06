@@ -3,6 +3,7 @@ import { Button } from "@/shared/ui/global/Button";
 import { Input } from "@/shared/ui/global/Input";
 import { Textarea } from "@/shared/ui/global/Textarea";
 import { RadioGroup } from "@/shared/ui/global/RadioGroup";
+import { AlertModal } from "@/shared/ui/global/AlertModal";
 import type { DomainItem } from "@/features/ssf/model/types";
 import { FONT, popupStyles } from "@/shared/ui/styles";
 
@@ -114,6 +115,7 @@ export function DomainFormPopup({ open, onClose, onSave, onDelete, mode, initial
   const [nameEn, setNameEn] = useState("");
   const [description, setDescription] = useState("");
   const [useYn, setUseYn] = useState("사용");
+  const [closeAlertOpen, setCloseAlertOpen] = useState(false);
 
   useEffect(() => {
     if (open && initialData) {
@@ -137,6 +139,15 @@ export function DomainFormPopup({ open, onClose, onSave, onDelete, mode, initial
   };
 
   const handleClose = () => {
+    if (mode === "create") {
+      setCloseAlertOpen(true);
+    } else {
+      onClose();
+    }
+  };
+
+  const handleCloseConfirm = () => {
+    setCloseAlertOpen(false);
     onClose();
   };
 
@@ -258,6 +269,17 @@ export function DomainFormPopup({ open, onClose, onSave, onDelete, mode, initial
           </div>
         </div>
       </div>
+      <AlertModal
+        open={closeAlertOpen}
+        onClose={() => setCloseAlertOpen(false)}
+        type="warning"
+        message="입력한 값을 초기화하고 창을 닫습니다."
+        confirmLabel="확인"
+        cancelLabel="취소"
+        showCancel
+        onConfirm={handleCloseConfirm}
+        onCancel={() => setCloseAlertOpen(false)}
+      />
     </div>
   );
 }
