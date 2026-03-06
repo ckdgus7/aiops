@@ -7,7 +7,7 @@ import {
   COMPONENT_MOCK_DATA,
 } from "@/features/ssf/model/mock-data";
 import { BpmnViewer } from "@/shared/ui/service/BpmnViewer";
-import { TiptapEditor } from "@/shared/ui/TiptapEditor";
+import { TiptapEditor } from "@/shared/ui/service/TiptapEditor";
 import { RadioGroup } from "@/shared/ui/global/RadioGroup";
 import { Button } from "@/shared/ui/global/Button";
 

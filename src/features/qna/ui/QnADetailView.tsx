@@ -2,7 +2,7 @@ import { useState, useEffect, type CSSProperties } from "react";
 import { useParams, useNavigate } from "react-router";
 import { Button } from "@/shared/ui/global/Button";
 import { usePageHeader } from "@/shared/hooks/usePageHeader";
-import { TiptapEditor } from "@/shared/ui/TiptapEditor";
+import { TiptapEditor } from "@/shared/ui/service/TiptapEditor";
 import { AlertModal } from "@/shared/ui/global/AlertModal";
 import { Snackbar } from "@/shared/ui/global/Snackbar";
 import { useMdiStore } from "@/shared/model/mdi.store";

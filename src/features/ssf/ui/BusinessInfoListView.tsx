@@ -3,7 +3,7 @@ import { useNavigate } from "react-router";
 import { SelectBox } from "@/shared/ui/global/SelectBox";
 import { Input } from "@/shared/ui/global/Input";
 import { Button } from "@/shared/ui/global/Button";
-import { TiptapEditor } from "@/shared/ui/TiptapEditor";
+import { TiptapEditor } from "@/shared/ui/service/TiptapEditor";
 import { useMdiStore } from "@/shared/model/mdi.store";
 import { usePageHeader } from "@/shared/hooks/usePageHeader";
 import type { BusinessSortKey, SortDir, BusinessItem } from "@/features/ssf/model/types";

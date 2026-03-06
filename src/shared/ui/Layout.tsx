@@ -1,5 +1,5 @@
 import type { CSSProperties, ReactNode } from "react";
-import { LNB } from "./LNB";
+import { LNB } from "./service/LNB";
 
 const styles = {
   container: {

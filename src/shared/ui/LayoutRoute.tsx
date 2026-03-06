@@ -1,9 +1,9 @@
 import { Outlet, useLocation } from "react-router";
 import { useEffect, useState } from "react";
 import type { CSSProperties } from "react";
-import { LNB } from "./LNB";
-import { PageHeader } from "./PageHeader";
-import { PageFooter } from "./PageFooter";
+import { LNB } from "./service/LNB";
+import { PageHeader } from "./service/PageHeader";
+import { PageFooter } from "./service/PageFooter";
 import { useMenuStore } from "@/shared/model/menu.store";
 
 const styles = {

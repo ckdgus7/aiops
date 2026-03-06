@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { RadioGroup } from "@/shared/ui/global/RadioGroup";
 import { Input } from "@/shared/ui/global/Input";
 import { Button } from "@/shared/ui/global/Button";
-import { TiptapEditor } from "@/shared/ui/TiptapEditor";
+import { TiptapEditor } from "@/shared/ui/service/TiptapEditor";
 import type { QnADetail } from "@/features/qna/model/types";
 import { popupStyles as ps } from "@/shared/ui/styles";
 
