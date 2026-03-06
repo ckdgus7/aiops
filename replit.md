@@ -102,6 +102,9 @@ All other pages are blank placeholder pages using the shared `BlankPage` compone
 - When composing screens, import and use the common components (such as Button, Input, Datepicker, SelectBox, RadioGroup, Checkbox, TiptapEditor, etc.) that are defined in `shared/ui/global`.
 - **All styles use inline CSSProperties** (no CSS files, no Tailwind). Pretendard font family.
 
+### Popup Components (`src/shared/ui/popup/`)
+- **ReasonPopup** (`src/shared/ui/popup/ReasonPopup.tsx`): Common reason-input popup for approval/rejection/deletion workflows. Props: `open`, `title` (popup title text), `onCancel` (cancel/close handler), `onConfirm` (receives reason string), `cancelLabel` (default "닫기"), `confirmLabel` (default "승인"), `placeholder`, `label` (textarea label, defaults to `${title}사유`), `maxLength` (default 300). Layout: 880px width popup with header (title + close X), main (Textarea with char indicator), footer (cancel outlined button + confirm filled positive button). Uses popupStyles from shared styles.
+
 ### Service Components (`src/shared/ui/service/`)
 - **BpmnViewer** (`src/shared/ui/service/BpmnViewer.tsx`): BPMN 2.0 diagram viewer using `bpmn-js` NavigatedViewer (mouse drag + zoom). Props: `xml` (BPMN XML string), `onLoading`, `onError`, `onImport` (warnings callback), `onElementClick` (element click handler), `fitOnImport` (default true), `width`/`height`/`style`/`className`. Built-in toolbar: zoom in/out, fit viewport, reset 1:1. Inline styles, border 1px solid #e4e7ec, borderRadius 8px.
 
