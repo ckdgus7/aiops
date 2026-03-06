@@ -25,7 +25,7 @@ vite.config.ts  - Vite configuration
 - **Preview**: `.storybook/preview.ts` (centered layout, light/grey/dark backgrounds)
 - **Stories location**: Co-located with components as `*.stories.tsx` files
 - **Component library coverage**:
-  - `src/shared/ui/global/` — Button, Input, Checkbox, Toggle, RadioGroup, SelectBox, Textarea, DatePicker, ChooseButton, AlertModal, Snackbar (11 components)
+  - `src/shared/ui/global/` — Button, Input, Checkbox, Toggle, RadioGroup, SelectBox, Textarea, DatePicker, ChooseButton, AlertModal, Snackbar, FileUpload (12 components)
   - `src/shared/ui/service/` — Breadcrumb, PageTitle, PageFooter, BlankPage, MdiTab, TiptapEditor, BpmnViewer (7 components)
   - `src/shared/ui/popup/` — ReasonPopup, TermsPopup, PrivacyPopup (3 components)
 
