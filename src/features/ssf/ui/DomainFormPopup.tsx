@@ -27,8 +27,18 @@ export interface DomainFormData {
 function CloseIcon() {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-      <path d="M6 6L18 18" stroke="#71717a" strokeWidth="1.5" strokeLinecap="round" />
-      <path d="M18 6L6 18" stroke="#71717a" strokeWidth="1.5" strokeLinecap="round" />
+      <path
+        d="M6 6L18 18"
+        stroke="#71717a"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+      <path
+        d="M18 6L6 18"
+        stroke="#71717a"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
     </svg>
   );
 }
@@ -109,7 +119,14 @@ const TITLE_MAP = {
   edit: "도메인(L1) 수정",
 };
 
-export function DomainFormPopup({ open, onClose, onSave, onDelete, mode, initialData }: DomainFormPopupProps) {
+export function DomainFormPopup({
+  open,
+  onClose,
+  onSave,
+  onDelete,
+  mode,
+  initialData,
+}: DomainFormPopupProps) {
   const [abbr, setAbbr] = useState("");
   const [nameKo, setNameKo] = useState("");
   const [nameEn, setNameEn] = useState("");
@@ -133,8 +150,20 @@ export function DomainFormPopup({ open, onClose, onSave, onDelete, mode, initial
     }
   }, [open, initialData]);
 
+  const save = () => {
+    const data: DomainFormData = {
+      abbr,
+      nameKo,
+      nameEn,
+      description,
+      useYn,
+    };
+    onSave?.(data);
+  }
   const handleSave = () => {
-    onSave?.({ abbr, nameKo, nameEn, description, useYn });
+    if (mode === 'create') {
+      
+    }
     onClose();
   };
 
@@ -243,22 +272,14 @@ export function DomainFormPopup({ open, onClose, onSave, onDelete, mode, initial
             </Button>
           </div>
           <div style={s.footerRight}>
-            {mode === "edit" && onDelete && (
-              <Button
-                size="l"
-                variant="filled"
-                color="negative"
-                onClick={() => { onClose(); onDelete(); }}
-              >
-                삭제
-              </Button>
-            )}
             <Button
               size="l"
               variant="filled"
               color="positive"
               onClick={handleSave}
-              style={mode === "edit" && onDelete ? { marginLeft: 8 } : undefined}
+              style={
+                mode === "edit" && onDelete ? { marginLeft: 8 } : undefined
+              }
             >
               저장
             </Button>
@@ -269,7 +290,11 @@ export function DomainFormPopup({ open, onClose, onSave, onDelete, mode, initial
         open={closeAlertOpen}
         onClose={() => setCloseAlertOpen(false)}
         type="warning"
-        message={mode === "create" ? "입력한 값을 초기화하고 창을 닫습니다." : "변경된 사항을 저장하지 않고 창을 닫습니다."}
+        message={
+          mode === "create"
+            ? "입력한 값을 초기화하고 창을 닫습니다."
+            : "변경된 사항을 저장하지 않고 창을 닫습니다."
+        }
         confirmLabel="확인"
         cancelLabel="취소"
         showCancel

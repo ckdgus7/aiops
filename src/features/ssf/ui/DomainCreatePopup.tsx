@@ -9,9 +9,12 @@ interface DomainCreatePopupProps {
   onSave?: (data: DomainFormData) => void;
 }
 
-export function DomainCreatePopup({ open, onClose, onSave }: DomainCreatePopupProps) {
-  const [snackbarOpen, setSnackbarOpen] = useState(false);
-
+export function DomainCreatePopup({
+  open,
+  onClose,
+  onSave,
+}: DomainCreatePopupProps) {
+  const [snackbarOpen, setSnackbarOpen] = useState(true);
   const handleSave = (data: DomainFormData) => {
     onSave?.(data);
     setSnackbarOpen(true);

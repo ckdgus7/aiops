@@ -6,6 +6,7 @@ import { useMdiStore } from "@/shared/model/mdi.store";
 import { usePageHeader } from "@/shared/hooks/usePageHeader";
 import type { SortKey, SortDir, DomainItem } from "@/features/ssf/model/types";
 import { DOMAIN_MOCK_DATA } from "@/features/ssf/model/mock-data";
+import { DomainCreatePopup } from "@/features/ssf/ui/DomainCreatePopup";
 import { DomainFormPopup } from "@/features/ssf/ui/DomainFormPopup";
 import { DomainDeletePopup } from "@/features/ssf/ui/DomainDeletePopup";
 import { DomainDetailPopup } from "@/features/ssf/ui/DomainDetailPopup";
@@ -98,8 +99,8 @@ export function DomainListView() {
   const [sortDir, setSortDir] = useState<SortDir>(null);
   const [page, setPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [createPopupOpen, setCreatePopupOpen] = useState(false);
   const [popupOpen, setPopupOpen] = useState(false);
-  const [popupMode, setPopupMode] = useState<"create" | "edit">("create");
   const [editTarget, setEditTarget] = useState<DomainItem | null>(null);
   const [deletePopupOpen, setDeletePopupOpen] = useState(false);
   const [detailPopupOpen, setDetailPopupOpen] = useState(false);
@@ -273,7 +274,7 @@ export function DomainListView() {
                 size="m"
                 variant="filled"
                 color="positive"
-                onClick={() => { setPopupMode("create"); setEditTarget(null); setPopupOpen(true); }}
+                onClick={() => { setCreatePopupOpen(true); }}
               >
                 등록
               </Button>
@@ -341,7 +342,6 @@ export function DomainListView() {
         onClose={() => setDetailPopupOpen(false)}
         data={detailTarget}
         onEdit={() => {
-          setPopupMode("edit");
           setEditTarget(detailTarget);
           setPopupOpen(true);
         }}
@@ -349,10 +349,14 @@ export function DomainListView() {
           setDeletePopupOpen(true);
         }}
       />
+      <DomainCreatePopup
+        open={createPopupOpen}
+        onClose={() => setCreatePopupOpen(false)}
+      />
       <DomainFormPopup
         open={popupOpen}
         onClose={() => setPopupOpen(false)}
-        mode={popupMode}
+        mode="edit"
         initialData={editTarget}
         onDelete={() => setDeletePopupOpen(true)}
       />
