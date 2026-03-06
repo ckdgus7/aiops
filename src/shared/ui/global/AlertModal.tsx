@@ -1,4 +1,9 @@
-import { type CSSProperties, type ReactNode, type ReactElement, useEffect } from "react";
+import {
+  type CSSProperties,
+  type ReactNode,
+  type ReactElement,
+  useEffect,
+} from "react";
 import { Button } from "./Button";
 
 type AlertType = "info" | "success" | "warning" | "error";
@@ -20,8 +25,23 @@ const FONT_FAMILY = "'Pretendard', sans-serif";
 function InfoIcon() {
   return (
     <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
-      <circle cx="26" cy="26" r="18" stroke="#7a5af8" strokeWidth="2.5" fill="none" />
-      <line x1="26" y1="22" x2="26" y2="36" stroke="#7a5af8" strokeWidth="2.5" strokeLinecap="round" />
+      <circle
+        cx="26"
+        cy="26"
+        r="18"
+        stroke="#7a5af8"
+        strokeWidth="2.5"
+        fill="none"
+      />
+      <line
+        x1="26"
+        y1="22"
+        x2="26"
+        y2="36"
+        stroke="#7a5af8"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+      />
       <circle cx="26" cy="17" r="1.5" fill="#7a5af8" />
     </svg>
   );
@@ -30,8 +50,21 @@ function InfoIcon() {
 function SuccessIcon() {
   return (
     <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
-      <circle cx="26" cy="26" r="18" stroke="#1ac057" strokeWidth="2.5" fill="none" />
-      <path d="M18 26L23 31L34 20" stroke="#1ac057" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+      <circle
+        cx="26"
+        cy="26"
+        r="18"
+        stroke="#1ac057"
+        strokeWidth="2.5"
+        fill="none"
+      />
+      <path
+        d="M18 26L23 31L34 20"
+        stroke="#1ac057"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }
@@ -39,8 +72,22 @@ function SuccessIcon() {
 function WarningIcon() {
   return (
     <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
-      <path d="M26 8L46 44H6L26 8Z" stroke="#f79009" strokeWidth="2.5" strokeLinejoin="round" fill="none" />
-      <line x1="26" y1="22" x2="26" y2="33" stroke="#f79009" strokeWidth="2.5" strokeLinecap="round" />
+      <path
+        d="M26 8L46 44H6L26 8Z"
+        stroke="#f79009"
+        strokeWidth="2.5"
+        strokeLinejoin="round"
+        fill="none"
+      />
+      <line
+        x1="26"
+        y1="22"
+        x2="26"
+        y2="33"
+        stroke="#f79009"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+      />
       <circle cx="26" cy="38" r="1.5" fill="#f79009" />
     </svg>
   );
@@ -49,9 +96,32 @@ function WarningIcon() {
 function ErrorIcon() {
   return (
     <svg width="52" height="52" viewBox="0 0 52 52" fill="none">
-      <circle cx="26" cy="26" r="18" stroke="#f04438" strokeWidth="2.5" fill="none" />
-      <line x1="20" y1="20" x2="32" y2="32" stroke="#f04438" strokeWidth="2.5" strokeLinecap="round" />
-      <line x1="32" y1="20" x2="20" y2="32" stroke="#f04438" strokeWidth="2.5" strokeLinecap="round" />
+      <circle
+        cx="26"
+        cy="26"
+        r="18"
+        stroke="#f04438"
+        strokeWidth="2.5"
+        fill="none"
+      />
+      <line
+        x1="20"
+        y1="20"
+        x2="32"
+        y2="32"
+        stroke="#f04438"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+      />
+      <line
+        x1="32"
+        y1="20"
+        x2="20"
+        y2="32"
+        stroke="#f04438"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+      />
     </svg>
   );
 }
@@ -59,8 +129,18 @@ function ErrorIcon() {
 function CloseIcon() {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-      <path d="M8 8L16 16" stroke="#71717a" strokeWidth="1.5" strokeLinecap="round" />
-      <path d="M16 8L8 16" stroke="#71717a" strokeWidth="1.5" strokeLinecap="round" />
+      <path
+        d="M8 8L16 16"
+        stroke="#71717a"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+      <path
+        d="M16 8L8 16"
+        stroke="#71717a"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
     </svg>
   );
 }
@@ -202,9 +282,7 @@ export function AlertModal({
             <Icon />
           </div>
 
-          <div style={messageStyle}>
-            {message}
-          </div>
+          <div style={messageStyle}>{message}</div>
 
           <div style={buttonRowStyle}>
             {showCancel && (
@@ -220,7 +298,7 @@ export function AlertModal({
             <Button
               size="l"
               variant={showCancel ? "filled" : "outlined"}
-              color={showCancel ? "negative" : "info"}
+              color={showCancel ? "positive" : "info"}
               onClick={handleConfirm}
             >
               {resolvedConfirmLabel}
