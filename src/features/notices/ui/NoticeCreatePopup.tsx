@@ -2,6 +2,7 @@ import { useState } from "react";
 import { RadioGroup } from "@/shared/ui/global/RadioGroup";
 import { Input } from "@/shared/ui/global/Input";
 import { Button } from "@/shared/ui/global/Button";
+import { Checkbox } from "@/shared/ui/global/Checkbox";
 import { DatePicker } from "@/shared/ui/global/DatePicker";
 import { FileUpload } from "@/shared/ui/global/FileUpload";
 import { TiptapEditor } from "@/shared/ui/service/TiptapEditor";
@@ -38,7 +39,7 @@ export function NoticeCreatePopup({ open, onClose }: NoticeCreatePopupProps) {
   const [publishDate, setPublishDate] = useState("");
   const [content, setContent] = useState("");
   const [files, setFiles] = useState<UploadedFile[]>([]);
-  const [pinnedFiles, setPinnedFiles] = useState<UploadedFile[]>([]);
+  const [pinned, setPinned] = useState(false);
 
   if (!open) return null;
 
@@ -52,7 +53,7 @@ export function NoticeCreatePopup({ open, onClose }: NoticeCreatePopupProps) {
     setPublishDate("");
     setContent("");
     setFiles([]);
-    setPinnedFiles([]);
+    setPinned(false);
     onClose();
   };
 
@@ -113,9 +114,10 @@ export function NoticeCreatePopup({ open, onClose }: NoticeCreatePopupProps) {
               <div style={ps.fieldLabel}>
                 <span style={ps.labelText}>상단고정</span>
               </div>
-              <FileUpload
-                value={pinnedFiles}
-                onChange={setPinnedFiles}
+              <Checkbox
+                checked={pinned}
+                onChange={setPinned}
+                label="상단에 고정합니다."
               />
             </div>
 
