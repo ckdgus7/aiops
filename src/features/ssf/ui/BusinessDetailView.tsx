@@ -10,8 +10,7 @@ import { BpmnViewer } from "@/shared/ui/service/BpmnViewer";
 import { TiptapEditor } from "@/shared/ui/service/TiptapEditor";
 import { RadioGroup } from "@/shared/ui/global/RadioGroup";
 import { Button } from "@/shared/ui/global/Button";
-
-const FONT = "'Pretendard', sans-serif";
+import { FONT } from "@/shared/ui/styles";
 
 function ChevronIcon() {
   return (
