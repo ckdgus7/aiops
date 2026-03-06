@@ -76,7 +76,7 @@ const SEARCH_SCOPE_OPTIONS = [
 
 const COLUMNS: { key: NoticeSortKey; label: string; width: number | string; align?: "left" | "center" }[] = [
   { key: "no", label: "번호", width: 80, align: "center" },
-  { key: "category", label: "분류", width: 120, align: "center" },
+  { key: "category", label: "구분", width: 120, align: "center" },
   { key: "title", label: "제목", width: "auto", align: "left" },
   { key: "author", label: "작성자", width: 120, align: "center" },
   { key: "createdAt", label: "게시일", width: 180, align: "center" },
@@ -103,19 +103,6 @@ const s = {
     alignItems: "center",
     gap: 4,
   } satisfies CSSProperties,
-  categoryBadge: {
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: "2px 8px",
-    borderRadius: 4,
-    fontFamily: FONT,
-    fontSize: 12,
-    fontWeight: 500,
-    lineHeight: "16px",
-    whiteSpace: "nowrap",
-    flexShrink: 0,
-  } satisfies CSSProperties,
   newBadge: {
     display: "inline-flex",
     alignItems: "center",
@@ -140,28 +127,6 @@ const s = {
     color: "black",
   } satisfies CSSProperties,
 };
-
-function getCategoryBadgeStyle(category: string): CSSProperties {
-  if (category === "공통") {
-    return {
-      backgroundColor: "#fafaff",
-      border: "1px solid #7a5af8",
-      color: "#7a5af8",
-    };
-  }
-  if (category === "업무") {
-    return {
-      backgroundColor: "#eff8ff",
-      border: "1px solid #2e90fa",
-      color: "#2e90fa",
-    };
-  }
-  return {
-    backgroundColor: "#f0fdf4",
-    border: "1px solid #16a34a",
-    color: "#16a34a",
-  };
-}
 
 export function NoticeListView() {
   const addTab = useMdiStore((st) => st.addTab);
@@ -390,9 +355,7 @@ export function NoticeListView() {
                     <tr key={item.no} style={{ cursor: "pointer" }} onClick={() => navigate(`/notices/${item.no}`)}>
                       <td style={listStyles.td}>{item.no}</td>
                       <td style={listStyles.td}>
-                        <span style={{ ...s.categoryBadge, ...getCategoryBadgeStyle(item.category) }}>
-                          {item.category}
-                        </span>
+                        {item.category}
                       </td>
                       <td style={{ ...listStyles.td, ...listStyles.tdLeft }}>
                         <div style={s.titleRow}>
