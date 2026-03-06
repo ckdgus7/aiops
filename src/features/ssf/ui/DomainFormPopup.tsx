@@ -150,20 +150,8 @@ export function DomainFormPopup({
     }
   }, [open, initialData]);
 
-  const save = () => {
-    const data: DomainFormData = {
-      abbr,
-      nameKo,
-      nameEn,
-      description,
-      useYn,
-    };
-    onSave?.(data);
-  }
   const handleSave = () => {
-    if (mode === 'create') {
-      
-    }
+    onSave?.({ abbr, nameKo, nameEn, description, useYn });
     onClose();
   };
 
