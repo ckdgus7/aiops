@@ -5,6 +5,7 @@ import { Breadcrumb } from "./Breadcrumb";
 import { PageTitle } from "./PageTitle";
 import { usePageHeaderStore } from "@/shared/model/pageHeader.store";
 import { useMyInfoStore } from "@/shared/model/myInfo.store";
+import { useMyNotificationStore } from "@/shared/model/myNotification.store";
 
 const siteHeaderStyle: CSSProperties = {
   width: "100%",
@@ -51,7 +52,23 @@ export function PageHeader() {
   const showRefresh = usePageHeaderStore((s) => s.showRefresh);
   const onRefresh = usePageHeaderStore((s) => s.onRefresh);
 
+  const myInfoIsOpen = useMyInfoStore((s) => s.isOpen);
   const toggleMyInfo = useMyInfoStore((s) => s.toggle);
+  const closeMyInfo = useMyInfoStore((s) => s.close);
+
+  const notifIsOpen = useMyNotificationStore((s) => s.isOpen);
+  const toggleNotif = useMyNotificationStore((s) => s.toggle);
+  const closeNotif = useMyNotificationStore((s) => s.close);
+
+  const handleUserClick = () => {
+    if (notifIsOpen) closeNotif();
+    toggleMyInfo();
+  };
+
+  const handleBellClick = () => {
+    if (myInfoIsOpen) closeMyInfo();
+    toggleNotif();
+  };
 
   return (
     <div style={siteHeaderStyle}>
@@ -60,7 +77,8 @@ export function PageHeader() {
         <TopUtil
           bellNotification
           chatNotification
-          onUserClick={toggleMyInfo}
+          onUserClick={handleUserClick}
+          onBellClick={handleBellClick}
         />
       </div>
       {title && (
