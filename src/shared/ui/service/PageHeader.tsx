@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import { MdiTab } from "./MdiTab";
+import { TopUtil } from "./TopUtil";
 import { Breadcrumb } from "./Breadcrumb";
 import { PageTitle } from "./PageTitle";
 import { usePageHeaderStore } from "@/shared/model/pageHeader.store";
@@ -10,6 +11,15 @@ const siteHeaderStyle: CSSProperties = {
   flexShrink: 0,
   zIndex: 10,
   borderBottom: "1px solid #e4e4e7",
+};
+
+const topBarStyle: CSSProperties = {
+  display: "flex",
+  alignItems: "center",
+  width: "100%",
+  background: "#fafafa",
+  borderBottom: "1px solid #e4e4e7",
+  boxSizing: "border-box",
 };
 
 const pageTitleWrapStyle: CSSProperties = {
@@ -42,7 +52,10 @@ export function PageHeader() {
 
   return (
     <div style={siteHeaderStyle}>
-      <MdiTab />
+      <div style={topBarStyle}>
+        <MdiTab />
+        <TopUtil bellNotification chatNotification />
+      </div>
       {title && (
         <div style={pageTitleWrapStyle}>
           <div style={pageTitleInnerStyle}>
