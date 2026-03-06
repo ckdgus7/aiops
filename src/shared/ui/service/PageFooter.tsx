@@ -1,4 +1,5 @@
-import type { CSSProperties } from "react";
+import { useState, type CSSProperties } from "react";
+import { TermsPopup } from "@/shared/ui/popup/TermsPopup";
 
 const st = {
   footer: {
@@ -57,19 +58,24 @@ const st = {
 };
 
 export function PageFooter() {
+  const [termsOpen, setTermsOpen] = useState(false);
+
   return (
-    <footer style={st.footer}>
-      <div style={st.row}>
-        <div style={st.left}>
-          <span style={st.copyright}>
-            COPYRIGHT © SKT NOVA AI DevOps. ALL RIGHTS RESERVED.
-          </span>
+    <>
+      <footer style={st.footer}>
+        <div style={st.row}>
+          <div style={st.left}>
+            <span style={st.copyright}>
+              COPYRIGHT © SKT NOVA AI DevOps. ALL RIGHTS RESERVED.
+            </span>
+          </div>
+          <div style={st.right}>
+            <span style={st.link} onClick={() => setTermsOpen(true)}>서비스 이용약관</span>
+            <span style={st.linkBold}>개인정보처리방침</span>
+          </div>
         </div>
-        <div style={st.right}>
-          <span style={st.link}>서비스 이용약관</span>
-          <span style={st.linkBold}>개인정보처리방침</span>
-        </div>
-      </div>
-    </footer>
+      </footer>
+      <TermsPopup open={termsOpen} onClose={() => setTermsOpen(false)} />
+    </>
   );
 }
