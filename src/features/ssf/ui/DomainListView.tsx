@@ -164,6 +164,16 @@ export function DomainListView() {
     breadcrumbItems: [{ label: "SSF관리" }, { label: "도메인(L1)정보 관리" }],
     title: "도메인(L1)정보 관리",
     favoriteKey: "도메인(L1)정보 관리",
+    actions: (
+      <Button
+        size="m"
+        variant="filled"
+        color="positive"
+        onClick={() => { setCreatePopupOpen(true); }}
+      >
+        도메인(L1) 신규 등록
+      </Button>
+    ),
   });
 
   return (
@@ -270,14 +280,6 @@ export function DomainListView() {
               <button style={listStyles.downloadBtn} title="다운로드">
                 <DownloadIcon />
               </button>
-              <Button
-                size="m"
-                variant="filled"
-                color="positive"
-                onClick={() => { setCreatePopupOpen(true); }}
-              >
-                등록
-              </Button>
             </div>
           </div>
 
