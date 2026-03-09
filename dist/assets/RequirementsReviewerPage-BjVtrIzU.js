@@ -1,0 +1,1 @@
+import{j as e}from"./index-4vKZSMnB.js";import{B as r}from"./BlankPage-ChR68buW.js";import"./usePageHeader-CmoGXkei.js";function n(){return e.jsx(r,{title:"요구사항 검토자 배정",gnbName:"요구관리",path:"/requirements/reviewer"})}export{n as RequirementsReviewerPage};

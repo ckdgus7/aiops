@@ -10,6 +10,15 @@ const sampleOptions = [
   { label: "기타", value: "etc" },
 ];
 
+const projectOptions = [
+  { label: "TC-CT-001 통신사 고객 서비스 개선", value: "tc-ct-001" },
+  { label: "TC-CT-002 네트워크 품질 모니터링", value: "tc-ct-002" },
+  { label: "TC-CT-003 데이터 분석 플랫폼 구축", value: "tc-ct-003" },
+  { label: "TC-CT-004 고객 문의 응대 시스템 개선", value: "tc-ct-004" },
+  { label: "TC-CT-005 보안 인프라 강화 프로젝트", value: "tc-ct-005" },
+  { label: "TC-CT-006 클라우드 마이그레이션", value: "tc-ct-006" },
+];
+
 const meta: Meta<typeof SelectBox> = {
   title: "Global/SelectBox",
   component: SelectBox,
@@ -28,7 +37,7 @@ const meta: Meta<typeof SelectBox> = {
   },
   decorators: [
     (Story) => (
-      <div style={{ width: 360, minHeight: 400 }}>
+      <div style={{ width: 480, minHeight: 400 }}>
         <Story />
       </div>
     ),
@@ -88,7 +97,53 @@ export const MultiSelect: Story = {
 
 export const MultiSelectSearchable: Story = {
   render: () => {
-    const [val, setVal] = useState<string[]>(["service"]);
-    return <SelectBox value={val} onChange={setVal} options={sampleOptions} multiple searchable label="검색 복수 선택" />;
+    const [val, setVal] = useState<string[]>(["tc-ct-001"]);
+    return (
+      <SelectBox
+        value={val}
+        onChange={setVal}
+        options={projectOptions}
+        multiple
+        searchable
+        searchHighlight
+        label="과제 선택"
+        required
+        placeholder="과제를 검색하세요"
+      />
+    );
+  },
+};
+
+export const MultiSelectWithSelectAll: Story = {
+  render: () => {
+    const [val, setVal] = useState<string[]>([]);
+    return (
+      <SelectBox
+        value={val}
+        onChange={setVal}
+        options={sampleOptions}
+        multiple
+        selectAllLabel="전체 선택"
+        label="전체 선택 가능"
+        placeholder="선택하세요"
+      />
+    );
+  },
+};
+
+export const MultiSelectMaxSelections: Story = {
+  render: () => {
+    const [val, setVal] = useState<string[]>([]);
+    return (
+      <SelectBox
+        value={val}
+        onChange={setVal}
+        options={sampleOptions}
+        multiple
+        maxSelections={3}
+        label="최대 3개 선택"
+        placeholder="최대 3개까지 선택 가능"
+      />
+    );
   },
 };

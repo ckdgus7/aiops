@@ -2,7 +2,9 @@ import { useState, useRef, useCallback } from "react";
 import { RadioGroup } from "@/shared/ui/global/RadioGroup";
 import { Input } from "@/shared/ui/global/Input";
 import { Button } from "@/shared/ui/global/Button";
-import { TiptapEditor } from "@/shared/ui/service/TiptapEditor";
+import { ToastEditor } from "@/shared/ui/service/ToastEditor";
+import { AlertModal } from "@/shared/ui/global/AlertModal";
+import { Snackbar } from "@/shared/ui/global/Snackbar";
 import { popupStyles as ps } from "@/shared/ui/styles";
 
 interface QnACreatePopupProps {
@@ -47,9 +49,9 @@ function DeleteIcon() {
 }
 
 const CATEGORY_OPTIONS = [
-  { label: "공지", value: "공지" },
-  { label: "이용문의", value: "이용문의" },
-  { label: "기술", value: "기술" },
+  { label: "계정", value: "계정" },
+  { label: "이용방법", value: "이용방법" },
+  { label: "기타문의", value: "기타문의" },
 ];
 
 interface UploadedFile {
@@ -58,11 +60,13 @@ interface UploadedFile {
 }
 
 export function QnACreatePopup({ open, onClose }: QnACreatePopupProps) {
-  const [category, setCategory] = useState("이용문의");
+  const [category, setCategory] = useState("계정");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [files, setFiles] = useState<UploadedFile[]>([]);
   const [isDragging, setIsDragging] = useState(false);
+  const [closeAlertOpen, setCloseAlertOpen] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dragCounterRef = useRef(0);
 
@@ -129,10 +133,25 @@ export function QnACreatePopup({ open, onClose }: QnACreatePopupProps) {
   };
 
   const handleReset = () => {
-    setCategory("이용문의");
+    setCategory("계정");
     setTitle("");
     setContent("");
     setFiles([]);
+  };
+
+  const handleCloseClick = () => {
+    setCloseAlertOpen(true);
+  };
+
+  const handleCloseConfirm = () => {
+    setCloseAlertOpen(false);
+    handleReset();
+    onClose();
+  };
+
+  const handleSave = () => {
+    handleReset();
+    setSnackbarOpen(true);
     onClose();
   };
 
@@ -142,7 +161,7 @@ export function QnACreatePopup({ open, onClose }: QnACreatePopupProps) {
         <div style={ps.header}>
           <div style={ps.titleRow}>
             <span style={ps.titleText}>Q&A 등록</span>
-            <button style={ps.closeBtn} onClick={onClose}>
+            <button style={ps.closeBtn} onClick={handleCloseClick}>
               <CloseIcon />
             </button>
           </div>
@@ -156,7 +175,7 @@ export function QnACreatePopup({ open, onClose }: QnACreatePopupProps) {
           <div style={ps.formSection}>
             <div style={ps.fieldGroup}>
               <div style={ps.fieldLabel}>
-                <span style={ps.labelText}>분류</span>
+                <span style={ps.labelText}>구분</span>
                 <span style={ps.requiredDot} />
               </div>
               <RadioGroup
@@ -170,7 +189,7 @@ export function QnACreatePopup({ open, onClose }: QnACreatePopupProps) {
 
             <div style={ps.fieldGroup}>
               <Input
-                label="제목"
+                label="제목명"
                 required
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
@@ -184,10 +203,10 @@ export function QnACreatePopup({ open, onClose }: QnACreatePopupProps) {
                 <span style={ps.labelText}>내용</span>
                 <span style={ps.requiredDot} />
               </div>
-              <TiptapEditor
+              <ToastEditor
                 value={content}
                 onChange={setContent}
-                placeholder="내용을 입력하세요."
+                placeholder="문의하실 내용을 입력하세요."
                 minHeight={300}
               />
             </div>
@@ -249,9 +268,9 @@ export function QnACreatePopup({ open, onClose }: QnACreatePopupProps) {
               size="l"
               variant="outlined"
               color="info"
-              onClick={handleReset}
+              onClick={handleCloseClick}
             >
-              취소
+              닫기
             </Button>
           </div>
           <div style={ps.footerRight}>
@@ -259,12 +278,32 @@ export function QnACreatePopup({ open, onClose }: QnACreatePopupProps) {
               size="l"
               variant="filled"
               color="positive"
+              onClick={handleSave}
             >
-              등록
+              저장
             </Button>
           </div>
         </div>
+
+        <AlertModal
+          open={closeAlertOpen}
+          onClose={() => setCloseAlertOpen(false)}
+          type="warning"
+          message="변경된 사항을 저장하지 않고 창을 닫습니다."
+          showCancel
+          cancelLabel="취소"
+          confirmLabel="확인"
+          onCancel={() => setCloseAlertOpen(false)}
+          onConfirm={handleCloseConfirm}
+        />
       </div>
+
+      <Snackbar
+        open={snackbarOpen}
+        onClose={() => setSnackbarOpen(false)}
+        type="success"
+        message="저장 되었습니다."
+      />
     </div>
   );
 }

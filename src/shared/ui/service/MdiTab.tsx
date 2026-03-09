@@ -8,10 +8,10 @@ const styles = {
   wrapper: {
     display: "flex",
     alignItems: "center",
-    width: "100%",
+    flex: 1,
+    minWidth: 0,
     height: 36,
     background: "#fafafa",
-    borderBottom: "1px solid #e4e4e7",
     fontFamily: "'Pretendard', sans-serif",
     boxSizing: "border-box",
   } satisfies CSSProperties,

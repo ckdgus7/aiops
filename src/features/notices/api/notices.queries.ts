@@ -27,8 +27,8 @@ const keys = {
 
 function filterAndSort(params: NoticeListParams): NoticeListResponse {
   const {
-    category = "전체",
-    searchScope = "전체",
+    category = "",
+    searchScope = "",
     keyword = "",
     page = 1,
     pageSize = 10,
@@ -38,20 +38,20 @@ function filterAndSort(params: NoticeListParams): NoticeListResponse {
 
   let filtered = [...NOTICE_MOCK_DATA];
 
-  if (category && category !== "전체") {
+  if (category) {
     filtered = filtered.filter((item) => item.category === category);
+  }
+
+  if (searchScope) {
+    filtered = filtered.filter((item) => item.category === searchScope);
   }
 
   if (keyword) {
     const kw = keyword.toLowerCase();
-    filtered = filtered.filter((item) => {
-      if (searchScope === "제목") return item.title.toLowerCase().includes(kw);
-      if (searchScope === "작성자") return item.author.toLowerCase().includes(kw);
-      return (
-        item.title.toLowerCase().includes(kw) ||
-        item.author.toLowerCase().includes(kw)
-      );
-    });
+    filtered = filtered.filter((item) =>
+      item.title.toLowerCase().includes(kw) ||
+      item.author.toLowerCase().includes(kw)
+    );
   }
 
   if (sortKey && sortDir) {
@@ -78,8 +78,8 @@ function filterAndSort(params: NoticeListParams): NoticeListResponse {
 
 export function useNoticesQuery(params: NoticeListParams) {
   const normalized: NoticeListParams = {
-    category: params.category ?? "전체",
-    searchScope: params.searchScope ?? "전체",
+    category: params.category ?? "",
+    searchScope: params.searchScope ?? "",
     keyword: params.keyword ?? "",
     page: params.page ?? 1,
     pageSize: params.pageSize ?? 10,

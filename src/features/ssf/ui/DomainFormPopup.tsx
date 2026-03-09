@@ -1,8 +1,9 @@
 import { useState, useEffect, type CSSProperties } from "react";
 import { Button } from "@/shared/ui/global/Button";
 import { Input } from "@/shared/ui/global/Input";
-import { Textarea } from "@/shared/ui/global/Textarea";
 import { RadioGroup } from "@/shared/ui/global/RadioGroup";
+import { AlertModal } from "@/shared/ui/global/AlertModal";
+import { ToastEditor } from "@/shared/ui/service/ToastEditor";
 import type { DomainItem } from "@/features/ssf/model/types";
 import { FONT, popupStyles } from "@/shared/ui/styles";
 
@@ -26,8 +27,18 @@ export interface DomainFormData {
 function CloseIcon() {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-      <path d="M6 6L18 18" stroke="#71717a" strokeWidth="1.5" strokeLinecap="round" />
-      <path d="M18 6L6 18" stroke="#71717a" strokeWidth="1.5" strokeLinecap="round" />
+      <path
+        d="M6 6L18 18"
+        stroke="#71717a"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+      <path
+        d="M18 6L6 18"
+        stroke="#71717a"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
     </svg>
   );
 }
@@ -108,12 +119,20 @@ const TITLE_MAP = {
   edit: "도메인(L1) 수정",
 };
 
-export function DomainFormPopup({ open, onClose, onSave, onDelete, mode, initialData }: DomainFormPopupProps) {
+export function DomainFormPopup({
+  open,
+  onClose,
+  onSave,
+  onDelete,
+  mode,
+  initialData,
+}: DomainFormPopupProps) {
   const [abbr, setAbbr] = useState("");
   const [nameKo, setNameKo] = useState("");
   const [nameEn, setNameEn] = useState("");
   const [description, setDescription] = useState("");
   const [useYn, setUseYn] = useState("사용");
+  const [closeAlertOpen, setCloseAlertOpen] = useState(false);
 
   useEffect(() => {
     if (open && initialData) {
@@ -137,6 +156,11 @@ export function DomainFormPopup({ open, onClose, onSave, onDelete, mode, initial
   };
 
   const handleClose = () => {
+    setCloseAlertOpen(true);
+  };
+
+  const handleCloseConfirm = () => {
+    setCloseAlertOpen(false);
     onClose();
   };
 
@@ -194,17 +218,22 @@ export function DomainFormPopup({ open, onClose, onSave, onDelete, mode, initial
             />
           </div>
 
-          <Textarea
-            label="도메인(L1) 설명"
-            required
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="설명을 입력하세요."
-            maxLength={500}
-            indicator
-            wrapperStyle={{ minHeight: 400 }}
-            style={{ minHeight: 350 }}
-          />
+          <div style={s.fieldRow}>
+            <div style={s.labelRow}>
+              <span style={s.label}>도메인(L1) 설명</span>
+              <div style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: "#36bffa", flexShrink: 0 }} />
+            </div>
+            <ToastEditor
+              value={description}
+              onChange={setDescription}
+              placeholder="설명을 입력하세요."
+              minHeight={400}
+              maxLength={500}
+            />
+            <div style={{ fontFamily: FONT, fontSize: 12, fontWeight: 400, lineHeight: "16px", color: "#a1a1aa", textAlign: "right" as const, marginTop: 4 }}>
+              {description.replace(/<[^>]*>/g, "").length}/500
+            </div>
+          </div>
 
           <div style={s.fieldRow}>
             <div style={s.labelRow}>
@@ -236,28 +265,35 @@ export function DomainFormPopup({ open, onClose, onSave, onDelete, mode, initial
             </Button>
           </div>
           <div style={s.footerRight}>
-            {mode === "edit" && onDelete && (
-              <Button
-                size="l"
-                variant="filled"
-                color="negative"
-                onClick={() => { onClose(); onDelete(); }}
-              >
-                삭제
-              </Button>
-            )}
             <Button
               size="l"
               variant="filled"
               color="positive"
               onClick={handleSave}
-              style={mode === "edit" && onDelete ? { marginLeft: 8 } : undefined}
+              style={
+                mode === "edit" && onDelete ? { marginLeft: 8 } : undefined
+              }
             >
               저장
             </Button>
           </div>
         </div>
       </div>
+      <AlertModal
+        open={closeAlertOpen}
+        onClose={() => setCloseAlertOpen(false)}
+        type="warning"
+        message={
+          mode === "create"
+            ? "입력한 값을 초기화하고 창을 닫습니다."
+            : "변경된 사항을 저장하지 않고 창을 닫습니다."
+        }
+        confirmLabel="확인"
+        cancelLabel="취소"
+        showCancel
+        onConfirm={handleCloseConfirm}
+        onCancel={() => setCloseAlertOpen(false)}
+      />
     </div>
   );
 }

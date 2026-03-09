@@ -72,24 +72,24 @@ function ReplyIcon() {
 }
 
 const CATEGORY_OPTIONS = [
-  { label: "전체", value: "전체" },
-  { label: "이용문의", value: "이용문의" },
-  { label: "기술", value: "기술" },
+  { label: "공통", value: "공통" },
+  { label: "업무", value: "업무" },
+  { label: "서비스", value: "서비스" },
 ];
 
 const SEARCH_SCOPE_OPTIONS = [
-  { label: "전체", value: "전체" },
-  { label: "제목", value: "제목" },
-  { label: "작성자", value: "작성자" },
+  { label: "계정", value: "계정" },
+  { label: "이용방법", value: "이용방법" },
+  { label: "기타문의", value: "기타문의" },
 ];
 
 const COLUMNS: { key: QnASortKey; label: string; width: number | string; align?: "left" | "center"; sortable?: boolean }[] = [
   { key: "no", label: "번호", width: 80, align: "center" },
-  { key: "category", label: "분류", width: 160, align: "center" },
+  { key: "category", label: "구분", width: 160, align: "center" },
   { key: "title", label: "제목", width: "auto", align: "left", sortable: false },
   { key: "author", label: "작성자", width: 120, align: "center" },
-  { key: "createdAt", label: "등록일", width: 200, align: "center" },
-  { key: "status", label: "상태", width: 140, align: "center" },
+  { key: "createdAt", label: "작성일시", width: 200, align: "center" },
+  { key: "status", label: "처리상태", width: 140, align: "center" },
 ];
 
 const s = {
@@ -137,15 +137,15 @@ const s = {
 function getStatusBadgeStyle(status: string): CSSProperties {
   if (status === "답변완료") {
     return {
-      backgroundColor: "#f0fdf4",
+      backgroundColor: "#ecfdf3",
       border: "1px solid #1ac057",
       color: "#1ac057",
     };
   }
   return {
-    backgroundColor: "#fefce8",
-    border: "1px solid #f79009",
-    color: "#f79009",
+    backgroundColor: "#f4f3ff",
+    border: "1px solid #7a5af8",
+    color: "#7a5af8",
   };
 }
 
@@ -157,11 +157,11 @@ export function QnAListView() {
   }, [addTab]);
 
   const [createPopupOpen, setCreatePopupOpen] = useState(false);
-  const [categoryFilter, setCategoryFilter] = useState("전체");
-  const [searchScope, setSearchScope] = useState("전체");
+  const [categoryFilter, setCategoryFilter] = useState("");
+  const [searchScope, setSearchScope] = useState("");
   const [searchKeywordDraft, setSearchKeywordDraft] = useState("");
   const [appliedKeyword, setAppliedKeyword] = useState("");
-  const [appliedScope, setAppliedScope] = useState("전체");
+  const [appliedScope, setAppliedScope] = useState("");
   const [sortKey, setSortKey] = useState<QnASortKey | null>(null);
   const [sortDir, setSortDir] = useState<QnASortDir>(null);
   const [page, setPage] = useState(1);
@@ -213,6 +213,16 @@ export function QnAListView() {
     breadcrumbItems: [{ label: "게시판" }, { label: "Q&A" }],
     title: "Q&A",
     favoriteKey: "Q&A",
+    actions: (
+      <Button
+        size="m"
+        variant="filled"
+        color="positive"
+        onClick={() => setCreatePopupOpen(true)}
+      >
+        등록
+      </Button>
+    ),
   });
 
   return (
@@ -224,8 +234,8 @@ export function QnAListView() {
               value={categoryFilter}
               onChange={(v) => { setCategoryFilter(v); setPage(1); }}
               options={CATEGORY_OPTIONS}
-              placeholder="분류"
-              wrapperStyle={{ width: 140 }}
+              placeholder="구분"
+              wrapperStyle={{ width: 120 }}
             />
           </div>
           <div style={s.filterRight}>
@@ -233,7 +243,7 @@ export function QnAListView() {
               value={searchScope}
               onChange={setSearchScope}
               options={SEARCH_SCOPE_OPTIONS}
-              placeholder="검색범위"
+              placeholder="선택"
               wrapperStyle={{ width: 140, flexShrink: 0 }}
             />
             <Input
@@ -325,14 +335,6 @@ export function QnAListView() {
               <button style={listStyles.downloadBtn} title="다운로드">
                 <DownloadIcon />
               </button>
-              <Button
-                size="m"
-                variant="filled"
-                color="positive"
-                onClick={() => setCreatePopupOpen(true)}
-              >
-                등록
-              </Button>
             </div>
           </div>
 

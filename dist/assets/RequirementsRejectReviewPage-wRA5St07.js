@@ -1,0 +1,1 @@
+import{j as e}from"./index-4vKZSMnB.js";import{B as t}from"./BlankPage-ChR68buW.js";import"./usePageHeader-CmoGXkei.js";function n(){return e.jsx(t,{title:"요구사항 반려 검토",gnbName:"요구관리",path:"/requirements/reject-review"})}export{n as RequirementsRejectReviewPage};

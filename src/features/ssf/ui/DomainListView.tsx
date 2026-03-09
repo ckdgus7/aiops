@@ -6,6 +6,7 @@ import { useMdiStore } from "@/shared/model/mdi.store";
 import { usePageHeader } from "@/shared/hooks/usePageHeader";
 import type { SortKey, SortDir, DomainItem } from "@/features/ssf/model/types";
 import { DOMAIN_MOCK_DATA } from "@/features/ssf/model/mock-data";
+import { DomainCreatePopup } from "@/features/ssf/ui/DomainCreatePopup";
 import { DomainFormPopup } from "@/features/ssf/ui/DomainFormPopup";
 import { DomainDeletePopup } from "@/features/ssf/ui/DomainDeletePopup";
 import { DomainDetailPopup } from "@/features/ssf/ui/DomainDetailPopup";
@@ -98,8 +99,8 @@ export function DomainListView() {
   const [sortDir, setSortDir] = useState<SortDir>(null);
   const [page, setPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [createPopupOpen, setCreatePopupOpen] = useState(false);
   const [popupOpen, setPopupOpen] = useState(false);
-  const [popupMode, setPopupMode] = useState<"create" | "edit">("create");
   const [editTarget, setEditTarget] = useState<DomainItem | null>(null);
   const [deletePopupOpen, setDeletePopupOpen] = useState(false);
   const [detailPopupOpen, setDetailPopupOpen] = useState(false);
@@ -163,6 +164,16 @@ export function DomainListView() {
     breadcrumbItems: [{ label: "SSF관리" }, { label: "도메인(L1)정보 관리" }],
     title: "도메인(L1)정보 관리",
     favoriteKey: "도메인(L1)정보 관리",
+    actions: (
+      <Button
+        size="m"
+        variant="filled"
+        color="positive"
+        onClick={() => { setCreatePopupOpen(true); }}
+      >
+        도메인(L1) 신규 등록
+      </Button>
+    ),
   });
 
   return (
@@ -269,14 +280,6 @@ export function DomainListView() {
               <button style={listStyles.downloadBtn} title="다운로드">
                 <DownloadIcon />
               </button>
-              <Button
-                size="m"
-                variant="filled"
-                color="positive"
-                onClick={() => { setPopupMode("create"); setEditTarget(null); setPopupOpen(true); }}
-              >
-                등록
-              </Button>
             </div>
           </div>
 
@@ -341,7 +344,6 @@ export function DomainListView() {
         onClose={() => setDetailPopupOpen(false)}
         data={detailTarget}
         onEdit={() => {
-          setPopupMode("edit");
           setEditTarget(detailTarget);
           setPopupOpen(true);
         }}
@@ -349,13 +351,17 @@ export function DomainListView() {
           setDeletePopupOpen(true);
         }}
       />
-      <DomainFormPopup
+      <DomainCreatePopup
+        open={createPopupOpen}
+        onClose={() => setCreatePopupOpen(false)}
+      />
+      {/* <DomainFormPopup
         open={popupOpen}
         onClose={() => setPopupOpen(false)}
-        mode={popupMode}
+        mode="edit"
         initialData={editTarget}
         onDelete={() => setDeletePopupOpen(true)}
-      />
+      /> */}
       <DomainDeletePopup
         open={deletePopupOpen}
         onClose={() => setDeletePopupOpen(false)}

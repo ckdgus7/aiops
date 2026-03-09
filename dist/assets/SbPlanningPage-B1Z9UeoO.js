@@ -1,0 +1,1 @@
+import{j as n}from"./index-4vKZSMnB.js";import{B as t}from"./BlankPage-ChR68buW.js";import"./usePageHeader-CmoGXkei.js";function o(){return n.jsx(t,{title:"SB기획",gnbName:"UI 관리",path:"/ui/sb-planning"})}export{o as SbPlanningPage};

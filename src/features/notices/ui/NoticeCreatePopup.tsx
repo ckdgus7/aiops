@@ -1,8 +1,11 @@
-import { useState, useRef, useCallback } from "react";
+import { useState } from "react";
 import { RadioGroup } from "@/shared/ui/global/RadioGroup";
 import { Input } from "@/shared/ui/global/Input";
 import { Button } from "@/shared/ui/global/Button";
-import { TiptapEditor } from "@/shared/ui/service/TiptapEditor";
+import { Checkbox } from "@/shared/ui/global/Checkbox";
+import { DatePicker } from "@/shared/ui/global/DatePicker";
+import { FileUpload } from "@/shared/ui/global/FileUpload";
+import { ToastEditor } from "@/shared/ui/service/ToastEditor";
 import { popupStyles as ps } from "@/shared/ui/styles";
 
 interface NoticeCreatePopupProps {
@@ -19,41 +22,10 @@ function CloseIcon() {
   );
 }
 
-function FileIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-      <path d="M11 2H5C4.44772 2 4 2.44772 4 3V17C4 17.5523 4.44772 18 5 18H15C15.5523 18 16 17.5523 16 17V7L11 2Z" stroke="#a1a1aa" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M11 2V7H16" stroke="#a1a1aa" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function UploadIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-      <path d="M12 16V4M12 4L8 8M12 4L16 8" stroke="#a1a1aa" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M4 17V19C4 19.5523 4.44772 20 5 20H19C19.5523 20 20 19.5523 20 19V17" stroke="#a1a1aa" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-function DeleteIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-      <path d="M12 4L4 12" stroke="#a1a1aa" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M4 4L12 12" stroke="#a1a1aa" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
-  );
-}
-
 const CATEGORY_OPTIONS = [
-  { label: "공지", value: "공지" },
-  { label: "필독공지", value: "필독공지" },
-  { label: "일반", value: "일반" },
-];
-
-const POST_TYPE_OPTIONS = [
-  { label: "즉시", value: "즉시" },
+  { label: "공통", value: "공통" },
+  { label: "서비스", value: "서비스" },
+  { label: "업무", value: "업무" },
 ];
 
 interface UploadedFile {
@@ -62,23 +34,12 @@ interface UploadedFile {
 }
 
 export function NoticeCreatePopup({ open, onClose }: NoticeCreatePopupProps) {
-  const [category, setCategory] = useState("공지");
+  const [category, setCategory] = useState("공통");
   const [title, setTitle] = useState("");
-  const [author] = useState("Admin");
-  const [postType, setPostType] = useState("즉시");
+  const [publishDate, setPublishDate] = useState("");
   const [content, setContent] = useState("");
   const [files, setFiles] = useState<UploadedFile[]>([]);
-  const [isDragging, setIsDragging] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const dragCounterRef = useRef(0);
-
-  const addFiles = useCallback((fileList: FileList) => {
-    const newFiles: UploadedFile[] = Array.from(fileList).map((f) => ({
-      id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
-      name: f.name,
-    }));
-    setFiles((prev) => [...prev, ...newFiles]);
-  }, []);
+  const [pinned, setPinned] = useState(false);
 
   if (!open) return null;
 
@@ -86,60 +47,13 @@ export function NoticeCreatePopup({ open, onClose }: NoticeCreatePopupProps) {
     if (e.target === e.currentTarget) onClose();
   };
 
-  const handleFileSelect = () => {
-    fileInputRef.current?.click();
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFiles = e.target.files;
-    if (!selectedFiles) return;
-    addFiles(selectedFiles);
-    if (fileInputRef.current) fileInputRef.current.value = "";
-  };
-
-  const handleFileDelete = (id: string) => {
-    setFiles((prev) => prev.filter((f) => f.id !== id));
-  };
-
-  const handleDragEnter = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    dragCounterRef.current += 1;
-    if (e.dataTransfer.types.includes("Files")) {
-      setIsDragging(true);
-    }
-  };
-
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    dragCounterRef.current -= 1;
-    if (dragCounterRef.current === 0) {
-      setIsDragging(false);
-    }
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    dragCounterRef.current = 0;
-    setIsDragging(false);
-    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      addFiles(e.dataTransfer.files);
-    }
-  };
-
   const handleReset = () => {
-    setCategory("공지");
+    setCategory("공통");
     setTitle("");
-    setPostType("즉시");
+    setPublishDate("");
     setContent("");
     setFiles([]);
+    setPinned(false);
     onClose();
   };
 
@@ -163,7 +77,7 @@ export function NoticeCreatePopup({ open, onClose }: NoticeCreatePopupProps) {
           <div style={ps.formSection}>
             <div style={ps.fieldGroup}>
               <div style={ps.fieldLabel}>
-                <span style={ps.labelText}>분류</span>
+                <span style={ps.labelText}>공지유형</span>
                 <span style={ps.requiredDot} />
               </div>
               <RadioGroup
@@ -178,7 +92,7 @@ export function NoticeCreatePopup({ open, onClose }: NoticeCreatePopupProps) {
             <div style={ps.fieldRow}>
               <div style={{ flex: 540, minWidth: 0 }}>
                 <Input
-                  label="제목"
+                  label="제목명"
                   required
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
@@ -187,25 +101,23 @@ export function NoticeCreatePopup({ open, onClose }: NoticeCreatePopupProps) {
                 />
               </div>
               <div style={{ flex: 244, minWidth: 0 }}>
-                <Input
-                  label="작성자"
-                  value={author}
-                  readOnly
+                <DatePicker
+                  label="게시일"
+                  required
+                  value={publishDate}
+                  onChange={setPublishDate}
                 />
               </div>
             </div>
 
             <div style={ps.fieldGroup}>
               <div style={ps.fieldLabel}>
-                <span style={ps.labelText}>게시</span>
-                <span style={ps.requiredDot} />
+                <span style={ps.labelText}>상단고정</span>
               </div>
-              <RadioGroup
-                value={postType}
-                onChange={setPostType}
-                options={POST_TYPE_OPTIONS}
-                size="m"
-                gap={16}
+              <Checkbox
+                checked={pinned}
+                onChange={setPinned}
+                label="상단에 고정합니다."
               />
             </div>
 
@@ -214,7 +126,7 @@ export function NoticeCreatePopup({ open, onClose }: NoticeCreatePopupProps) {
                 <span style={ps.labelText}>내용</span>
                 <span style={ps.requiredDot} />
               </div>
-              <TiptapEditor
+              <ToastEditor
                 value={content}
                 onChange={setContent}
                 placeholder="내용을 입력하세요."
@@ -226,49 +138,10 @@ export function NoticeCreatePopup({ open, onClose }: NoticeCreatePopupProps) {
               <div style={ps.fieldLabel}>
                 <span style={ps.labelText}>첨부</span>
               </div>
-              <input
-                ref={fileInputRef}
-                type="file"
-                multiple
-                style={{ display: "none" }}
-                onChange={handleFileChange}
+              <FileUpload
+                value={files}
+                onChange={setFiles}
               />
-              <div
-                style={isDragging ? { ...ps.uploadArea, ...ps.uploadAreaDragging } : ps.uploadArea}
-                onClick={handleFileSelect}
-                onDragEnter={handleDragEnter}
-                onDragLeave={handleDragLeave}
-                onDragOver={handleDragOver}
-                onDrop={handleDrop}
-              >
-                <UploadIcon />
-                <span style={ps.uploadText}>
-                  파일을 드래그하거나 클릭하여 업로드하세요.
-                </span>
-                <button
-                  style={ps.uploadBtn}
-                  type="button"
-                  onClick={(e) => { e.stopPropagation(); handleFileSelect(); }}
-                >
-                  파일 선택
-                </button>
-              </div>
-              {files.length > 0 && (
-                <div style={ps.fileList}>
-                  {files.map((file) => (
-                    <div key={file.id} style={ps.fileItem}>
-                      <FileIcon />
-                      <span style={ps.fileName}>{file.name}</span>
-                      <button
-                        style={ps.fileDeleteBtn}
-                        onClick={() => handleFileDelete(file.id)}
-                      >
-                        <DeleteIcon />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
             </div>
           </div>
         </div>

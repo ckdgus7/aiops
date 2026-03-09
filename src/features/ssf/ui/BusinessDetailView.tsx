@@ -5,11 +5,13 @@ import { usePageHeader } from "@/shared/hooks/usePageHeader";
 import {
   BUSINESS_MOCK_DATA,
   COMPONENT_MOCK_DATA,
+  DOMAIN_MOCK_DATA,
 } from "@/features/ssf/model/mock-data";
 import { BpmnViewer } from "@/shared/ui/service/BpmnViewer";
 import { TiptapEditor } from "@/shared/ui/service/TiptapEditor";
 import { RadioGroup } from "@/shared/ui/global/RadioGroup";
 import { Button } from "@/shared/ui/global/Button";
+import { BusinessEditPopup } from "@/features/ssf/ui/BusinessEditPopup";
 import { FONT } from "@/shared/ui/styles";
 
 function ChevronIcon() {
@@ -178,17 +180,21 @@ interface LevelBadgeProps {
   level: string;
   code: string;
   color: string;
+  name: string;
   active?: boolean;
+  onClick?: () => void;
 }
 
-function LevelBadge({ level, code, color, active }: LevelBadgeProps) {
+function LevelBadge({ level, code, color, name, active, onClick }: LevelBadgeProps) {
   return (
     <div
       style={{
         ...s.lvCard,
         ...(active ? { border: `1px solid #7a5af8` } : {}),
         ...(!active ? { opacity: 0.5 } : {}),
+        cursor: "pointer",
       }}
+      onClick={onClick}
     >
       <div style={s.lvBadgeWrap}>
         <div style={{ ...s.lvBadgeBase, borderColor: color }}>
@@ -199,11 +205,7 @@ function LevelBadge({ level, code, color, active }: LevelBadgeProps) {
         </div>
       </div>
       <div style={s.lvNameRow}>
-        <span style={s.lvName}>
-          {code === "EPC"
-            ? "엔터프라이즈 상품 카탈로그"
-            : "서비스 카탈로그 관리"}
-        </span>
+        <span style={s.lvName}>{name}</span>
         <button type="button" style={s.lvToggleBtn}>
           <AccordionToggle open={active || false} />
         </button>
@@ -313,6 +315,12 @@ const PROJECT_ITEMS = [
   { id: "PJ-0002", text: "운영 안정화 프로젝트" },
   { id: "PJ-0003", text: "데이터 마이그레이션" },
   { id: "PJ-0004", text: "보안 체계 강화" },
+];
+
+const EPC_L3_ITEMS = [
+  { id: "BZ-EPC001-001", text: "상품 카탈로그 조회" },
+  { id: "BZ-EPC001-002", text: "상품 사양 관리" },
+  { id: "BZ-EPC001-003", text: "상품 카테고리 관리" },
 ];
 
 const L3_ITEMS = [
@@ -802,6 +810,8 @@ export function BusinessDetailView() {
   const [bpdSpec, setBpdSpec] = useState("");
   const [bpdVersionType, setBpdVersionType] = useState("Major");
   const [bpdVersionDesc, setBpdVersionDesc] = useState("");
+  const [editOpen, setEditOpen] = useState(false);
+  const [activeSsfTab, setActiveSsfTab] = useState<"EPC" | "TMFC" | null>("TMFC");
 
   const item = BUSINESS_MOCK_DATA.find((b) => b.businessId === id);
 
@@ -820,6 +830,16 @@ export function BusinessDetailView() {
       { label: "업무(L3)정보 상세" },
     ],
     title: "업무(L3)정보 상세",
+    actions: (
+      <div style={{ display: "flex", gap: 8 }}>
+        <Button size="m" variant="outlined" color="negative" onClick={() => {}}>
+          삭제
+        </Button>
+        <Button size="m" variant="filled" color="positive" onClick={() => setEditOpen(true)}>
+          수정
+        </Button>
+      </div>
+    ),
   });
 
   if (!item) {
@@ -834,6 +854,8 @@ export function BusinessDetailView() {
     (c) =>
       c.nameKo === item.componentNameKo && c.domainNameKo === item.domainNameKo,
   );
+
+  const domain = DOMAIN_MOCK_DATA.find((d) => d.nameKo === item.domainNameKo);
 
   return (
     <div style={s.outer}>
@@ -880,77 +902,136 @@ export function BusinessDetailView() {
                 <div style={s.ssfSection}>
                   <span style={s.ssfLabel}>SSF 정보</span>
                   <div style={s.lvAccordion}>
-                    {/* L1→L2 hierarchy bar */}
                     <div style={s.lvHierarchy}>
-                      <LevelBadge level="L1" code="EPC" color="#3e1c96" />
+                      <LevelBadge
+                        level="L1"
+                        code="EPC"
+                        color="#3e1c96"
+                        name={domain?.nameKo || "엔터프라이즈 상품 카탈로그"}
+                        active={activeSsfTab === "EPC"}
+                        onClick={() => setActiveSsfTab(activeSsfTab === "EPC" ? null : "EPC")}
+                      />
                       <LevelBadge
                         level="L2"
                         code={comp?.componentId || "TMFC006"}
                         color="#5925dc"
-                        active
+                        name={item.componentNameKo}
+                        active={activeSsfTab === "TMFC"}
+                        onClick={() => setActiveSsfTab(activeSsfTab === "TMFC" ? null : "TMFC")}
                       />
                     </div>
 
-                    {/* Expanded content */}
-                    <div style={s.lvContent}>
-                      <div style={s.lvFieldRow}>
-                        <LabelValue
-                          label="Component ID"
-                          value={comp?.componentId || "TMFC006"}
-                        />
-                        <LabelValue
-                          label="Component(한글)"
-                          value={item.componentNameKo}
-                        />
-                        <LabelValue
-                          label="Component명"
-                          value={comp?.nameEn || "Service Catalog Management"}
-                        />
-                      </div>
-                      <div style={s.lvFieldRow}>
-                        <LabelValue
-                          label="L2기획리더"
-                          value={comp?.planLeader || item.planLeader}
-                        />
-                        <LabelValue
-                          label="L2설계리더"
-                          value={comp?.designLeader || item.designLeader}
-                        />
-                      </div>
-                      <LabelValue
-                        label="Component 설명"
-                        value={
-                          comp?.description ||
-                          "서비스 카탈로그 관리 구성 요소는 수행 가능한 모든 서비스 요구 사항을 식별하고 정의하는 서비스 사양 모음을 구성하는 역할을 합니다."
-                        }
-                        fullWidth
-                      />
-
-                      {/* 연관 업무(L3) */}
-                      <div style={s.relSection}>
-                        <div style={s.relHeaderRow}>
-                          <span style={{ ...s.fieldLabel, fontSize: 14 }}>
-                            연관 업무(L3)
-                          </span>
-                          <MiniPagination
-                            current={1}
-                            total={L3_ITEMS.length}
-                            perPage={5}
+                    {activeSsfTab === "EPC" && (
+                      <div style={s.lvContent}>
+                        <div style={s.lvFieldRow}>
+                          <LabelValue
+                            label="Domain ID"
+                            value={domain?.abbr || "EPC"}
+                          />
+                          <LabelValue
+                            label="Domain(한글)"
+                            value={domain?.nameKo || item.domainNameKo}
+                          />
+                          <LabelValue
+                            label="Domain명"
+                            value={domain?.nameEn || "Enterprise Product Catalog"}
                           />
                         </div>
-                        <div style={s.relList}>
-                          {L3_ITEMS.map((l3) => (
-                            <ListItemRow
-                              key={l3.id}
-                              badge={l3.id}
-                              badgeColor="#7a5af8"
-                              badgeBg="rgba(122,90,248,0.05)"
-                              text={l3.text}
+                        <LabelValue
+                          label="Domain 설명"
+                          value={
+                            domain?.description ||
+                            "엔터프라이즈 상품 카탈로그는 상품의 전체 라이프사이클을 관리하고, 상품 사양 및 카테고리를 체계적으로 구성하는 역할을 합니다."
+                          }
+                          fullWidth
+                        />
+
+                        <div style={s.relSection}>
+                          <div style={s.relHeaderRow}>
+                            <span style={{ ...s.fieldLabel, fontSize: 14 }}>
+                              연관 업무(L3)
+                            </span>
+                            <MiniPagination
+                              current={1}
+                              total={EPC_L3_ITEMS.length}
+                              perPage={5}
                             />
-                          ))}
+                          </div>
+                          <div style={s.relList}>
+                            {EPC_L3_ITEMS.map((l3) => (
+                              <ListItemRow
+                                key={l3.id}
+                                badge={l3.id}
+                                badgeColor="#3e1c96"
+                                badgeBg="rgba(62,28,150,0.05)"
+                                text={l3.text}
+                              />
+                            ))}
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    )}
+
+                    {activeSsfTab === "TMFC" && (
+                      <div style={s.lvContent}>
+                        <div style={s.lvFieldRow}>
+                          <LabelValue
+                            label="Component ID"
+                            value={comp?.componentId || "TMFC006"}
+                          />
+                          <LabelValue
+                            label="Component(한글)"
+                            value={item.componentNameKo}
+                          />
+                          <LabelValue
+                            label="Component명"
+                            value={comp?.nameEn || "Service Catalog Management"}
+                          />
+                        </div>
+                        <div style={s.lvFieldRow}>
+                          <LabelValue
+                            label="L2기획리더"
+                            value={comp?.planLeader || item.planLeader}
+                          />
+                          <LabelValue
+                            label="L2설계리더"
+                            value={comp?.designLeader || item.designLeader}
+                          />
+                        </div>
+                        <LabelValue
+                          label="Component 설명"
+                          value={
+                            comp?.description ||
+                            "서비스 카탈로그 관리 구성 요소는 수행 가능한 모든 서비스 요구 사항을 식별하고 정의하는 서비스 사양 모음을 구성하는 역할을 합니다."
+                          }
+                          fullWidth
+                        />
+
+                        <div style={s.relSection}>
+                          <div style={s.relHeaderRow}>
+                            <span style={{ ...s.fieldLabel, fontSize: 14 }}>
+                              연관 업무(L3)
+                            </span>
+                            <MiniPagination
+                              current={1}
+                              total={L3_ITEMS.length}
+                              perPage={5}
+                            />
+                          </div>
+                          <div style={s.relList}>
+                            {L3_ITEMS.map((l3) => (
+                              <ListItemRow
+                                key={l3.id}
+                                badge={l3.id}
+                                badgeColor="#7a5af8"
+                                badgeBg="rgba(122,90,248,0.05)"
+                                text={l3.text}
+                              />
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -1162,6 +1243,11 @@ export function BusinessDetailView() {
           </div>
         </div>
       </div>
+      <BusinessEditPopup
+        open={editOpen}
+        onClose={() => setEditOpen(false)}
+        item={item}
+      />
     </div>
   );
 }

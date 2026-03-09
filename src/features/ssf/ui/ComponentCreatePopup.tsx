@@ -3,8 +3,9 @@ import { Button } from "@/shared/ui/global/Button";
 import { Input } from "@/shared/ui/global/Input";
 import { SelectBox } from "@/shared/ui/global/SelectBox";
 import { RadioGroup } from "@/shared/ui/global/RadioGroup";
-import { TiptapEditor } from "@/shared/ui/service/TiptapEditor";
-import { DOMAIN_MOCK_DATA } from "@/features/ssf/model/mock-data";
+import { ToastEditor } from "@/shared/ui/service/ToastEditor";
+import { AlertModal } from "@/shared/ui/global/AlertModal";
+import { Snackbar } from "@/shared/ui/global/Snackbar";
 import { FONT, popupStyles } from "@/shared/ui/styles";
 
 interface ComponentCreatePopupProps {
@@ -124,9 +125,21 @@ const s = {
   footerRight: popupStyles.footerRight,
 };
 
-const DOMAIN_OPTIONS = DOMAIN_MOCK_DATA
-  .filter((d) => d.useYn === "사용")
-  .map((d) => ({ label: d.nameKo, value: d.nameKo }));
+const DOMAIN_OPTIONS = [
+  { label: "마케팅 & 오퍼링", value: "마케팅 & 오퍼링" },
+  { label: "CRM", value: "CRM" },
+  { label: "파티", value: "파티" },
+  { label: "파트너", value: "파트너" },
+  { label: "엔터프라이즈 상품 카탈로그", value: "엔터프라이즈 상품 카탈로그" },
+  { label: "상품 주문", value: "상품 주문" },
+  { label: "서비스 주문", value: "서비스 주문" },
+  { label: "리소스 주문 & 풀필먼트", value: "리소스 주문 & 풀필먼트" },
+  { label: "통합 과금", value: "통합 과금" },
+  { label: "빌링", value: "빌링" },
+  { label: "AI & 데이터", value: "AI & 데이터" },
+  { label: "공통 비즈니스 서비스", value: "공통 비즈니스 서비스" },
+  { label: "엔터프라이즈 통합", value: "엔터프라이즈 통합" },
+];
 
 const USE_YN_OPTIONS = [
   { label: "사용", value: "사용" },
@@ -141,6 +154,8 @@ export function ComponentCreatePopup({ open, onClose, onSave }: ComponentCreateP
   const [designLeader, setDesignLeader] = useState("");
   const [description, setDescription] = useState("");
   const [useYn, setUseYn] = useState("사용");
+  const [closeAlertOpen, setCloseAlertOpen] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   useEffect(() => {
     if (open) {
@@ -158,6 +173,15 @@ export function ComponentCreatePopup({ open, onClose, onSave }: ComponentCreateP
 
   const isValid = domainNameKo && nameKo.trim() && nameEn.trim() && planLeader.trim() && designLeader.trim();
 
+  const handleCloseClick = () => {
+    setCloseAlertOpen(true);
+  };
+
+  const handleCloseConfirm = () => {
+    setCloseAlertOpen(false);
+    onClose();
+  };
+
   const handleSave = () => {
     if (!isValid) return;
     onSave?.({
@@ -169,16 +193,17 @@ export function ComponentCreatePopup({ open, onClose, onSave }: ComponentCreateP
       description,
       useYn,
     });
+    setSnackbarOpen(true);
     onClose();
   };
 
   return (
-    <div style={s.overlay} onClick={onClose}>
+    <div style={s.overlay} onClick={handleCloseClick}>
       <div style={s.popup} onClick={(e) => e.stopPropagation()}>
         <div style={s.header}>
           <div style={s.titleRow}>
             <span style={s.titleText}>컴포넌트(L2) 신규 등록</span>
-            <button style={s.closeBtn} onClick={onClose} type="button">
+            <button style={s.closeBtn} onClick={handleCloseClick} type="button">
               <CloseIcon />
             </button>
           </div>
@@ -191,7 +216,7 @@ export function ComponentCreatePopup({ open, onClose, onSave }: ComponentCreateP
         <div style={s.main}>
           <div style={s.fieldRow}>
             <SelectBox
-              label="도메인(한글) 명"
+              label="도메인(L1) 명을 선택하세요."
               required
               value={domainNameKo}
               onChange={setDomainNameKo}
@@ -274,7 +299,7 @@ export function ComponentCreatePopup({ open, onClose, onSave }: ComponentCreateP
 
           <div style={s.fieldRow}>
             <span style={s.editorLabel}>컴포넌트(L2) 설명</span>
-            <TiptapEditor
+            <ToastEditor
               value={description}
               onChange={setDescription}
               placeholder="컴포넌트(L2) 설명을 입력하세요."
@@ -299,7 +324,7 @@ export function ComponentCreatePopup({ open, onClose, onSave }: ComponentCreateP
 
         <div style={s.footer}>
           <div style={s.footerLeft}>
-            <Button size="l" variant="outlined" color="info" onClick={onClose}>
+            <Button size="l" variant="outlined" color="info" onClick={handleCloseClick}>
               닫기
             </Button>
           </div>
@@ -309,7 +334,26 @@ export function ComponentCreatePopup({ open, onClose, onSave }: ComponentCreateP
             </Button>
           </div>
         </div>
+
+        <AlertModal
+          open={closeAlertOpen}
+          onClose={() => setCloseAlertOpen(false)}
+          type="warning"
+          message="입력한 값을 초기화하고 창을 닫습니다."
+          showCancel
+          cancelLabel="취소"
+          confirmLabel="확인"
+          onCancel={() => setCloseAlertOpen(false)}
+          onConfirm={handleCloseConfirm}
+        />
       </div>
+
+      <Snackbar
+        open={snackbarOpen}
+        onClose={() => setSnackbarOpen(false)}
+        type="success"
+        message="저장 되었습니다."
+      />
     </div>
   );
 }

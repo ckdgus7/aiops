@@ -15,6 +15,7 @@ interface SelectBoxBaseProps {
   helperText?: string;
   searchable?: boolean;
   searchPlaceholder?: string;
+  searchHighlight?: boolean;
   style?: CSSProperties;
   wrapperStyle?: CSSProperties;
 }
@@ -23,12 +24,16 @@ interface SingleSelectBoxProps extends SelectBoxBaseProps {
   multiple?: false;
   value: string;
   onChange: (value: string) => void;
+  maxSelections?: never;
+  selectAllLabel?: never;
 }
 
 interface MultiSelectBoxProps extends SelectBoxBaseProps {
   multiple: true;
   value: string[];
   onChange: (value: string[]) => void;
+  maxSelections?: number;
+  selectAllLabel?: string;
 }
 
 type SelectBoxProps = SingleSelectBoxProps | MultiSelectBoxProps;
@@ -45,10 +50,11 @@ const COLORS = {
   background: "#ffffff",
   placeholder: "#a1a1aa",
   text: "#18181b",
+  valueText: "#3f3f46",
   iconColor: "#71717a",
   errorText: "#f04438",
   disabledBg: "#fafafa",
-  dropdownShadow: "0 4px 16px rgba(0,0,0,0.10)",
+  dropdownShadow: "0px 16px 32px rgba(23,37,76,0.12)",
   hoverBg: "#f4f4f5",
   activeBg: "#ede9fe",
   chipBg: "#fafaff",
@@ -56,6 +62,7 @@ const COLORS = {
   checkedBg: "#7a5af8",
   uncheckedBorder: "#e4e7ec",
   searchBorder: "#e4e7ec",
+  highlightText: "#7a5af8",
 };
 
 function ChevronDownIcon({ rotated }: { rotated?: boolean }) {
@@ -68,6 +75,7 @@ function ChevronDownIcon({ rotated }: { rotated?: boolean }) {
       style={{
         transition: "transform 0.15s ease",
         transform: rotated ? "rotate(180deg)" : "rotate(0deg)",
+        flexShrink: 0,
       }}
     >
       <path
@@ -141,6 +149,32 @@ function MiniCheckbox({ checked }: { checked: boolean }) {
   );
 }
 
+function HighlightedLabel({ label, searchText }: { label: string; searchText: string }) {
+  if (!searchText) {
+    return <span>{label}</span>;
+  }
+
+  const lowerLabel = label.toLowerCase();
+  const lowerSearch = searchText.toLowerCase();
+  const idx = lowerLabel.indexOf(lowerSearch);
+
+  if (idx === -1) {
+    return <span>{label}</span>;
+  }
+
+  const before = label.slice(0, idx);
+  const match = label.slice(idx, idx + searchText.length);
+  const after = label.slice(idx + searchText.length);
+
+  return (
+    <span>
+      {before}
+      <span style={{ fontWeight: 700, color: COLORS.highlightText }}>{match}</span>
+      {after}
+    </span>
+  );
+}
+
 export function SelectBox(props: SelectBoxProps) {
   const {
     options,
@@ -152,6 +186,7 @@ export function SelectBox(props: SelectBoxProps) {
     helperText,
     searchable = false,
     searchPlaceholder = "검색",
+    searchHighlight = true,
     style,
     wrapperStyle,
     multiple = false,
@@ -161,6 +196,11 @@ export function SelectBox(props: SelectBoxProps) {
   const [searchText, setSearchText] = useState("");
   const containerRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const inlineSearchRef = useRef<HTMLInputElement>(null);
+
+  const isMultiple = multiple === true;
+  const maxSelections = isMultiple ? (props as MultiSelectBoxProps).maxSelections : undefined;
+  const selectAllLabel = isMultiple ? (props as MultiSelectBoxProps).selectAllLabel : undefined;
 
   useEffect(() => {
     if (!open) return;
@@ -175,12 +215,15 @@ export function SelectBox(props: SelectBoxProps) {
   }, [open]);
 
   useEffect(() => {
-    if (open && searchable && searchInputRef.current) {
-      searchInputRef.current.focus();
+    if (open && searchable) {
+      if (isMultiple && inlineSearchRef.current) {
+        inlineSearchRef.current.focus();
+      } else if (!isMultiple && searchInputRef.current) {
+        searchInputRef.current.focus();
+      }
     }
-  }, [open, searchable]);
+  }, [open, searchable, isMultiple]);
 
-  const isMultiple = multiple === true;
   const singleValue = isMultiple ? "" : (props as SingleSelectBoxProps).value;
   const multiValue = isMultiple ? (props as MultiSelectBoxProps).value : [];
 
@@ -190,6 +233,9 @@ export function SelectBox(props: SelectBoxProps) {
   const filteredOptions = searchText
     ? options.filter((o) => o.label.toLowerCase().includes(searchText.toLowerCase()))
     : options;
+
+  const allFilteredSelected = isMultiple && filteredOptions.length > 0 &&
+    filteredOptions.every((o) => multiValue.includes(o.value));
 
   const borderColor = error
     ? COLORS.borderError
@@ -219,7 +265,27 @@ export function SelectBox(props: SelectBoxProps) {
       if (current.includes(optionValue)) {
         onChange(current.filter((v) => v !== optionValue));
       } else {
+        if (maxSelections !== undefined && current.length >= maxSelections) return;
         onChange([...current, optionValue]);
+      }
+    }
+  };
+
+  const handleSelectAll = () => {
+    if (isMultiple) {
+      const onChange = (props as MultiSelectBoxProps).onChange;
+      if (allFilteredSelected) {
+        const filteredValues = filteredOptions.map((o) => o.value);
+        onChange(multiValue.filter((v) => !filteredValues.includes(v)));
+      } else {
+        const newValues = [...multiValue];
+        for (const o of filteredOptions) {
+          if (!newValues.includes(o.value)) {
+            if (maxSelections !== undefined && newValues.length >= maxSelections) break;
+            newValues.push(o.value);
+          }
+        }
+        onChange(newValues);
       }
     }
   };
@@ -239,6 +305,7 @@ export function SelectBox(props: SelectBoxProps) {
     } else {
       (props as SingleSelectBoxProps).onChange("");
     }
+    setSearchText("");
   };
 
   const wrapper: CSSProperties = {
@@ -285,8 +352,8 @@ export function SelectBox(props: SelectBoxProps) {
   const fieldBase: CSSProperties = {
     display: "flex",
     alignItems: "center",
-    gap: 4,
-    padding: hasChips ? 6 : 8,
+    gap: 8,
+    padding: 8,
     minHeight: 40,
     backgroundColor: disabled ? COLORS.disabledBg : COLORS.background,
     border: `1px solid ${borderColor}`,
@@ -306,7 +373,7 @@ export function SelectBox(props: SelectBoxProps) {
     display: "flex",
     flexWrap: "wrap",
     gap: 4,
-    alignItems: "flex-start",
+    alignItems: "center",
     flex: "1 0 0",
     paddingLeft: 4,
     minWidth: 0,
@@ -347,6 +414,21 @@ export function SelectBox(props: SelectBoxProps) {
     flexShrink: 0,
     width: 12,
     height: 12,
+  };
+
+  const inlineSearchStyle: CSSProperties = {
+    border: "none",
+    outline: "none",
+    fontFamily: FONT_FAMILY,
+    fontSize: 16,
+    fontWeight: 400,
+    lineHeight: "24px",
+    color: COLORS.valueText,
+    backgroundColor: "transparent",
+    padding: 0,
+    minWidth: 40,
+    width: 60,
+    flexShrink: 1,
   };
 
   const textWrap: CSSProperties = {
@@ -393,7 +475,7 @@ export function SelectBox(props: SelectBoxProps) {
     zIndex: 1000,
     maxHeight: 296,
     overflowY: "auto",
-    padding: "4px 0",
+    padding: "8px 0",
     boxSizing: "border-box",
   };
 
@@ -421,13 +503,13 @@ export function SelectBox(props: SelectBoxProps) {
   const optionBase: CSSProperties = {
     display: "flex",
     alignItems: "center",
-    gap: isMultiple ? 10 : 0,
-    padding: isMultiple ? "8px 16px" : "8px 16px",
+    gap: 10,
+    padding: "8px 16px",
     fontFamily: FONT_FAMILY,
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: 400,
-    lineHeight: "20px",
-    color: COLORS.text,
+    lineHeight: "24px",
+    color: COLORS.valueText,
     cursor: "pointer",
     whiteSpace: "nowrap",
     overflow: "hidden",
@@ -449,6 +531,8 @@ export function SelectBox(props: SelectBoxProps) {
     if (isMultiple) return multiValue.includes(optionValue);
     return singleValue === optionValue;
   };
+
+  const shouldHighlight = searchable && searchHighlight && searchText.length > 0;
 
   return (
     <div style={wrapper} ref={containerRef}>
@@ -477,15 +561,42 @@ export function SelectBox(props: SelectBoxProps) {
                 </span>
               </div>
             ))}
+            {searchable && open && (
+              <input
+                ref={inlineSearchRef}
+                type="text"
+                value={searchText}
+                onChange={(e) => setSearchText(e.target.value)}
+                onClick={(e) => e.stopPropagation()}
+                placeholder={searchPlaceholder}
+                style={inlineSearchStyle}
+              />
+            )}
           </div>
         ) : (
-          <div style={textWrap}>
-            <span style={textStyle}>
-              {selectedOption ? selectedOption.label : placeholder}
-            </span>
-          </div>
+          <>
+            {searchable && isMultiple && open ? (
+              <div style={textWrap}>
+                <input
+                  ref={inlineSearchRef}
+                  type="text"
+                  value={searchText}
+                  onChange={(e) => setSearchText(e.target.value)}
+                  onClick={(e) => e.stopPropagation()}
+                  placeholder={searchPlaceholder}
+                  style={{ ...inlineSearchStyle, flex: 1, width: "100%" }}
+                />
+              </div>
+            ) : (
+              <div style={textWrap}>
+                <span style={textStyle}>
+                  {selectedOption ? selectedOption.label : placeholder}
+                </span>
+              </div>
+            )}
+          </>
         )}
-        {hasClearable && (
+        {hasClearable && !disabled && (
           <span style={iconBtn} onClick={handleClearAll}>
             <ClearIcon />
           </span>
@@ -498,7 +609,7 @@ export function SelectBox(props: SelectBoxProps) {
             style={dropdown}
             onClick={(e) => e.stopPropagation()}
           >
-            {searchable && (
+            {searchable && !isMultiple && (
               <div style={searchWrap}>
                 <SearchIcon />
                 <input
@@ -511,6 +622,29 @@ export function SelectBox(props: SelectBoxProps) {
                 />
               </div>
             )}
+            {isMultiple && selectAllLabel && filteredOptions.length > 0 && (
+              <div
+                style={{
+                  ...optionBase,
+                  backgroundColor: allFilteredSelected ? COLORS.activeBg : undefined,
+                  fontWeight: 500,
+                  borderBottom: `1px solid ${COLORS.searchBorder}`,
+                }}
+                onMouseEnter={(e) => {
+                  if (!allFilteredSelected) {
+                    (e.currentTarget as HTMLDivElement).style.backgroundColor = COLORS.hoverBg;
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  (e.currentTarget as HTMLDivElement).style.backgroundColor =
+                    allFilteredSelected ? COLORS.activeBg : "";
+                }}
+                onClick={handleSelectAll}
+              >
+                <MiniCheckbox checked={allFilteredSelected} />
+                <span>{selectAllLabel}</span>
+              </div>
+            )}
             {filteredOptions.length === 0 ? (
               <div style={{ ...optionBase, color: COLORS.placeholder, cursor: "default" }}>
                 검색 결과가 없습니다
@@ -518,6 +652,7 @@ export function SelectBox(props: SelectBoxProps) {
             ) : (
               filteredOptions.map((option) => {
                 const selected = isOptionSelected(option.value);
+                const atLimit = !selected && isMultiple && maxSelections !== undefined && multiValue.length >= maxSelections;
                 return (
                   <div
                     key={option.value}
@@ -525,9 +660,11 @@ export function SelectBox(props: SelectBoxProps) {
                       ...optionBase,
                       backgroundColor: selected ? COLORS.activeBg : undefined,
                       fontWeight: selected ? 500 : 400,
+                      opacity: atLimit ? 0.5 : 1,
+                      cursor: atLimit ? "not-allowed" : "pointer",
                     }}
                     onMouseEnter={(e) => {
-                      if (!selected) {
+                      if (!selected && !atLimit) {
                         (e.currentTarget as HTMLDivElement).style.backgroundColor = COLORS.hoverBg;
                       }
                     }}
@@ -537,6 +674,7 @@ export function SelectBox(props: SelectBoxProps) {
                     }}
                     onClick={(e) => {
                       e.stopPropagation();
+                      if (atLimit) return;
                       if (isMultiple) {
                         handleMultiToggle(option.value);
                       } else {
@@ -546,7 +684,11 @@ export function SelectBox(props: SelectBoxProps) {
                   >
                     {isMultiple && <MiniCheckbox checked={selected} />}
                     <span style={{ overflow: "hidden", textOverflow: "ellipsis" }}>
-                      {option.label}
+                      {shouldHighlight ? (
+                        <HighlightedLabel label={option.label} searchText={searchText} />
+                      ) : (
+                        option.label
+                      )}
                     </span>
                   </div>
                 );

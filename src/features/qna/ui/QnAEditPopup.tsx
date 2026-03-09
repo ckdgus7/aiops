@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { RadioGroup } from "@/shared/ui/global/RadioGroup";
 import { Input } from "@/shared/ui/global/Input";
 import { Button } from "@/shared/ui/global/Button";
-import { TiptapEditor } from "@/shared/ui/service/TiptapEditor";
+import { ToastEditor } from "@/shared/ui/service/ToastEditor";
 import type { QnADetail } from "@/features/qna/model/types";
 import { popupStyles as ps } from "@/shared/ui/styles";
 
@@ -192,7 +192,7 @@ export function QnAEditPopup({ open, onClose, detail }: QnAEditPopupProps) {
                 <span style={ps.labelText}>내용</span>
                 <span style={ps.requiredDot} />
               </div>
-              <TiptapEditor
+              <ToastEditor
                 value={content}
                 onChange={setContent}
                 placeholder="내용을 입력하세요."

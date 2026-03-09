@@ -3,11 +3,11 @@ import { useNavigate } from "react-router";
 import { SelectBox } from "@/shared/ui/global/SelectBox";
 import { Input } from "@/shared/ui/global/Input";
 import { Button } from "@/shared/ui/global/Button";
-import { TiptapEditor } from "@/shared/ui/service/TiptapEditor";
 import { useMdiStore } from "@/shared/model/mdi.store";
 import { usePageHeader } from "@/shared/hooks/usePageHeader";
 import type { BusinessSortKey, SortDir, BusinessItem } from "@/features/ssf/model/types";
-import { BUSINESS_MOCK_DATA, DOMAIN_MOCK_DATA, COMPONENT_MOCK_DATA } from "@/features/ssf/model/mock-data";
+import { BUSINESS_MOCK_DATA, COMPONENT_MOCK_DATA } from "@/features/ssf/model/mock-data";
+import { BusinessCreatePopup } from "@/features/ssf/ui/BusinessCreatePopup";
 import { FONT, listStyles } from "@/shared/ui/styles";
 
 function SortIcon({ active, dir }: { active: boolean; dir: SortDir }) {
@@ -79,9 +79,9 @@ function CheckboxIcon({ checked }: { checked: boolean }) {
 }
 
 const SEARCH_KEY_OPTIONS = [
-  { label: "업무(L3)명", value: "업무(L3)명" },
-  { label: "업무ID", value: "업무ID" },
-  { label: "담당자명", value: "담당자명" },
+  { label: "업무(L3)명(한글/영문)", value: "업무(L3)명(한글/영문)" },
+  { label: "업무(L3)ID", value: "업무(L3)ID" },
+  { label: "담당자명(L2기획리더/L3설계리더)", value: "담당자명(L2기획리더/L3설계리더)" },
 ];
 
 const s = {
@@ -134,390 +134,6 @@ const s = {
   } satisfies CSSProperties,
 };
 
-function CloseIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-      <path d="M6 6L18 18" stroke="#71717a" strokeWidth="1.5" strokeLinecap="round" />
-      <path d="M18 6L6 18" stroke="#71717a" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function AddIcon() {
-  return (
-    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-      <path d="M6 1V11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-      <path d="M1 6H11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-const ps = {
-  overlay: {
-    position: "fixed",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    zIndex: 1000,
-  } satisfies CSSProperties,
-  popup: {
-    width: 880,
-    maxHeight: "90vh",
-    backgroundColor: "#ffffff",
-    borderRadius: 16,
-    boxShadow: "0 4px 24px rgba(0, 0, 0, 0.12)",
-    display: "flex",
-    flexDirection: "column",
-    overflow: "hidden",
-  } satisfies CSSProperties,
-  header: {
-    display: "flex",
-    flexDirection: "column",
-    padding: "32px 32px 16px 32px",
-    gap: 12,
-    flexShrink: 0,
-  } satisfies CSSProperties,
-  titleRow: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    width: "100%",
-  } satisfies CSSProperties,
-  titleText: {
-    fontFamily: FONT,
-    fontSize: 24,
-    fontWeight: 700,
-    lineHeight: "32px",
-    color: "#52525b",
-  } satisfies CSSProperties,
-  closeBtn: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    width: 32,
-    height: 32,
-    border: "none",
-    background: "transparent",
-    cursor: "pointer",
-    borderRadius: 4,
-    padding: 0,
-  } satisfies CSSProperties,
-  requiredRow: {
-    display: "flex",
-    alignItems: "center",
-    gap: 4,
-  } satisfies CSSProperties,
-  requiredMark: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: "#36bffa",
-    flexShrink: 0,
-  } satisfies CSSProperties,
-  requiredText: {
-    fontFamily: FONT,
-    fontSize: 14,
-    fontWeight: 400,
-    lineHeight: "18px",
-    color: "#52525b",
-  } satisfies CSSProperties,
-  main: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 24,
-    padding: "24px 32px",
-    overflowY: "auto",
-    flex: 1,
-  } satisfies CSSProperties,
-  fieldRow: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 8,
-    width: "100%",
-  } satisfies CSSProperties,
-  labelRow: {
-    display: "flex",
-    alignItems: "center",
-    gap: 4,
-  } satisfies CSSProperties,
-  label: {
-    fontFamily: FONT,
-    fontSize: 14,
-    fontWeight: 500,
-    lineHeight: "18px",
-    color: "#a1a1aa",
-    whiteSpace: "nowrap",
-  } satisfies CSSProperties,
-  inputWithBtn: {
-    display: "flex",
-    gap: 10,
-    alignItems: "flex-start",
-    width: "100%",
-  } satisfies CSSProperties,
-  disabledInput: {
-    fontFamily: FONT,
-    fontSize: 16,
-    fontWeight: 400,
-    lineHeight: "24px",
-    color: "#a1a1aa",
-    backgroundColor: "#f4f4f5",
-    border: "1px solid #e4e7ec",
-    borderRadius: 4,
-    padding: "8px 16px",
-    height: 40,
-    width: "100%",
-    boxSizing: "border-box",
-  } satisfies CSSProperties,
-  editorLabel: {
-    fontFamily: FONT,
-    fontSize: 14,
-    fontWeight: 500,
-    lineHeight: "18px",
-    color: "#a1a1aa",
-    marginBottom: 12,
-  } satisfies CSSProperties,
-  footer: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: "16px 32px 32px 32px",
-    flexShrink: 0,
-  } satisfies CSSProperties,
-  footerLeft: {
-    display: "flex",
-    alignItems: "center",
-  } satisfies CSSProperties,
-  footerRight: {
-    display: "flex",
-    alignItems: "center",
-    gap: 12,
-  } satisfies CSSProperties,
-  charCount: {
-    fontFamily: FONT,
-    fontSize: 12,
-    fontWeight: 400,
-    lineHeight: "16px",
-    color: "#a1a1aa",
-    textAlign: "right",
-    marginTop: 4,
-  } satisfies CSSProperties,
-};
-
-interface BusinessCreatePopupProps {
-  open: boolean;
-  onClose: () => void;
-  onSave?: () => void;
-}
-
-function BusinessCreatePopup({ open, onClose, onSave }: BusinessCreatePopupProps) {
-  const [domainNameKo, setDomainNameKo] = useState("");
-  const [componentNameKo, setComponentNameKo] = useState("");
-  const [nameKo, setNameKo] = useState("");
-  const [designLeader, setDesignLeader] = useState("");
-  const [description, setDescription] = useState("");
-
-  useEffect(() => {
-    if (open) {
-      setDomainNameKo("");
-      setComponentNameKo("");
-      setNameKo("");
-      setDesignLeader("");
-      setDescription("");
-    }
-  }, [open]);
-
-  const domainOptions = useMemo(
-    () =>
-      DOMAIN_MOCK_DATA.filter((d) => d.useYn === "사용").map((d) => ({
-        label: d.nameKo,
-        value: d.nameKo,
-      })),
-    [],
-  );
-
-  const componentOptions = useMemo(() => {
-    if (!domainNameKo) return [];
-    return COMPONENT_MOCK_DATA.filter(
-      (c) => c.domainNameKo === domainNameKo && c.useYn === "사용",
-    ).map((c) => ({ label: c.nameKo, value: c.nameKo }));
-  }, [domainNameKo]);
-
-  const l2PlanLeader = useMemo(() => {
-    if (!componentNameKo) return "";
-    const comp = COMPONENT_MOCK_DATA.find(
-      (c) => c.nameKo === componentNameKo && c.domainNameKo === domainNameKo,
-    );
-    return comp?.planLeader ?? "";
-  }, [componentNameKo, domainNameKo]);
-
-  useEffect(() => {
-    if (domainNameKo) {
-      const available = COMPONENT_MOCK_DATA.filter(
-        (c) => c.domainNameKo === domainNameKo && c.useYn === "사용",
-      );
-      if (!available.some((c) => c.nameKo === componentNameKo)) {
-        setComponentNameKo("");
-      }
-    } else {
-      setComponentNameKo("");
-    }
-  }, [domainNameKo]);
-
-  if (!open) return null;
-
-  const descPlainLength = description.replace(/<[^>]*>/g, "").length;
-
-  const isValid =
-    domainNameKo &&
-    componentNameKo &&
-    nameKo.trim() &&
-    l2PlanLeader &&
-    designLeader.trim() &&
-    descPlainLength > 0 &&
-    descPlainLength <= 3000;
-
-  const handleDescChange = (val: string) => {
-    const plainLen = val.replace(/<[^>]*>/g, "").length;
-    if (plainLen <= 3000) {
-      setDescription(val);
-    }
-  };
-
-  const handleSave = () => {
-    if (!isValid) return;
-    onSave?.();
-    onClose();
-  };
-
-  return (
-    <div style={ps.overlay} onClick={onClose}>
-      <div style={ps.popup} onClick={(e) => e.stopPropagation()}>
-        <div style={ps.header}>
-          <div style={ps.titleRow}>
-            <span style={ps.titleText}>업무(L3) 신규 등록</span>
-            <button style={ps.closeBtn} onClick={onClose} type="button">
-              <CloseIcon />
-            </button>
-          </div>
-          <div style={ps.requiredRow}>
-            <div style={ps.requiredMark} />
-            <span style={ps.requiredText}>표시는 필수로 입력하세요.</span>
-          </div>
-        </div>
-
-        <div style={ps.main}>
-          <div style={ps.fieldRow}>
-            <SelectBox
-              label="도메인(L1) 명(한글)"
-              required
-              value={domainNameKo}
-              onChange={setDomainNameKo}
-              options={domainOptions}
-              placeholder="도메인(L1) 명(한글)을 선택하세요."
-            />
-          </div>
-
-          <div style={ps.fieldRow}>
-            <SelectBox
-              label="컴포넌트(L2) 명(한글)"
-              required
-              value={componentNameKo}
-              onChange={setComponentNameKo}
-              options={componentOptions}
-              placeholder="컴포넌트(L2) 명(한글)을 선택하세요."
-              disabled={!domainNameKo}
-            />
-          </div>
-
-          <div style={ps.fieldRow}>
-            <Input
-              label="업무(L3) 명"
-              required
-              value={nameKo}
-              onChange={(e) => setNameKo(e.target.value)}
-              placeholder="업무(L3) 명을 입력하세요."
-              maxLength={70}
-              indicator={`${nameKo.length}/70`}
-            />
-          </div>
-
-          <div style={ps.fieldRow}>
-            <div style={ps.labelRow}>
-              <span style={ps.label}>L2기획리더</span>
-              <div style={ps.requiredMark} />
-            </div>
-            <div style={ps.disabledInput}>
-              {l2PlanLeader || "컴포넌트(L2) 선택 시 출력됩니다."}
-            </div>
-          </div>
-
-          <div style={ps.fieldRow}>
-            <div style={ps.labelRow}>
-              <span style={ps.label}>L3설계리더</span>
-              <div style={ps.requiredMark} />
-            </div>
-            <div style={ps.inputWithBtn}>
-              <Input
-                value={designLeader}
-                onChange={(e) => setDesignLeader(e.target.value)}
-                placeholder="담당자를 선택하거나 검색하세요."
-                style={{ flex: 1 }}
-              />
-              <Button
-                size="l"
-                variant="outlined"
-                color="positive"
-                disabled={!designLeader.trim()}
-                leadingIcon={<AddIcon />}
-              >
-                추가
-              </Button>
-            </div>
-          </div>
-
-          <div style={ps.fieldRow}>
-            <div style={ps.labelRow}>
-              <span style={ps.label}>업무 설명</span>
-              <div style={ps.requiredMark} />
-            </div>
-            <TiptapEditor
-              value={description}
-              onChange={handleDescChange}
-              placeholder="과제 개요를 입력하세요."
-              minHeight={300}
-            />
-            <div style={ps.charCount}>{descPlainLength}/3000</div>
-          </div>
-        </div>
-
-        <div style={ps.footer}>
-          <div style={ps.footerLeft}>
-            <Button size="l" variant="outlined" color="info" onClick={onClose}>
-              닫기
-            </Button>
-          </div>
-          <div style={ps.footerRight}>
-            <Button
-              size="l"
-              variant="filled"
-              color="positive"
-              disabled={!isValid}
-              onClick={handleSave}
-            >
-              저장
-            </Button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 type ColumnDef = { key: BusinessSortKey | "_checkbox"; label: string; width: number | string; align?: "left" | "center"; sortable?: boolean };
 
 const COLUMNS: ColumnDef[] = [
@@ -541,11 +157,11 @@ export function BusinessInfoListView() {
   }, [addTab]);
 
   const [domainFilter, setDomainFilter] = useState("");
-  const [componentFilter, setComponentFilter] = useState("");
-  const [searchKey, setSearchKey] = useState("업무(L3)명");
+  const [componentFilter, setComponentFilter] = useState<string[]>([]);
+  const [searchKey, setSearchKey] = useState("업무(L3)명(한글/영문)");
   const [searchKeywordDraft, setSearchKeywordDraft] = useState("");
   const [appliedKeyword, setAppliedKeyword] = useState("");
-  const [appliedSearchKey, setAppliedSearchKey] = useState("업무(L3)명");
+  const [appliedSearchKey, setAppliedSearchKey] = useState("업무(L3)명(한글/영문)");
   const [sortKey, setSortKey] = useState<BusinessSortKey | null>(null);
   const [sortDir, setSortDir] = useState<SortDir>(null);
   const [page, setPage] = useState(1);
@@ -554,14 +170,25 @@ export function BusinessInfoListView() {
   const [selectAll, setSelectAll] = useState(false);
   const [createOpen, setCreateOpen] = useState(false);
 
-  const domainOptions = useMemo(() => {
-    const names = DOMAIN_MOCK_DATA.map((d) => d.nameKo);
-    return [{ label: "전체", value: "" }, ...names.map((n) => ({ label: n, value: n }))];
-  }, []);
+  const domainOptions = useMemo(() => [
+    { label: "마케팅 & 오퍼링", value: "마케팅 & 오퍼링" },
+    { label: "CRM", value: "CRM" },
+    { label: "파티", value: "파티" },
+    { label: "파트너", value: "파트너" },
+    { label: "엔터프라이즈 상품 카탈로그", value: "엔터프라이즈 상품 카탈로그" },
+    { label: "상품 주문", value: "상품 주문" },
+    { label: "서비스 주문", value: "서비스 주문" },
+    { label: "리소스 주문 & 풀필먼트", value: "리소스 주문 & 풀필먼트" },
+    { label: "통합 과금", value: "통합 과금" },
+    { label: "빌링", value: "빌링" },
+    { label: "AI & 데이터", value: "AI & 데이터" },
+    { label: "공통 비즈니스 서비스", value: "공통 비즈니스 서비스" },
+    { label: "엔터프라이즈 통합", value: "엔터프라이즈 통합" },
+  ], []);
 
   const componentOptions = useMemo(() => {
     const names = [...new Set(COMPONENT_MOCK_DATA.map((c) => c.nameKo))];
-    return [{ label: "전체", value: "" }, ...names.map((n) => ({ label: n, value: n }))];
+    return names.map((n) => ({ label: n, value: n }));
   }, []);
 
   const handleSort = (key: BusinessSortKey) => {
@@ -583,16 +210,16 @@ export function BusinessInfoListView() {
 
   const filtered = BUSINESS_MOCK_DATA.filter((item) => {
     if (domainFilter && item.domainNameKo !== domainFilter) return false;
-    if (componentFilter && item.componentNameKo !== componentFilter) return false;
+    if (componentFilter.length > 0 && !componentFilter.includes(item.componentNameKo)) return false;
     if (appliedKeyword) {
       const kw = appliedKeyword.toLowerCase();
-      if (appliedSearchKey === "업무(L3)명") {
+      if (appliedSearchKey === "업무(L3)명(한글/영문)") {
         return item.nameKo.toLowerCase().includes(kw) || item.nameEn.toLowerCase().includes(kw);
       }
-      if (appliedSearchKey === "업무ID") {
+      if (appliedSearchKey === "업무(L3)ID") {
         return item.businessId.toLowerCase().includes(kw);
       }
-      if (appliedSearchKey === "담당자명") {
+      if (appliedSearchKey === "담당자명(L2기획리더/L3설계리더)") {
         return item.planLeader.toLowerCase().includes(kw) || item.designLeader.toLowerCase().includes(kw);
       }
     }
@@ -652,6 +279,16 @@ export function BusinessInfoListView() {
     breadcrumbItems: [{ label: "SSF관리" }, { label: "업무(L3)정보 관리" }],
     title: "업무(L3)정보 관리",
     favoriteKey: "업무(L3)정보 관리",
+    actions: (
+      <Button
+        size="m"
+        variant="filled"
+        color="positive"
+        onClick={() => setCreateOpen(true)}
+      >
+        업무(L3) 신규 등록
+      </Button>
+    ),
   });
 
   return (
@@ -664,14 +301,16 @@ export function BusinessInfoListView() {
               onChange={(v) => { setDomainFilter(v); setPage(1); }}
               options={domainOptions}
               placeholder="도메인(L1)"
-              wrapperStyle={{ width: 180 }}
+              wrapperStyle={{ width: 250 }}
             />
             <SelectBox
+              multiple
+              searchable
               value={componentFilter}
               onChange={(v) => { setComponentFilter(v); setPage(1); }}
               options={componentOptions}
               placeholder="컴포넌트(L2)"
-              wrapperStyle={{ width: 180 }}
+              wrapperStyle={{ width: 220 }}
             />
           </div>
           <div style={s.filterRight}>
@@ -679,8 +318,8 @@ export function BusinessInfoListView() {
               value={searchKey}
               onChange={setSearchKey}
               options={SEARCH_KEY_OPTIONS}
-              placeholder="검색범위"
-              wrapperStyle={{ width: 180, flexShrink: 0 }}
+              placeholder="업무(L3) 명"
+              wrapperStyle={{ width: 290, flexShrink: 0 }}
             />
             <div style={s.searchWrap}>
               <Input
@@ -776,14 +415,6 @@ export function BusinessInfoListView() {
               <button style={listStyles.downloadBtn} title="다운로드">
                 <DownloadIcon />
               </button>
-              <Button
-                size="m"
-                variant="filled"
-                color="positive"
-                onClick={() => setCreateOpen(true)}
-              >
-                등록
-              </Button>
             </div>
           </div>
 

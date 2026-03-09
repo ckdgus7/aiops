@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { RadioGroup } from "@/shared/ui/global/RadioGroup";
 import { Input } from "@/shared/ui/global/Input";
 import { Button } from "@/shared/ui/global/Button";
-import { TiptapEditor } from "@/shared/ui/service/TiptapEditor";
+import { ToastEditor } from "@/shared/ui/service/ToastEditor";
 import type { NoticeDetail } from "@/features/notices/model/types";
 import { popupStyles as ps } from "@/shared/ui/styles";
 
@@ -49,9 +49,9 @@ function DeleteIcon() {
 }
 
 const CATEGORY_OPTIONS = [
-  { label: "공지", value: "공지" },
-  { label: "필독공지", value: "필독공지" },
-  { label: "일반", value: "일반" },
+  { label: "공통", value: "공통" },
+  { label: "업무", value: "업무" },
+  { label: "서비스", value: "서비스" },
 ];
 
 const POST_TYPE_OPTIONS = [
@@ -65,12 +65,11 @@ interface EditFile {
 }
 
 function mapCategoryToRadio(notice: NoticeDetail): string {
-  if (notice.category === "공지" && notice.isPinned) return "필독공지";
   return notice.category;
 }
 
 export function NoticeEditPopup({ open, onClose, notice }: NoticeEditPopupProps) {
-  const [category, setCategory] = useState("공지");
+  const [category, setCategory] = useState("공통");
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("Admin");
   const [postType, setPostType] = useState("즉시");
@@ -231,7 +230,7 @@ export function NoticeEditPopup({ open, onClose, notice }: NoticeEditPopupProps)
                 <span style={ps.labelText}>내용</span>
                 <span style={ps.requiredDot} />
               </div>
-              <TiptapEditor
+              <ToastEditor
                 value={content}
                 onChange={setContent}
                 placeholder="내용을 입력하세요."

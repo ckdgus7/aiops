@@ -1,10 +1,10 @@
-export type NoticeCategory = "공지" | "일반";
+export type NoticeCategory = "공통" | "업무" | "서비스";
 
 export interface Notice {
   no: number;
   category: NoticeCategory;
   title: string;
-  isPinned: boolean;
+  isNew: boolean;
   author: string;
   createdAt: string;
   updatedAt: string;
@@ -23,7 +23,7 @@ export interface NoticeAttachment {
 export interface NoticeDetail {
   no: number;
   category: NoticeCategory;
-  isPinned: boolean;
+  isNew: boolean;
   title: string;
   content: string;
   author: string;
@@ -33,5 +33,5 @@ export interface NoticeDetail {
   attachments: NoticeAttachment[];
 }
 
-export type NoticeSortKey = "no" | "category" | "title" | "author" | "createdAt" | "updatedAt" | "attachments" | "views";
+export type NoticeSortKey = "no" | "category" | "title" | "author" | "createdAt" | "views";
 export type NoticeSortDir = "asc" | "desc" | null;
