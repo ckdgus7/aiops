@@ -212,32 +212,17 @@ export function BusinessCreatePopup({ open, onClose, onSave }: BusinessCreatePop
   ], []);
 
   const componentOptions = useMemo(() => {
-    if (!domainNameKo) return [];
-    return COMPONENT_MOCK_DATA.filter(
-      (c) => c.domainNameKo === domainNameKo && c.useYn === "사용",
-    ).map((c) => ({ label: c.nameKo, value: c.nameKo }));
-  }, [domainNameKo]);
+    const names = [...new Set(COMPONENT_MOCK_DATA.map((c) => c.nameKo))];
+    return names.map((n) => ({ label: n, value: n }));
+  }, []);
 
   const l2PlanLeader = useMemo(() => {
     if (!componentNameKo) return "";
     const comp = COMPONENT_MOCK_DATA.find(
-      (c) => c.nameKo === componentNameKo && c.domainNameKo === domainNameKo,
+      (c) => c.nameKo === componentNameKo,
     );
     return comp?.planLeader ?? "";
-  }, [componentNameKo, domainNameKo]);
-
-  useEffect(() => {
-    if (domainNameKo) {
-      const available = COMPONENT_MOCK_DATA.filter(
-        (c) => c.domainNameKo === domainNameKo && c.useYn === "사용",
-      );
-      if (!available.some((c) => c.nameKo === componentNameKo)) {
-        setComponentNameKo("");
-      }
-    } else {
-      setComponentNameKo("");
-    }
-  }, [domainNameKo]);
+  }, [componentNameKo]);
 
   if (!open) return null;
 
@@ -295,13 +280,12 @@ export function BusinessCreatePopup({ open, onClose, onSave }: BusinessCreatePop
 
           <div style={ps.fieldRow}>
             <SelectBox
-              label="컴포넌트(L2) 명(한글)"
+              label="컴포넌트(L2) 명(한글)을 선택하세요."
               required
               value={componentNameKo}
               onChange={setComponentNameKo}
               options={componentOptions}
               placeholder="컴포넌트(L2) 명(한글)을 선택하세요."
-              disabled={!domainNameKo}
             />
           </div>
 
