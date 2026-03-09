@@ -254,7 +254,6 @@ export function ComponentInfoListView() {
               value={searchKey}
               onChange={setSearchKey}
               options={SEARCH_KEY_OPTIONS}
-              label="컴포넌트(L2)"
               placeholder="컴포넌트(L2)"
               wrapperStyle={{ width: 290, flexShrink: 0 }}
             />

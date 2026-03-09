@@ -4,6 +4,8 @@ import { Input } from "@/shared/ui/global/Input";
 import { SelectBox } from "@/shared/ui/global/SelectBox";
 import { RadioGroup } from "@/shared/ui/global/RadioGroup";
 import { ToastEditor } from "@/shared/ui/service/ToastEditor";
+import { AlertModal } from "@/shared/ui/global/AlertModal";
+import { Snackbar } from "@/shared/ui/global/Snackbar";
 import { FONT, popupStyles } from "@/shared/ui/styles";
 
 interface ComponentCreatePopupProps {
@@ -152,6 +154,8 @@ export function ComponentCreatePopup({ open, onClose, onSave }: ComponentCreateP
   const [designLeader, setDesignLeader] = useState("");
   const [description, setDescription] = useState("");
   const [useYn, setUseYn] = useState("사용");
+  const [closeAlertOpen, setCloseAlertOpen] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   useEffect(() => {
     if (open) {
@@ -169,6 +173,15 @@ export function ComponentCreatePopup({ open, onClose, onSave }: ComponentCreateP
 
   const isValid = domainNameKo && nameKo.trim() && nameEn.trim() && planLeader.trim() && designLeader.trim();
 
+  const handleCloseClick = () => {
+    setCloseAlertOpen(true);
+  };
+
+  const handleCloseConfirm = () => {
+    setCloseAlertOpen(false);
+    onClose();
+  };
+
   const handleSave = () => {
     if (!isValid) return;
     onSave?.({
@@ -180,16 +193,17 @@ export function ComponentCreatePopup({ open, onClose, onSave }: ComponentCreateP
       description,
       useYn,
     });
+    setSnackbarOpen(true);
     onClose();
   };
 
   return (
-    <div style={s.overlay} onClick={onClose}>
+    <div style={s.overlay} onClick={handleCloseClick}>
       <div style={s.popup} onClick={(e) => e.stopPropagation()}>
         <div style={s.header}>
           <div style={s.titleRow}>
             <span style={s.titleText}>컴포넌트(L2) 신규 등록</span>
-            <button style={s.closeBtn} onClick={onClose} type="button">
+            <button style={s.closeBtn} onClick={handleCloseClick} type="button">
               <CloseIcon />
             </button>
           </div>
@@ -310,7 +324,7 @@ export function ComponentCreatePopup({ open, onClose, onSave }: ComponentCreateP
 
         <div style={s.footer}>
           <div style={s.footerLeft}>
-            <Button size="l" variant="outlined" color="info" onClick={onClose}>
+            <Button size="l" variant="outlined" color="info" onClick={handleCloseClick}>
               닫기
             </Button>
           </div>
@@ -320,7 +334,26 @@ export function ComponentCreatePopup({ open, onClose, onSave }: ComponentCreateP
             </Button>
           </div>
         </div>
+
+        <AlertModal
+          open={closeAlertOpen}
+          onClose={() => setCloseAlertOpen(false)}
+          type="warning"
+          message="입력한 값을 초기화하고 창을 닫습니다."
+          showCancel
+          cancelLabel="취소"
+          confirmLabel="확인"
+          onCancel={() => setCloseAlertOpen(false)}
+          onConfirm={handleCloseConfirm}
+        />
       </div>
+
+      <Snackbar
+        open={snackbarOpen}
+        onClose={() => setSnackbarOpen(false)}
+        type="success"
+        message="저장 되었습니다."
+      />
     </div>
   );
 }
