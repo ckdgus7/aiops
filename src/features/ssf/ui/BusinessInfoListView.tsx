@@ -663,6 +663,16 @@ export function BusinessInfoListView() {
     breadcrumbItems: [{ label: "SSF관리" }, { label: "업무(L3)정보 관리" }],
     title: "업무(L3)정보 관리",
     favoriteKey: "업무(L3)정보 관리",
+    actions: (
+      <Button
+        size="m"
+        variant="filled"
+        color="positive"
+        onClick={() => setCreateOpen(true)}
+      >
+        업무(L3) 신규 등록
+      </Button>
+    ),
   });
 
   return (
@@ -789,14 +799,6 @@ export function BusinessInfoListView() {
               <button style={listStyles.downloadBtn} title="다운로드">
                 <DownloadIcon />
               </button>
-              <Button
-                size="m"
-                variant="filled"
-                color="positive"
-                onClick={() => setCreateOpen(true)}
-              >
-                등록
-              </Button>
             </div>
           </div>
 
