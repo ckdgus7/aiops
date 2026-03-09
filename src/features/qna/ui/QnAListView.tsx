@@ -85,11 +85,11 @@ const SEARCH_SCOPE_OPTIONS = [
 
 const COLUMNS: { key: QnASortKey; label: string; width: number | string; align?: "left" | "center"; sortable?: boolean }[] = [
   { key: "no", label: "번호", width: 80, align: "center" },
-  { key: "category", label: "분류", width: 160, align: "center" },
+  { key: "category", label: "구분", width: 160, align: "center" },
   { key: "title", label: "제목", width: "auto", align: "left", sortable: false },
   { key: "author", label: "작성자", width: 120, align: "center" },
-  { key: "createdAt", label: "등록일", width: 200, align: "center" },
-  { key: "status", label: "상태", width: 140, align: "center" },
+  { key: "createdAt", label: "작성일시", width: 200, align: "center" },
+  { key: "status", label: "처리상태", width: 140, align: "center" },
 ];
 
 const s = {
@@ -137,15 +137,15 @@ const s = {
 function getStatusBadgeStyle(status: string): CSSProperties {
   if (status === "답변완료") {
     return {
-      backgroundColor: "#f0fdf4",
+      backgroundColor: "#ecfdf3",
       border: "1px solid #1ac057",
       color: "#1ac057",
     };
   }
   return {
-    backgroundColor: "#fefce8",
-    border: "1px solid #f79009",
-    color: "#f79009",
+    backgroundColor: "#f4f3ff",
+    border: "1px solid #7a5af8",
+    color: "#7a5af8",
   };
 }
 
