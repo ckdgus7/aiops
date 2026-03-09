@@ -3,7 +3,7 @@ import { SelectBox } from "@/shared/ui/global/SelectBox";
 import { Input } from "@/shared/ui/global/Input";
 import { Button } from "@/shared/ui/global/Button";
 import { TiptapEditor } from "@/shared/ui/service/TiptapEditor";
-import { DOMAIN_MOCK_DATA, COMPONENT_MOCK_DATA } from "@/features/ssf/model/mock-data";
+import { COMPONENT_MOCK_DATA } from "@/features/ssf/model/mock-data";
 import { FONT } from "@/shared/ui/styles";
 
 function CloseIcon() {
@@ -195,14 +195,21 @@ export function BusinessCreatePopup({ open, onClose, onSave }: BusinessCreatePop
     }
   }, [open]);
 
-  const domainOptions = useMemo(
-    () =>
-      DOMAIN_MOCK_DATA.filter((d) => d.useYn === "사용").map((d) => ({
-        label: d.nameKo,
-        value: d.nameKo,
-      })),
-    [],
-  );
+  const domainOptions = useMemo(() => [
+    { label: "마케팅 & 오퍼링", value: "마케팅 & 오퍼링" },
+    { label: "CRM", value: "CRM" },
+    { label: "파티", value: "파티" },
+    { label: "파트너", value: "파트너" },
+    { label: "엔터프라이즈 상품 카탈로그", value: "엔터프라이즈 상품 카탈로그" },
+    { label: "상품 주문", value: "상품 주문" },
+    { label: "서비스 주문", value: "서비스 주문" },
+    { label: "리소스 주문 & 풀필먼트", value: "리소스 주문 & 풀필먼트" },
+    { label: "통합 과금", value: "통합 과금" },
+    { label: "빌링", value: "빌링" },
+    { label: "AI & 데이터", value: "AI & 데이터" },
+    { label: "공통 비즈니스 서비스", value: "공통 비즈니스 서비스" },
+    { label: "엔터프라이즈 통합", value: "엔터프라이즈 통합" },
+  ], []);
 
   const componentOptions = useMemo(() => {
     if (!domainNameKo) return [];
@@ -277,7 +284,7 @@ export function BusinessCreatePopup({ open, onClose, onSave }: BusinessCreatePop
         <div style={ps.main}>
           <div style={ps.fieldRow}>
             <SelectBox
-              label="도메인(L1) 명(한글)"
+              label="도메인(L1) 명(한글)을 선택하세요."
               required
               value={domainNameKo}
               onChange={setDomainNameKo}
