@@ -1,1 +1,0 @@
-import{j as r}from"./index-BfRhNC_0.js";import{B as t}from"./BlankPage-hg84i1EB.js";import"./usePageHeader-Cu4aIY6G.js";function s(){return r.jsx(t,{title:"SSF탐색기",gnbName:"SSF관리",path:"/ssf/explorer"})}export{s as SsfExplorerPage};

@@ -1,0 +1,1 @@
+import{j as e}from"./index-Dl5UKzKa.js";import{B as t}from"./BlankPage-agrsVJLu.js";import"./usePageHeader-BjGMLXhB.js";function m(){return e.jsx(t,{title:"요구상세",gnbName:"요구관리",path:"/requirements/detail"})}export{m as RequirementsDetailPage};

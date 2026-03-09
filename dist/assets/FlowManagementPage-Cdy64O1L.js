@@ -1,1 +1,0 @@
-import{j as o}from"./index-BfRhNC_0.js";import{B as t}from"./BlankPage-hg84i1EB.js";import"./usePageHeader-Cu4aIY6G.js";function r(){return o.jsx(t,{title:"업무Flow 관리",gnbName:"업무 기준 정보 관리",path:"/business-info/flow"})}export{r as FlowManagementPage};

@@ -1,5 +1,6 @@
 import { useState, useEffect, type CSSProperties } from "react";
 import { Button } from "@/shared/ui/global/Button";
+import { ComponentDeletePopup } from "@/features/ssf/ui/ComponentDeletePopup";
 import { ComponentEditPopup } from "@/features/ssf/ui/ComponentEditPopup";
 import type { ComponentItem } from "@/features/ssf/model/types";
 import { DOMAIN_MOCK_DATA } from "@/features/ssf/model/mock-data";
@@ -104,10 +105,6 @@ const st = {
     flex: 1,
   } satisfies CSSProperties,
   closeBtn: popupStyles.closeBtn,
-  requiredMark: {
-    ...popupStyles.requiredDot,
-    borderRadius: 3,
-  } satisfies CSSProperties,
   main: {
     display: "flex",
     flexDirection: "column",
@@ -396,7 +393,6 @@ const st = {
     alignItems: "center",
   } satisfies CSSProperties,
   footerRight: popupStyles.footerRight,
-  labelRow: popupStyles.fieldLabel,
 };
 
 function HistoryTimeline({ entries }: { entries: HistoryEntry[] }) {
@@ -455,111 +451,6 @@ function L3ListItem({ item }: { item: L3Item }) {
       <button style={st.l3DeleteBtn} type="button">
         <DeleteIcon />
       </button>
-    </div>
-  );
-}
-
-interface ComponentDeletePopupProps {
-  open: boolean;
-  onClose: () => void;
-  onConfirmDelete: () => void;
-}
-
-function ComponentDeletePopup({ open, onClose, onConfirmDelete }: ComponentDeletePopupProps) {
-  const [reason, setReason] = useState("");
-
-  useEffect(() => {
-    if (open) {
-      setReason("");
-    }
-  }, [open]);
-
-  if (!open) return null;
-
-  const canDelete = reason.trim().length > 0;
-
-  const handleDelete = () => {
-    if (!canDelete) return;
-    onConfirmDelete();
-  };
-
-  return (
-    <div style={{ ...st.overlay, zIndex: 1002 }} onClick={onClose}>
-      <div style={{ ...st.popup, maxHeight: "auto", overflow: "visible" }} onClick={(e) => e.stopPropagation()}>
-        <div style={st.header}>
-          <div style={st.titleRow}>
-            <span style={st.titleText}>삭제 사유</span>
-            <button style={st.closeBtn} onClick={onClose} type="button">
-              <CloseIcon />
-            </button>
-          </div>
-        </div>
-
-        <div style={{ display: "flex", flexDirection: "column", gap: 8, padding: "24px 32px" }}>
-          <div style={st.labelRow}>
-            <span style={{ fontFamily: FONT, fontSize: 15, fontWeight: 500, lineHeight: "18px", color: "#a1a1aa" }}>삭제 사유</span>
-            <div style={st.requiredMark} />
-          </div>
-          <div style={{ position: "relative", width: "100%" }}>
-            <textarea
-              value={reason}
-              onChange={(e) => {
-                if (e.target.value.length <= 300) setReason(e.target.value);
-              }}
-              placeholder="삭제 사유를 입력하세요."
-              maxLength={300}
-              style={{
-                width: "100%",
-                minHeight: 120,
-                padding: "8px 16px",
-                border: "1px solid #e4e7ec",
-                borderRadius: 4,
-                backgroundColor: "#ffffff",
-                fontFamily: FONT,
-                fontSize: 17,
-                fontWeight: 400,
-                lineHeight: "24px",
-                color: "#3f3f46",
-                resize: "vertical",
-                boxSizing: "border-box",
-                outline: "none",
-              }}
-            />
-            <div style={{
-              display: "flex",
-              justifyContent: "flex-end",
-              padding: "4px 8px 0 0",
-            }}>
-              <span style={{
-                fontFamily: FONT,
-                fontSize: 13,
-                fontWeight: 400,
-                lineHeight: "18px",
-                color: "#a1a1aa",
-              }}>{reason.length}/300</span>
-            </div>
-          </div>
-        </div>
-
-        <div style={st.footer}>
-          <div style={st.footerLeft}>
-            <Button size="l" variant="outlined" color="info" onClick={onClose}>
-              닫기
-            </Button>
-          </div>
-          <div style={st.footerRight}>
-            <Button
-              size="l"
-              variant="filled"
-              color="negative"
-              disabled={!canDelete}
-              onClick={handleDelete}
-            >
-              삭제
-            </Button>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }

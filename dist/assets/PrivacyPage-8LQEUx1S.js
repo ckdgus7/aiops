@@ -1,1 +1,0 @@
-import{j as r}from"./index-BfRhNC_0.js";import{B as t}from"./BlankPage-hg84i1EB.js";import"./usePageHeader-Cu4aIY6G.js";function i(){return r.jsx(t,{title:"개인정보 처리방침 관리",gnbName:"워크스페이스",path:"/workspace/privacy"})}export{i as PrivacyPage};

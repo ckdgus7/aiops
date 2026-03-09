@@ -1,1 +1,0 @@
-import{j as e}from"./index-BfRhNC_0.js";import{B as t}from"./BlankPage-hg84i1EB.js";import"./usePageHeader-Cu4aIY6G.js";function n(){return e.jsx(t,{title:"애플리케이션 설계",gnbName:"요구관리",path:"/requirements/app-design"})}export{n as AppDesignPage};

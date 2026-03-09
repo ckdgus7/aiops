@@ -1,1 +1,0 @@
-import{j as r}from"./index-BfRhNC_0.js";import{B as e}from"./BlankPage-hg84i1EB.js";import"./usePageHeader-Cu4aIY6G.js";function p(){return r.jsx(e,{title:"요구상세 승인",gnbName:"요구관리",path:"/requirements/approval"})}export{p as RequirementsApprovalPage};
