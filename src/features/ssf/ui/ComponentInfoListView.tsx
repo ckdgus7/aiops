@@ -65,9 +65,9 @@ function DownloadIcon() {
 }
 
 const SEARCH_KEY_OPTIONS = [
-  { label: "컴포넌트(L2)명", value: "컴포넌트(L2)명" },
+  { label: "컴포넌트(L2)명(한글/영문)", value: "컴포넌트(L2)명(한글/영문)" },
   { label: "컴포넌트ID", value: "컴포넌트ID" },
-  { label: "담당자명", value: "담당자명" },
+  { label: "담당자명(L2기획리더/L2설계리더)", value: "담당자명(L2기획리더/L2설계리더)" },
 ];
 
 const s = {
@@ -123,27 +123,27 @@ export function ComponentInfoListView() {
   const [deleteSnackbarOpen, setDeleteSnackbarOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState("전체");
   const [domainFilter, setDomainFilter] = useState("");
-  const [searchKey, setSearchKey] = useState("컴포넌트(L2)명");
+  const [searchKey, setSearchKey] = useState("컴포넌트(L2)명(한글/영문)");
   const [searchKeywordDraft, setSearchKeywordDraft] = useState("");
   const [appliedKeyword, setAppliedKeyword] = useState("");
-  const [appliedSearchKey, setAppliedSearchKey] = useState("컴포넌트(L2)명");
+  const [appliedSearchKey, setAppliedSearchKey] = useState("컴포넌트(L2)명(한글/영문)");
   const [sortKey, setSortKey] = useState<ComponentSortKey | null>(null);
   const [sortDir, setSortDir] = useState<SortDir>(null);
   const [page, setPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
   const domainOptions = useMemo(() => [
-    { label: "마케팅&오퍼링", value: "마케팅&오퍼링" },
+    { label: "마케팅 & 오퍼링", value: "마케팅 & 오퍼링" },
     { label: "CRM", value: "CRM" },
     { label: "파티", value: "파티" },
     { label: "파트너", value: "파트너" },
     { label: "엔터프라이즈 상품 카탈로그", value: "엔터프라이즈 상품 카탈로그" },
     { label: "상품 주문", value: "상품 주문" },
     { label: "서비스 주문", value: "서비스 주문" },
-    { label: "리소스 주문&풀필먼트", value: "리소스 주문&풀필먼트" },
+    { label: "리소스 주문 & 풀필먼트", value: "리소스 주문 & 풀필먼트" },
     { label: "통합 과금", value: "통합 과금" },
     { label: "빌링", value: "빌링" },
-    { label: "AI&데이터", value: "AI&데이터" },
+    { label: "AI & 데이터", value: "AI & 데이터" },
     { label: "공통 비즈니스 서비스", value: "공통 비즈니스 서비스" },
     { label: "엔터프라이즈 통합", value: "엔터프라이즈 통합" },
   ], []);
@@ -171,13 +171,13 @@ export function ComponentInfoListView() {
     if (domainFilter && item.domainNameKo !== domainFilter) return false;
     if (appliedKeyword) {
       const kw = appliedKeyword.toLowerCase();
-      if (appliedSearchKey === "컴포넌트(L2)명") {
+      if (appliedSearchKey === "컴포넌트(L2)명(한글/영문)") {
         return item.nameKo.toLowerCase().includes(kw) || item.nameEn.toLowerCase().includes(kw);
       }
       if (appliedSearchKey === "컴포넌트ID") {
         return item.componentId.toLowerCase().includes(kw);
       }
-      if (appliedSearchKey === "담당자명") {
+      if (appliedSearchKey === "담당자명(L2기획리더/L2설계리더)") {
         return item.planLeader.toLowerCase().includes(kw) || item.designLeader.toLowerCase().includes(kw);
       }
     }
@@ -234,7 +234,6 @@ export function ComponentInfoListView() {
                 value={domainFilter}
                 onChange={(v) => { setDomainFilter(v); setPage(1); }}
                 options={domainOptions}
-                label="도메인(L1)"
                 placeholder="도메인(L1)"
                 wrapperStyle={{ width: 250 }}
               />
@@ -245,8 +244,9 @@ export function ComponentInfoListView() {
               value={searchKey}
               onChange={setSearchKey}
               options={SEARCH_KEY_OPTIONS}
-              placeholder="검색범위"
-              wrapperStyle={{ width: 180, flexShrink: 0 }}
+              label="컴포넌트(L2)"
+              placeholder="컴포넌트(L2)"
+              wrapperStyle={{ width: 290, flexShrink: 0 }}
             />
             <div style={s.searchWrap}>
               <Input
