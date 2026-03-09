@@ -79,9 +79,9 @@ function CheckboxIcon({ checked }: { checked: boolean }) {
 }
 
 const SEARCH_KEY_OPTIONS = [
-  { label: "업무(L3)명", value: "업무(L3)명" },
-  { label: "업무ID", value: "업무ID" },
-  { label: "담당자명", value: "담당자명" },
+  { label: "업무(L3)명(한글/영문)", value: "업무(L3)명(한글/영문)" },
+  { label: "업무(L3)ID", value: "업무(L3)ID" },
+  { label: "담당자명(L2기획리더/L3설계리더)", value: "담당자명(L2기획리더/L3설계리더)" },
 ];
 
 const s = {
@@ -542,10 +542,10 @@ export function BusinessInfoListView() {
 
   const [domainFilter, setDomainFilter] = useState("");
   const [componentFilter, setComponentFilter] = useState<string[]>([]);
-  const [searchKey, setSearchKey] = useState("업무(L3)명");
+  const [searchKey, setSearchKey] = useState("업무(L3)명(한글/영문)");
   const [searchKeywordDraft, setSearchKeywordDraft] = useState("");
   const [appliedKeyword, setAppliedKeyword] = useState("");
-  const [appliedSearchKey, setAppliedSearchKey] = useState("업무(L3)명");
+  const [appliedSearchKey, setAppliedSearchKey] = useState("업무(L3)명(한글/영문)");
   const [sortKey, setSortKey] = useState<BusinessSortKey | null>(null);
   const [sortDir, setSortDir] = useState<SortDir>(null);
   const [page, setPage] = useState(1);
@@ -597,13 +597,13 @@ export function BusinessInfoListView() {
     if (componentFilter.length > 0 && !componentFilter.includes(item.componentNameKo)) return false;
     if (appliedKeyword) {
       const kw = appliedKeyword.toLowerCase();
-      if (appliedSearchKey === "업무(L3)명") {
+      if (appliedSearchKey === "업무(L3)명(한글/영문)") {
         return item.nameKo.toLowerCase().includes(kw) || item.nameEn.toLowerCase().includes(kw);
       }
-      if (appliedSearchKey === "업무ID") {
+      if (appliedSearchKey === "업무(L3)ID") {
         return item.businessId.toLowerCase().includes(kw);
       }
-      if (appliedSearchKey === "담당자명") {
+      if (appliedSearchKey === "담당자명(L2기획리더/L3설계리더)") {
         return item.planLeader.toLowerCase().includes(kw) || item.designLeader.toLowerCase().includes(kw);
       }
     }
@@ -692,8 +692,8 @@ export function BusinessInfoListView() {
               value={searchKey}
               onChange={setSearchKey}
               options={SEARCH_KEY_OPTIONS}
-              placeholder="검색범위"
-              wrapperStyle={{ width: 180, flexShrink: 0 }}
+              placeholder="업무(L3) 명"
+              wrapperStyle={{ width: 290, flexShrink: 0 }}
             />
             <div style={s.searchWrap}>
               <Input
