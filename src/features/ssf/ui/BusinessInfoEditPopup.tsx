@@ -270,6 +270,7 @@ export function BusinessInfoEditPopup({ open, onClose, onSave, item }: BusinessI
               onChange={setDomainNameKo}
               options={domainOptions}
               placeholder="도메인(L1) 명(한글)을 선택하세요."
+              disabled
             />
           </div>
 
@@ -281,6 +282,7 @@ export function BusinessInfoEditPopup({ open, onClose, onSave, item }: BusinessI
               onChange={setComponentNameKo}
               options={componentOptions}
               placeholder="컴포넌트(L2) 명(한글)을 선택하세요."
+              disabled
             />
           </div>
 
