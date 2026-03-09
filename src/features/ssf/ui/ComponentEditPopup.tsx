@@ -313,6 +313,7 @@ export function ComponentEditPopup({ open, onClose, item }: ComponentEditPopupPr
               onChange={setDomainNameKo}
               options={getDomainOptions(item.domainNameKo)}
               placeholder="도메인(L1) 명을 선택하세요."
+              disabled
             />
           </div>
 
@@ -325,6 +326,7 @@ export function ComponentEditPopup({ open, onClose, item }: ComponentEditPopupPr
               placeholder="컴포넌트(한글) 명을 입력하세요."
               maxLength={70}
               indicator={`${nameKo.length}/70`}
+              disabled
             />
           </div>
 
@@ -337,6 +339,7 @@ export function ComponentEditPopup({ open, onClose, item }: ComponentEditPopupPr
               placeholder="컴포넌트(영문) 명을 입력하세요."
               maxLength={70}
               indicator={`${nameEn.length}/70`}
+              disabled
             />
           </div>
 
