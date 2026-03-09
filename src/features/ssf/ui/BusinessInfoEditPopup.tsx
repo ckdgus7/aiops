@@ -5,6 +5,7 @@ import { Button } from "@/shared/ui/global/Button";
 import { RadioGroup } from "@/shared/ui/global/RadioGroup";
 import { TiptapEditor } from "@/shared/ui/service/TiptapEditor";
 import { AlertModal } from "@/shared/ui/global/AlertModal";
+import { Snackbar } from "@/shared/ui/global/Snackbar";
 import { COMPONENT_MOCK_DATA } from "@/features/ssf/model/mock-data";
 import type { BusinessItem } from "@/features/ssf/model/types";
 import { FONT } from "@/shared/ui/styles";
@@ -180,6 +181,7 @@ export function BusinessInfoEditPopup({ open, onClose, onSave, item }: BusinessI
   const [description, setDescription] = useState("");
   const [useYn, setUseYn] = useState("사용");
   const [closeAlertOpen, setCloseAlertOpen] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   useEffect(() => {
     if (open && item) {
@@ -244,7 +246,10 @@ export function BusinessInfoEditPopup({ open, onClose, onSave, item }: BusinessI
   const handleSave = () => {
     if (!isValid) return;
     onSave?.();
-    onClose();
+    setSnackbarOpen(true);
+    setTimeout(() => {
+      onClose();
+    }, 1500);
   };
 
   return (
@@ -365,6 +370,12 @@ export function BusinessInfoEditPopup({ open, onClose, onSave, item }: BusinessI
           </div>
         </div>
       </div>
+      <Snackbar
+        open={snackbarOpen}
+        onClose={() => setSnackbarOpen(false)}
+        type="success"
+        message="저장 되었습니다."
+      />
       <AlertModal
         open={closeAlertOpen}
         onClose={() => setCloseAlertOpen(false)}
