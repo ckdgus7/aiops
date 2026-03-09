@@ -132,10 +132,21 @@ export function ComponentInfoListView() {
   const [page, setPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
-  const domainOptions = useMemo(() => {
-    const names = DOMAIN_MOCK_DATA.map((d) => d.nameKo);
-    return [{ label: "전체", value: "" }, ...names.map((n) => ({ label: n, value: n }))];
-  }, []);
+  const domainOptions = useMemo(() => [
+    { label: "마케팅&오퍼링", value: "마케팅&오퍼링" },
+    { label: "CRM", value: "CRM" },
+    { label: "파티", value: "파티" },
+    { label: "파트너", value: "파트너" },
+    { label: "엔터프라이즈 상품 카탈로그", value: "엔터프라이즈 상품 카탈로그" },
+    { label: "상품 주문", value: "상품 주문" },
+    { label: "서비스 주문", value: "서비스 주문" },
+    { label: "리소스 주문&풀필먼트", value: "리소스 주문&풀필먼트" },
+    { label: "통합 과금", value: "통합 과금" },
+    { label: "빌링", value: "빌링" },
+    { label: "AI&데이터", value: "AI&데이터" },
+    { label: "공통 비즈니스 서비스", value: "공통 비즈니스 서비스" },
+    { label: "엔터프라이즈 통합", value: "엔터프라이즈 통합" },
+  ], []);
 
   const handleSort = (key: ComponentSortKey) => {
     if (sortKey === key) {
@@ -223,8 +234,9 @@ export function ComponentInfoListView() {
                 value={domainFilter}
                 onChange={(v) => { setDomainFilter(v); setPage(1); }}
                 options={domainOptions}
+                label="도메인(L1)"
                 placeholder="도메인(L1)"
-                wrapperStyle={{ width: 180 }}
+                wrapperStyle={{ width: 250 }}
               />
             </div>
           </div>
