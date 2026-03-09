@@ -166,14 +166,14 @@ const USE_YN_OPTIONS = [
   { label: "미사용", value: "미사용" },
 ];
 
-interface BusinessInfoEditPopupProps {
+interface BusinessEditPopupProps {
   open: boolean;
   onClose: () => void;
   onSave?: () => void;
   item: BusinessItem | null;
 }
 
-export function BusinessInfoEditPopup({ open, onClose, onSave, item }: BusinessInfoEditPopupProps) {
+export function BusinessEditPopup({ open, onClose, onSave, item }: BusinessEditPopupProps) {
   const [domainNameKo, setDomainNameKo] = useState("");
   const [componentNameKo, setComponentNameKo] = useState("");
   const [nameKo, setNameKo] = useState("");

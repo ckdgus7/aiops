@@ -11,7 +11,7 @@ import { BpmnViewer } from "@/shared/ui/service/BpmnViewer";
 import { TiptapEditor } from "@/shared/ui/service/TiptapEditor";
 import { RadioGroup } from "@/shared/ui/global/RadioGroup";
 import { Button } from "@/shared/ui/global/Button";
-import { BusinessInfoEditPopup } from "@/features/ssf/ui/BusinessInfoEditPopup";
+import { BusinessEditPopup } from "@/features/ssf/ui/BusinessEditPopup";
 import { FONT } from "@/shared/ui/styles";
 
 function ChevronIcon() {
@@ -1243,7 +1243,7 @@ export function BusinessDetailView() {
           </div>
         </div>
       </div>
-      <BusinessInfoEditPopup
+      <BusinessEditPopup
         open={editOpen}
         onClose={() => setEditOpen(false)}
         item={item}
