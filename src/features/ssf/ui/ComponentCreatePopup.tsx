@@ -3,7 +3,7 @@ import { Button } from "@/shared/ui/global/Button";
 import { Input } from "@/shared/ui/global/Input";
 import { SelectBox } from "@/shared/ui/global/SelectBox";
 import { RadioGroup } from "@/shared/ui/global/RadioGroup";
-import { TiptapEditor } from "@/shared/ui/service/TiptapEditor";
+import { ToastEditor } from "@/shared/ui/service/ToastEditor";
 import { FONT, popupStyles } from "@/shared/ui/styles";
 
 interface ComponentCreatePopupProps {
@@ -285,7 +285,7 @@ export function ComponentCreatePopup({ open, onClose, onSave }: ComponentCreateP
 
           <div style={s.fieldRow}>
             <span style={s.editorLabel}>컴포넌트(L2) 설명</span>
-            <TiptapEditor
+            <ToastEditor
               value={description}
               onChange={setDescription}
               placeholder="컴포넌트(L2) 설명을 입력하세요."

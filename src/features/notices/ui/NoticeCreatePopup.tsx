@@ -5,7 +5,7 @@ import { Button } from "@/shared/ui/global/Button";
 import { Checkbox } from "@/shared/ui/global/Checkbox";
 import { DatePicker } from "@/shared/ui/global/DatePicker";
 import { FileUpload } from "@/shared/ui/global/FileUpload";
-import { TiptapEditor } from "@/shared/ui/service/TiptapEditor";
+import { ToastEditor } from "@/shared/ui/service/ToastEditor";
 import { popupStyles as ps } from "@/shared/ui/styles";
 
 interface NoticeCreatePopupProps {
@@ -126,7 +126,7 @@ export function NoticeCreatePopup({ open, onClose }: NoticeCreatePopupProps) {
                 <span style={ps.labelText}>내용</span>
                 <span style={ps.requiredDot} />
               </div>
-              <TiptapEditor
+              <ToastEditor
                 value={content}
                 onChange={setContent}
                 placeholder="내용을 입력하세요."

@@ -3,7 +3,7 @@ import { SelectBox } from "@/shared/ui/global/SelectBox";
 import { Input } from "@/shared/ui/global/Input";
 import { Button } from "@/shared/ui/global/Button";
 import { RadioGroup } from "@/shared/ui/global/RadioGroup";
-import { TiptapEditor } from "@/shared/ui/service/TiptapEditor";
+import { ToastEditor } from "@/shared/ui/service/ToastEditor";
 import { AlertModal } from "@/shared/ui/global/AlertModal";
 import { Snackbar } from "@/shared/ui/global/Snackbar";
 import { COMPONENT_MOCK_DATA } from "@/features/ssf/model/mock-data";
@@ -236,12 +236,6 @@ export function BusinessEditPopup({ open, onClose, onSave, item }: BusinessEditP
     descPlainLength > 0 &&
     descPlainLength <= 3000;
 
-  const handleDescChange = (val: string) => {
-    const plainLen = val.replace(/<[^>]*>/g, "").length;
-    if (plainLen <= 3000) {
-      setDescription(val);
-    }
-  };
 
   const handleSave = () => {
     if (!isValid) return;
@@ -330,11 +324,12 @@ export function BusinessEditPopup({ open, onClose, onSave, item }: BusinessEditP
               <span style={ps.label}>업무 설명</span>
               <div style={ps.requiredMark} />
             </div>
-            <TiptapEditor
+            <ToastEditor
               value={description}
-              onChange={handleDescChange}
+              onChange={setDescription}
               placeholder="과제 개요를 입력하세요."
               minHeight={300}
+              maxLength={3000}
             />
             <div style={ps.charCount}>{descPlainLength}/3000</div>
           </div>

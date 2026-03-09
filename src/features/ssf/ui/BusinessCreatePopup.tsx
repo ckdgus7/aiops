@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, type CSSProperties } from "react";
 import { SelectBox } from "@/shared/ui/global/SelectBox";
 import { Input } from "@/shared/ui/global/Input";
 import { Button } from "@/shared/ui/global/Button";
-import { TiptapEditor } from "@/shared/ui/service/TiptapEditor";
+import { ToastEditor } from "@/shared/ui/service/ToastEditor";
 import { COMPONENT_MOCK_DATA } from "@/features/ssf/model/mock-data";
 import { FONT } from "@/shared/ui/styles";
 
@@ -237,12 +237,6 @@ export function BusinessCreatePopup({ open, onClose, onSave }: BusinessCreatePop
     descPlainLength > 0 &&
     descPlainLength <= 3000;
 
-  const handleDescChange = (val: string) => {
-    const plainLen = val.replace(/<[^>]*>/g, "").length;
-    if (plainLen <= 3000) {
-      setDescription(val);
-    }
-  };
 
   const handleSave = () => {
     if (!isValid) return;
@@ -340,11 +334,12 @@ export function BusinessCreatePopup({ open, onClose, onSave }: BusinessCreatePop
               <span style={ps.label}>업무 설명</span>
               <div style={ps.requiredMark} />
             </div>
-            <TiptapEditor
+            <ToastEditor
               value={description}
-              onChange={handleDescChange}
+              onChange={setDescription}
               placeholder="과제 개요를 입력하세요."
               minHeight={300}
+              maxLength={3000}
             />
             <div style={ps.charCount}>{descPlainLength}/3000</div>
           </div>

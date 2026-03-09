@@ -3,7 +3,7 @@ import { Button } from "@/shared/ui/global/Button";
 import { Input } from "@/shared/ui/global/Input";
 import { SelectBox } from "@/shared/ui/global/SelectBox";
 import { RadioGroup } from "@/shared/ui/global/RadioGroup";
-import { TiptapEditor } from "@/shared/ui/service/TiptapEditor";
+import { ToastEditor } from "@/shared/ui/service/ToastEditor";
 import type { ComponentItem } from "@/features/ssf/model/types";
 import { DOMAIN_MOCK_DATA } from "@/features/ssf/model/mock-data";
 import { FONT, popupStyles } from "@/shared/ui/styles";
@@ -417,7 +417,7 @@ export function ComponentEditPopup({ open, onClose, item }: ComponentEditPopupPr
 
           <div style={st.fieldRow}>
             <span style={st.editorLabel}>컴포넌트(L2) 설명</span>
-            <TiptapEditor
+            <ToastEditor
               value={description}
               onChange={setDescription}
               placeholder="컴포넌트(L2) 설명을 입력하세요."
