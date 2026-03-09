@@ -541,7 +541,7 @@ export function BusinessInfoListView() {
   }, [addTab]);
 
   const [domainFilter, setDomainFilter] = useState("");
-  const [componentFilter, setComponentFilter] = useState("");
+  const [componentFilter, setComponentFilter] = useState<string[]>([]);
   const [searchKey, setSearchKey] = useState("업무(L3)명");
   const [searchKeywordDraft, setSearchKeywordDraft] = useState("");
   const [appliedKeyword, setAppliedKeyword] = useState("");
@@ -572,7 +572,7 @@ export function BusinessInfoListView() {
 
   const componentOptions = useMemo(() => {
     const names = [...new Set(COMPONENT_MOCK_DATA.map((c) => c.nameKo))];
-    return [{ label: "전체", value: "" }, ...names.map((n) => ({ label: n, value: n }))];
+    return names.map((n) => ({ label: n, value: n }));
   }, []);
 
   const handleSort = (key: BusinessSortKey) => {
@@ -594,7 +594,7 @@ export function BusinessInfoListView() {
 
   const filtered = BUSINESS_MOCK_DATA.filter((item) => {
     if (domainFilter && item.domainNameKo !== domainFilter) return false;
-    if (componentFilter && item.componentNameKo !== componentFilter) return false;
+    if (componentFilter.length > 0 && !componentFilter.includes(item.componentNameKo)) return false;
     if (appliedKeyword) {
       const kw = appliedKeyword.toLowerCase();
       if (appliedSearchKey === "업무(L3)명") {
@@ -678,11 +678,13 @@ export function BusinessInfoListView() {
               wrapperStyle={{ width: 250 }}
             />
             <SelectBox
+              multiple
+              searchable
               value={componentFilter}
               onChange={(v) => { setComponentFilter(v); setPage(1); }}
               options={componentOptions}
               placeholder="컴포넌트(L2)"
-              wrapperStyle={{ width: 180 }}
+              wrapperStyle={{ width: 220 }}
             />
           </div>
           <div style={s.filterRight}>
