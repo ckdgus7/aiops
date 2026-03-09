@@ -1,0 +1,1 @@
+import{j as i}from"./index-BfRhNC_0.js";import{B as t}from"./BlankPage-hg84i1EB.js";import"./usePageHeader-Cu4aIY6G.js";function a(){return i.jsx(t,{title:"퍼블리싱",gnbName:"UI 관리",path:"/ui/publishing"})}export{a as PublishingPage};

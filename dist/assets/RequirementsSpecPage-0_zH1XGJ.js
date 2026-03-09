@@ -1,0 +1,1 @@
+import{j as e}from"./index-BfRhNC_0.js";import{B as t}from"./BlankPage-hg84i1EB.js";import"./usePageHeader-Cu4aIY6G.js";function n(){return e.jsx(t,{title:"요구사항 명세 작성",gnbName:"요구관리",path:"/requirements/spec"})}export{n as RequirementsSpecPage};

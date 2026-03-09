@@ -1,0 +1,72 @@
+[
+  {
+    "id": "1",
+    "gnbName": "요구관리",
+    "lnb": [
+      { "name": "요구사항", "path": "/requirements" },
+      { "name": "요구사항 명세 작성", "path": "/requirements/spec" },
+      { "name": "요구사항 검토자 배정", "path": "/requirements/reviewer" },
+      { "name": "요구사항 검토", "path": "/requirements/review" },
+      { "name": "요구상세", "path": "/requirements/detail" },
+      { "name": "요구상세 승인", "path": "/requirements/approval" },
+      { "name": "요구사항 반려 검토", "path": "/requirements/reject-review" },
+      { "name": "업무 Flow 설계", "path": "/requirements/flow-design" },
+      { "name": "애플리케이션 설계", "path": "/requirements/app-design" }
+    ]
+  },
+  {
+    "id": "2",
+    "gnbName": "UI 관리",
+    "lnb": [
+      { "name": "SB기획", "path": "/ui/sb-planning" },
+      { "name": "UI디자인", "path": "/ui/design" },
+      { "name": "퍼블리싱", "path": "/ui/publishing" }
+    ]
+  },
+  {
+    "id": "3",
+    "gnbName": "기능관리",
+    "lnb": [
+      { "name": "기능설계", "path": "/features/design" },
+      { "name": "상세기능 설계", "path": "/features/detail-design" }
+    ]
+  },
+  {
+    "id": "4",
+    "gnbName": "게시판",
+    "lnb": [
+      { "name": "공지사항", "path": "/notices" },
+      { "name": "Q&A", "path": "/qna" }
+    ]
+  },
+  {
+    "id": "5",
+    "gnbName": "SSF관리",
+    "lnb": [
+      { "name": "도메인(L1)정보 관리", "path": "/ssf/domain" },
+      { "name": "컴포넌트(L2)정보 관리", "path": "/ssf/component" },
+      { "name": "업무(L3)정보 관리", "path": "/ssf/business" },
+      { "name": "기능(L4)정보 관리", "path": "/ssf/function" },
+      { "name": "SSF탐색기", "path": "/ssf/explorer" }
+    ]
+  },
+  {
+    "id": "6",
+    "gnbName": "워크스페이스",
+    "lnb": [
+      { "name": "사용자 관리", "path": "/workspace/users" },
+      { "name": "사이트 이용약관 관리", "path": "/workspace/terms" },
+      { "name": "개인정보 처리방침 관리", "path": "/workspace/privacy" }
+    ]
+  },
+  {
+    "id": "7",
+    "gnbName": "업무 기준 정보 관리",
+    "lnb": [
+      { "name": "업무Flow 관리", "path": "/business-info/flow" },
+      { "name": "화면 기준 정보 관리", "path": "/business-info/screen" },
+      { "name": "개발 진척 관리", "path": "/business-info/progress" },
+      { "name": "과제 관리", "path": "/business-info/project" }
+    ]
+  }
+]

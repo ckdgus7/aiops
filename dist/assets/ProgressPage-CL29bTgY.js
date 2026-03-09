@@ -1,0 +1,1 @@
+import{j as r}from"./index-BfRhNC_0.js";import{B as s}from"./BlankPage-hg84i1EB.js";import"./usePageHeader-Cu4aIY6G.js";function i(){return r.jsx(s,{title:"개발 진척 관리",gnbName:"업무 기준 정보 관리",path:"/business-info/progress"})}export{i as ProgressPage};

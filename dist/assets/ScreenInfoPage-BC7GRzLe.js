@@ -1,0 +1,1 @@
+import{j as e}from"./index-BfRhNC_0.js";import{B as n}from"./BlankPage-hg84i1EB.js";import"./usePageHeader-Cu4aIY6G.js";function s(){return e.jsx(n,{title:"화면 기준 정보 관리",gnbName:"업무 기준 정보 관리",path:"/business-info/screen"})}export{s as ScreenInfoPage};
