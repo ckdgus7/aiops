@@ -596,7 +596,7 @@ export function SelectBox(props: SelectBoxProps) {
             )}
           </>
         )}
-        {hasClearable && (
+        {hasClearable && !disabled && (
           <span style={iconBtn} onClick={handleClearAll}>
             <ClearIcon />
           </span>
