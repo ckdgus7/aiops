@@ -10,6 +10,7 @@ import { BpmnViewer } from "@/shared/ui/service/BpmnViewer";
 import { TiptapEditor } from "@/shared/ui/service/TiptapEditor";
 import { RadioGroup } from "@/shared/ui/global/RadioGroup";
 import { Button } from "@/shared/ui/global/Button";
+import { BusinessInfoEditPopup } from "@/features/ssf/ui/BusinessInfoEditPopup";
 import { FONT } from "@/shared/ui/styles";
 
 function ChevronIcon() {
@@ -802,6 +803,7 @@ export function BusinessDetailView() {
   const [bpdSpec, setBpdSpec] = useState("");
   const [bpdVersionType, setBpdVersionType] = useState("Major");
   const [bpdVersionDesc, setBpdVersionDesc] = useState("");
+  const [editOpen, setEditOpen] = useState(false);
 
   const item = BUSINESS_MOCK_DATA.find((b) => b.businessId === id);
 
@@ -825,7 +827,7 @@ export function BusinessDetailView() {
         <Button size="m" variant="outlined" color="negative" onClick={() => {}}>
           삭제
         </Button>
-        <Button size="m" variant="filled" color="positive" onClick={() => {}}>
+        <Button size="m" variant="filled" color="positive" onClick={() => setEditOpen(true)}>
           수정
         </Button>
       </div>
@@ -1172,6 +1174,11 @@ export function BusinessDetailView() {
           </div>
         </div>
       </div>
+      <BusinessInfoEditPopup
+        open={editOpen}
+        onClose={() => setEditOpen(false)}
+        item={item}
+      />
     </div>
   );
 }
