@@ -14,7 +14,7 @@ export function DomainCreatePopup({
   onClose,
   onSave,
 }: DomainCreatePopupProps) {
-  const [snackbarOpen, setSnackbarOpen] = useState(true);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
   const handleSave = (data: DomainFormData) => {
     onSave?.(data);
     setSnackbarOpen(true);

@@ -1,6 +1,11 @@
 import type { RouteObject } from 'react-router';
 import { lazy, Suspense } from 'react';
+import { Layout } from '@/shared/ui/Layout';
 import { LayoutRoute } from '@/shared/ui/LayoutRoute';
+
+const SsoLoginPage = lazy(() =>
+  import('@/pages/workspace/SsoLogin').then(m => ({ default: m.SsoLoginPage })),
+);
 
 const NoticeListPage = lazy(() =>
   import('@/pages/notices/NoticeListPage').then(m => ({ default: m.NoticeListPage })),
@@ -89,6 +94,9 @@ const TermsPage = lazy(() =>
 const PrivacyPage = lazy(() =>
   import('@/pages/workspace/PrivacyPage').then(m => ({ default: m.PrivacyPage })),
 );
+const LoginErrorPage = lazy(() =>
+  import('@/pages/workspace/LoginErrorPage').then(m => ({ default: m.LoginErrorPage })),
+);
 
 const FlowManagementPage = lazy(() =>
   import('@/pages/business-info/FlowManagementPage').then(m => ({ default: m.FlowManagementPage })),
@@ -116,6 +124,13 @@ function withSuspense(Component: React.LazyExoticComponent<React.ComponentType>)
 }
 
 export const routes: RouteObject[] = [
+  {
+    element: <Layout />,
+    children: [
+      { path: '/ssoLogin', element: withSuspense(SsoLoginPage) },
+      { path: '/login-error', element: withSuspense(LoginErrorPage) },
+    ],
+  },
   {
     element: <LayoutRoute />,
     children: [

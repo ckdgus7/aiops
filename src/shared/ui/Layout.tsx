@@ -1,6 +1,5 @@
 import type { CSSProperties, ReactNode } from "react";
-import { LNB } from "./service/LNB";
-
+import { Outlet } from "react-router";
 const styles = {
   container: {
     display: "flex",
@@ -22,15 +21,10 @@ interface LayoutProps {
   activeLnb?: string;
 }
 
-export function Layout({
-  children,
-  activeGnb = "게시판",
-  activeLnb = "Q&A",
-}: LayoutProps) {
+export function Layout() {
   return (
     <div style={styles.container}>
-      <LNB activeItem={activeLnb} activeGnb={activeGnb} />
-      <main style={styles.content}>{children}</main>
+      <main style={styles.content}><Outlet /></main>
     </div>
   );
 }

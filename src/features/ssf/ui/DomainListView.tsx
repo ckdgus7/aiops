@@ -353,13 +353,13 @@ export function DomainListView() {
         open={createPopupOpen}
         onClose={() => setCreatePopupOpen(false)}
       />
-      <DomainFormPopup
+      {/* <DomainFormPopup
         open={popupOpen}
         onClose={() => setPopupOpen(false)}
         mode="edit"
         initialData={editTarget}
         onDelete={() => setDeletePopupOpen(true)}
-      />
+      /> */}
       <DomainDeletePopup
         open={deletePopupOpen}
         onClose={() => setDeletePopupOpen(false)}
