@@ -72,15 +72,15 @@ function ReplyIcon() {
 }
 
 const CATEGORY_OPTIONS = [
-  { label: "전체", value: "전체" },
-  { label: "이용문의", value: "이용문의" },
-  { label: "기술", value: "기술" },
+  { label: "공통", value: "공통" },
+  { label: "업무", value: "업무" },
+  { label: "서비스", value: "서비스" },
 ];
 
 const SEARCH_SCOPE_OPTIONS = [
-  { label: "전체", value: "전체" },
-  { label: "제목", value: "제목" },
-  { label: "작성자", value: "작성자" },
+  { label: "계정", value: "계정" },
+  { label: "이용방법", value: "이용방법" },
+  { label: "기타문의", value: "기타문의" },
 ];
 
 const COLUMNS: { key: QnASortKey; label: string; width: number | string; align?: "left" | "center"; sortable?: boolean }[] = [
@@ -157,11 +157,11 @@ export function QnAListView() {
   }, [addTab]);
 
   const [createPopupOpen, setCreatePopupOpen] = useState(false);
-  const [categoryFilter, setCategoryFilter] = useState("전체");
-  const [searchScope, setSearchScope] = useState("전체");
+  const [categoryFilter, setCategoryFilter] = useState("");
+  const [searchScope, setSearchScope] = useState("");
   const [searchKeywordDraft, setSearchKeywordDraft] = useState("");
   const [appliedKeyword, setAppliedKeyword] = useState("");
-  const [appliedScope, setAppliedScope] = useState("전체");
+  const [appliedScope, setAppliedScope] = useState("");
   const [sortKey, setSortKey] = useState<QnASortKey | null>(null);
   const [sortDir, setSortDir] = useState<QnASortDir>(null);
   const [page, setPage] = useState(1);
@@ -224,8 +224,8 @@ export function QnAListView() {
               value={categoryFilter}
               onChange={(v) => { setCategoryFilter(v); setPage(1); }}
               options={CATEGORY_OPTIONS}
-              placeholder="분류"
-              wrapperStyle={{ width: 140 }}
+              placeholder="구분"
+              wrapperStyle={{ width: 120 }}
             />
           </div>
           <div style={s.filterRight}>
@@ -233,7 +233,7 @@ export function QnAListView() {
               value={searchScope}
               onChange={setSearchScope}
               options={SEARCH_SCOPE_OPTIONS}
-              placeholder="검색범위"
+              placeholder="선택"
               wrapperStyle={{ width: 140, flexShrink: 0 }}
             />
             <Input
