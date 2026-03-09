@@ -213,6 +213,16 @@ export function QnAListView() {
     breadcrumbItems: [{ label: "게시판" }, { label: "Q&A" }],
     title: "Q&A",
     favoriteKey: "Q&A",
+    actions: (
+      <Button
+        size="m"
+        variant="filled"
+        color="positive"
+        onClick={() => setCreatePopupOpen(true)}
+      >
+        등록
+      </Button>
+    ),
   });
 
   return (
@@ -325,14 +335,6 @@ export function QnAListView() {
               <button style={listStyles.downloadBtn} title="다운로드">
                 <DownloadIcon />
               </button>
-              <Button
-                size="m"
-                variant="filled"
-                color="positive"
-                onClick={() => setCreatePopupOpen(true)}
-              >
-                등록
-              </Button>
             </div>
           </div>
 
