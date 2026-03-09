@@ -61,9 +61,9 @@ export function LoginErrorPage() {
       <div style={s.content}>
         <ErrorIcon />
         <span style={s.title}>로그인이 실패하였습니다.</span>
-        <span style={s.message}>
+        {/* <span style={s.message}>
           아이디 또는 비밀번호가 올바르지 않거나, 접근 권한이 없습니다.
-        </span>
+        </span> */}
         <span style={s.subMessage}>
           문제가 계속될 경우 시스템 관리자에게 문의해 주세요.
         </span>
