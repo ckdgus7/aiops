@@ -1,1 +1,0 @@
-import{j as t}from"./index-Dl5UKzKa.js";import{B as i}from"./BlankPage-agrsVJLu.js";import"./usePageHeader-BjGMLXhB.js";function o(){return t.jsx(i,{title:"UI디자인",gnbName:"UI 관리",path:"/ui/design"})}export{o as UiDesignPage};

@@ -1,1 +1,0 @@
-import{j as t}from"./index-Dl5UKzKa.js";import{B as n}from"./BlankPage-agrsVJLu.js";import"./usePageHeader-BjGMLXhB.js";function a(){return t.jsx(n,{title:"기능(L4)정보 관리",gnbName:"SSF관리",path:"/ssf/function"})}export{a as FunctionInfoPage};

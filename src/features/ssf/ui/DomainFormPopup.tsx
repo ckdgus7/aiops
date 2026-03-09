@@ -1,9 +1,9 @@
 import { useState, useEffect, type CSSProperties } from "react";
 import { Button } from "@/shared/ui/global/Button";
 import { Input } from "@/shared/ui/global/Input";
-import { Textarea } from "@/shared/ui/global/Textarea";
 import { RadioGroup } from "@/shared/ui/global/RadioGroup";
 import { AlertModal } from "@/shared/ui/global/AlertModal";
+import { ToastEditor } from "@/shared/ui/service/ToastEditor";
 import type { DomainItem } from "@/features/ssf/model/types";
 import { FONT, popupStyles } from "@/shared/ui/styles";
 
@@ -218,17 +218,22 @@ export function DomainFormPopup({
             />
           </div>
 
-          <Textarea
-            label="도메인(L1) 설명"
-            required
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="설명을 입력하세요."
-            maxLength={500}
-            indicator
-            wrapperStyle={{ minHeight: 400 }}
-            style={{ minHeight: 350 }}
-          />
+          <div style={s.fieldRow}>
+            <div style={s.labelRow}>
+              <span style={s.label}>도메인(L1) 설명</span>
+              <div style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: "#36bffa", flexShrink: 0 }} />
+            </div>
+            <ToastEditor
+              value={description}
+              onChange={setDescription}
+              placeholder="설명을 입력하세요."
+              minHeight={400}
+              maxLength={500}
+            />
+            <div style={{ fontFamily: FONT, fontSize: 12, fontWeight: 400, lineHeight: "16px", color: "#a1a1aa", textAlign: "right" as const, marginTop: 4 }}>
+              {description.replace(/<[^>]*>/g, "").length}/500
+            </div>
+          </div>
 
           <div style={s.fieldRow}>
             <div style={s.labelRow}>

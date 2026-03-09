@@ -26,7 +26,7 @@ vite.config.ts  - Vite configuration
 - **Stories location**: Co-located with components as `*.stories.tsx` files
 - **Component library coverage**:
   - `src/shared/ui/global/` — Button, Input, Checkbox, Toggle, RadioGroup, SelectBox, Textarea, DatePicker, ChooseButton, AlertModal, Snackbar, FileUpload (12 components)
-  - `src/shared/ui/service/` — Breadcrumb, PageTitle, PageFooter, BlankPage, MdiTab, TopUtil, MyInfo, MyNotification, TiptapEditor, BpmnViewer (10 components)
+  - `src/shared/ui/service/` — Breadcrumb, PageTitle, PageFooter, BlankPage, MdiTab, TopUtil, MyInfo, MyNotification, TiptapEditor, BpmnViewer, ToastEditor (11 components)
   - `src/shared/ui/popup/` — ReasonPopup, TermsPopup, PrivacyPopup (3 components)
 
 ## Menu Structure & Routes
@@ -111,6 +111,7 @@ All other pages are blank placeholder pages using the shared `BlankPage` compone
 - **Textarea** (`src/shared/ui/global/Textarea.tsx`): Figma-based textarea field. Props: `label`, `required` (6px blue dot), `indicator` (charCount/maxLength, default true), `maxLength` (default 300), `error` (border #ee46bc), `helperText`, `readOnly` (bg #fafafa), `disabled` (bg #f4f4f5). Container: min-height 120px, padding 8px, border 1px solid, radius 4px, flex-col justify-between. Focus border #7a5af8. Text: Pretendard Regular 16px/24px #3f3f46. Indicator: 12px/18px #a1a1aa bottom-right.
 - **Checkbox** (`src/shared/ui/global/Checkbox.tsx`): Figma-based checkbox. Props: `checked`, `onChange` (boolean callback), `label`, `size` (l/m/s → 24/20/18px box), `disabled`. Checked: bg #7a5af8, white checkmark SVG. Unchecked: white bg, border #e4e7ec. Disabled: bg #71717a opacity 0.6 (checked) or border opacity 0.6 (unchecked). Border-radius 4px (L/M) or 3px (S). Label: Pretendard Regular, color #3f3f46. Sizes: L=16px, M=14px, S=12px text.
 - **TiptapEditor** (`src/shared/ui/service/TiptapEditor.tsx`): Rich text editor using Tiptap. Props: `value` (HTML string), `onChange` (html callback), `placeholder`, `minHeight` (default 300). Toolbar: H1-H3, bold/italic/underline/strikethrough, bullet/ordered list, blockquote/code block/horizontal rule, text align left/center/right, undo/redo. Extensions: StarterKit, Underline, TextAlign, Placeholder. Inline styles + injected CSS for ProseMirror.
+- **ToastEditor** (`src/shared/ui/service/ToastEditor.tsx`): Rich text editor using `@toast-ui/editor` (core only, custom React wrapper for React 19 compat). Props: `value` (HTML string), `onChange` (html callback), `placeholder`, `minHeight` (default 300), `height` (default "auto"). Toolbar: heading/bold/italic/strike, hr/quote, ul/ol/task, table/link, code/codeblock. Default mode: WYSIWYG. Used in DomainFormPopup for domain description field.
 - When composing screens, import and use the common components (such as Button, Input, Datepicker, SelectBox, RadioGroup, Checkbox, TiptapEditor, etc.) that are defined in `shared/ui/global`.
 - **All styles use inline CSSProperties** (no CSS files, no Tailwind). Pretendard font family.
 

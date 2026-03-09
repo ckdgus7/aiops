@@ -1,1 +1,0 @@
-import{j as t}from"./index-Dl5UKzKa.js";import{B as o}from"./BlankPage-agrsVJLu.js";import"./usePageHeader-BjGMLXhB.js";function n(){return t.jsx(o,{title:"과제 관리",gnbName:"업무 기준 정보 관리",path:"/business-info/project"})}export{n as ProjectPage};

@@ -1,1 +1,0 @@
-import{j as r}from"./index-Dl5UKzKa.js";import{B as t}from"./BlankPage-agrsVJLu.js";import"./usePageHeader-BjGMLXhB.js";function a(){return r.jsx(t,{title:"사용자 관리",gnbName:"워크스페이스",path:"/workspace/users"})}export{a as UsersPage};

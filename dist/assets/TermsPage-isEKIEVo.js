@@ -1,0 +1,1 @@
+import{j as r}from"./index-4vKZSMnB.js";import{B as t}from"./BlankPage-ChR68buW.js";import"./usePageHeader-CmoGXkei.js";function a(){return r.jsx(t,{title:"사이트 이용약관 관리",gnbName:"워크스페이스",path:"/workspace/terms"})}export{a as TermsPage};
