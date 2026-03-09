@@ -4,6 +4,7 @@ import { Input } from "@/shared/ui/global/Input";
 import { Button } from "@/shared/ui/global/Button";
 import { RadioGroup } from "@/shared/ui/global/RadioGroup";
 import { TiptapEditor } from "@/shared/ui/service/TiptapEditor";
+import { AlertModal } from "@/shared/ui/global/AlertModal";
 import { COMPONENT_MOCK_DATA } from "@/features/ssf/model/mock-data";
 import type { BusinessItem } from "@/features/ssf/model/types";
 import { FONT } from "@/shared/ui/styles";
@@ -178,6 +179,7 @@ export function BusinessInfoEditPopup({ open, onClose, onSave, item }: BusinessI
   const [designLeader, setDesignLeader] = useState("");
   const [description, setDescription] = useState("");
   const [useYn, setUseYn] = useState("사용");
+  const [closeAlertOpen, setCloseAlertOpen] = useState(false);
 
   useEffect(() => {
     if (open && item) {
@@ -246,12 +248,12 @@ export function BusinessInfoEditPopup({ open, onClose, onSave, item }: BusinessI
   };
 
   return (
-    <div style={ps.overlay} onClick={onClose}>
+    <div style={ps.overlay} onClick={() => setCloseAlertOpen(true)}>
       <div style={ps.popup} onClick={(e) => e.stopPropagation()}>
         <div style={ps.header}>
           <div style={ps.titleRow}>
             <span style={ps.titleText}>업무(L3) 수정</span>
-            <button style={ps.closeBtn} onClick={onClose} type="button">
+            <button style={ps.closeBtn} onClick={() => setCloseAlertOpen(true)} type="button">
               <CloseIcon />
             </button>
           </div>
@@ -346,7 +348,7 @@ export function BusinessInfoEditPopup({ open, onClose, onSave, item }: BusinessI
 
         <div style={ps.footer}>
           <div style={ps.footerLeft}>
-            <Button size="l" variant="outlined" color="info" onClick={onClose}>
+            <Button size="l" variant="outlined" color="info" onClick={() => setCloseAlertOpen(true)}>
               닫기
             </Button>
           </div>
@@ -363,6 +365,20 @@ export function BusinessInfoEditPopup({ open, onClose, onSave, item }: BusinessI
           </div>
         </div>
       </div>
+      <AlertModal
+        open={closeAlertOpen}
+        onClose={() => setCloseAlertOpen(false)}
+        type="warning"
+        message="입력값을 초기화 하고 창을 닫습니다."
+        showCancel
+        cancelLabel="취소"
+        confirmLabel="확인"
+        onCancel={() => setCloseAlertOpen(false)}
+        onConfirm={() => {
+          setCloseAlertOpen(false);
+          onClose();
+        }}
+      />
     </div>
   );
 }
