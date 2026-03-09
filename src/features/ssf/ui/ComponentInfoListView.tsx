@@ -213,6 +213,16 @@ export function ComponentInfoListView() {
     breadcrumbItems: [{ label: "SSF관리" }, { label: "컴포넌트(L2)정보 관리" }],
     title: "컴포넌트(L2)정보 관리",
     favoriteKey: "컴포넌트(L2)정보 관리",
+    actions: (
+      <Button
+        size="m"
+        variant="filled"
+        color="positive"
+        onClick={() => setCreatePopupOpen(true)}
+      >
+        컴포넌트(L2) 신규 등록
+      </Button>
+    ),
   });
 
   return (
@@ -338,14 +348,6 @@ export function ComponentInfoListView() {
               <button style={listStyles.downloadBtn} title="다운로드">
                 <DownloadIcon />
               </button>
-              <Button
-                size="m"
-                variant="filled"
-                color="positive"
-                onClick={() => setCreatePopupOpen(true)}
-              >
-                등록
-              </Button>
             </div>
           </div>
 
