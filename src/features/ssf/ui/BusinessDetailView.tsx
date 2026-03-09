@@ -820,6 +820,16 @@ export function BusinessDetailView() {
       { label: "업무(L3)정보 상세" },
     ],
     title: "업무(L3)정보 상세",
+    actions: (
+      <div style={{ display: "flex", gap: 8 }}>
+        <Button size="m" variant="outlined" color="negative" onClick={() => {}}>
+          삭제
+        </Button>
+        <Button size="m" variant="filled" color="positive" onClick={() => {}}>
+          수정
+        </Button>
+      </div>
+    ),
   });
 
   if (!item) {
