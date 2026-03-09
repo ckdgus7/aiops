@@ -675,7 +675,7 @@ export function BusinessInfoListView() {
               onChange={(v) => { setDomainFilter(v); setPage(1); }}
               options={domainOptions}
               placeholder="도메인(L1)"
-              wrapperStyle={{ width: 180 }}
+              wrapperStyle={{ width: 250 }}
             />
             <SelectBox
               value={componentFilter}
