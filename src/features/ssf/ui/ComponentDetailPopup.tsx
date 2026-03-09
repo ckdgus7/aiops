@@ -63,7 +63,40 @@ const MOCK_L3_ITEMS: L3Item[] = [
   { id: "BZ-PTYTMFC028-0020", name: "제휴서비스관리", hasBpd: false },
   { id: "BZ-PTYTMFC028-0019", name: "마케팅분석관리", hasBpd: true },
   { id: "BZ-PTYTMFC028-0018", name: "고객세분화관리", hasBpd: false },
+  { id: "BZ-PTYTMFC028-0017", name: "파트너계약관리", hasBpd: true },
+  { id: "BZ-PTYTMFC028-0016", name: "대리점계약관리", hasBpd: false },
+  { id: "BZ-PTYTMFC028-0015", name: "거래처정보관리", hasBpd: true },
+  { id: "BZ-PTYTMFC028-0014", name: "협력업체관리", hasBpd: false },
+  { id: "BZ-PTYTMFC028-0013", name: "위탁판매관리", hasBpd: true },
+  { id: "BZ-PTYTMFC028-0012", name: "직영점관리", hasBpd: false },
+  { id: "BZ-PTYTMFC028-0011", name: "온라인채널관리", hasBpd: true },
+  { id: "BZ-PTYTMFC028-0010", name: "오프라인채널관리", hasBpd: false },
+  { id: "BZ-PTYTMFC028-0009", name: "채널통합관리", hasBpd: true },
+  { id: "BZ-PTYTMFC028-0008", name: "파트너수수료관리", hasBpd: true },
+  { id: "BZ-PTYTMFC028-0007", name: "대리점수수료관리", hasBpd: false },
+  { id: "BZ-PTYTMFC028-0006", name: "인센티브관리", hasBpd: true },
+  { id: "BZ-PTYTMFC028-0005", name: "파트너교육관리", hasBpd: false },
+  { id: "BZ-PTYTMFC028-0004", name: "자격인증관리", hasBpd: true },
+  { id: "BZ-PTYTMFC028-0003", name: "실적평가관리", hasBpd: true },
 ];
+
+const L3_PAGE_SIZE = 5;
+
+function ChevronLeftIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+      <path d="M8.5 3L4.5 7L8.5 11" stroke="#71717a" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function ChevronRightIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+      <path d="M5.5 3L9.5 7L5.5 11" stroke="#71717a" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
 
 interface HistoryEntry {
   name: string;
@@ -223,11 +256,45 @@ const st = {
     lineHeight: "18px",
     color: "#a1a1aa",
   } satisfies CSSProperties,
-  l3Actions: {
+  l3Pagination: {
     display: "flex",
-    gap: 24,
+    gap: 8,
     alignItems: "center",
-    paddingBottom: 8,
+  } satisfies CSSProperties,
+  l3PageInfo: {
+    fontFamily: FONT,
+    fontSize: 12,
+    fontWeight: 400,
+    lineHeight: "18px",
+    color: "#71717a",
+    whiteSpace: "nowrap",
+  } satisfies CSSProperties,
+  l3PageBtn: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: 24,
+    height: 24,
+    border: "1px solid #e4e4e7",
+    borderRadius: 4,
+    backgroundColor: "#ffffff",
+    cursor: "pointer",
+    padding: 0,
+    flexShrink: 0,
+  } satisfies CSSProperties,
+  l3PageBtnDisabled: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: 24,
+    height: 24,
+    border: "1px solid #e4e4e7",
+    borderRadius: 4,
+    backgroundColor: "#ffffff",
+    cursor: "default",
+    padding: 0,
+    flexShrink: 0,
+    opacity: 0.4,
   } satisfies CSSProperties,
   l3List: {
     display: "flex",
@@ -465,11 +532,19 @@ interface ComponentDetailPopupProps {
 export function ComponentDetailPopup({ open, onClose, item, onDeleted }: ComponentDetailPopupProps) {
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [l3Page, setL3Page] = useState(1);
+
+  const totalL3 = MOCK_L3_ITEMS.length;
+  const totalL3Pages = Math.ceil(totalL3 / L3_PAGE_SIZE);
+  const l3Start = (l3Page - 1) * L3_PAGE_SIZE;
+  const l3End = Math.min(l3Start + L3_PAGE_SIZE, totalL3);
+  const pagedL3Items = MOCK_L3_ITEMS.slice(l3Start, l3End);
 
   useEffect(() => {
     if (!open) {
       setEditOpen(false);
       setDeleteOpen(false);
+      setL3Page(1);
     }
   }, [open]);
 
@@ -569,20 +644,28 @@ export function ComponentDetailPopup({ open, onClose, item, onDeleted }: Compone
             <div style={st.labelControlFull}>
               <div style={st.l3Header}>
                 <span style={{ ...st.l3Label, fontSize: 14 }}>업무(L3)</span>
-                <div style={st.l3Actions}>
-                  <Button size="s" variant="outlined" color="positive" leadingIcon={<span style={{ fontSize: 12 }}>+</span>}>
-                    추가
-                  </Button>
-                  <Button size="s" variant="outlined" color="info">
-                    BPD Map
-                  </Button>
-                  <Button size="s" variant="outlined" color="info">
-                    의존성 Map
-                  </Button>
+                <div style={st.l3Pagination}>
+                  <span style={st.l3PageInfo}>{l3Start + 1}-{l3End} of {totalL3}</span>
+                  <button
+                    style={l3Page <= 1 ? st.l3PageBtnDisabled : st.l3PageBtn}
+                    type="button"
+                    onClick={() => { if (l3Page > 1) setL3Page(l3Page - 1); }}
+                    disabled={l3Page <= 1}
+                  >
+                    <ChevronLeftIcon />
+                  </button>
+                  <button
+                    style={l3Page >= totalL3Pages ? st.l3PageBtnDisabled : st.l3PageBtn}
+                    type="button"
+                    onClick={() => { if (l3Page < totalL3Pages) setL3Page(l3Page + 1); }}
+                    disabled={l3Page >= totalL3Pages}
+                  >
+                    <ChevronRightIcon />
+                  </button>
                 </div>
               </div>
               <div style={st.l3List}>
-                {MOCK_L3_ITEMS.map((l3) => (
+                {pagedL3Items.map((l3) => (
                   <L3ListItem key={l3.id} item={l3} />
                 ))}
               </div>
