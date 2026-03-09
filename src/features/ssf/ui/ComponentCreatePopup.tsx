@@ -4,7 +4,6 @@ import { Input } from "@/shared/ui/global/Input";
 import { SelectBox } from "@/shared/ui/global/SelectBox";
 import { RadioGroup } from "@/shared/ui/global/RadioGroup";
 import { TiptapEditor } from "@/shared/ui/service/TiptapEditor";
-import { DOMAIN_MOCK_DATA } from "@/features/ssf/model/mock-data";
 import { FONT, popupStyles } from "@/shared/ui/styles";
 
 interface ComponentCreatePopupProps {
@@ -124,9 +123,21 @@ const s = {
   footerRight: popupStyles.footerRight,
 };
 
-const DOMAIN_OPTIONS = DOMAIN_MOCK_DATA
-  .filter((d) => d.useYn === "사용")
-  .map((d) => ({ label: d.nameKo, value: d.nameKo }));
+const DOMAIN_OPTIONS = [
+  { label: "마케팅 & 오퍼링", value: "마케팅 & 오퍼링" },
+  { label: "CRM", value: "CRM" },
+  { label: "파티", value: "파티" },
+  { label: "파트너", value: "파트너" },
+  { label: "엔터프라이즈 상품 카탈로그", value: "엔터프라이즈 상품 카탈로그" },
+  { label: "상품 주문", value: "상품 주문" },
+  { label: "서비스 주문", value: "서비스 주문" },
+  { label: "리소스 주문 & 풀필먼트", value: "리소스 주문 & 풀필먼트" },
+  { label: "통합 과금", value: "통합 과금" },
+  { label: "빌링", value: "빌링" },
+  { label: "AI & 데이터", value: "AI & 데이터" },
+  { label: "공통 비즈니스 서비스", value: "공통 비즈니스 서비스" },
+  { label: "엔터프라이즈 통합", value: "엔터프라이즈 통합" },
+];
 
 const USE_YN_OPTIONS = [
   { label: "사용", value: "사용" },
@@ -191,7 +202,7 @@ export function ComponentCreatePopup({ open, onClose, onSave }: ComponentCreateP
         <div style={s.main}>
           <div style={s.fieldRow}>
             <SelectBox
-              label="도메인(한글) 명"
+              label="도메인(L1) 명을 선택하세요."
               required
               value={domainNameKo}
               onChange={setDomainNameKo}
