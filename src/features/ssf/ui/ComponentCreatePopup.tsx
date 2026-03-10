@@ -428,18 +428,22 @@ export function ComponentCreatePopup({ open, onClose, onSave }: ComponentCreateP
   };
 
   const handlePlanSuggestSelect = (item: SuggestItem) => {
+    if (planTimerRef.current) { clearTimeout(planTimerRef.current); planTimerRef.current = null; }
     setPlanLeaders((prev) => [...prev, { name: item.name, org: item.org }]);
     setPlanLeaderInput("");
     setShowPlanSuggestions(false);
     setPlanSuggestions([]);
+    setPlanHoveredIndex(-1);
   };
 
   const handleAddPlanLeader = () => {
     if (!planLeaderInput.trim()) return;
+    if (planTimerRef.current) { clearTimeout(planTimerRef.current); planTimerRef.current = null; }
     setPlanLeaders((prev) => [...prev, { name: planLeaderInput.trim(), org: "Nova 추진팀" }]);
     setPlanLeaderInput("");
     setShowPlanSuggestions(false);
     setPlanSuggestions([]);
+    setPlanHoveredIndex(-1);
   };
 
   const handleDesignLeaderInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -465,28 +469,36 @@ export function ComponentCreatePopup({ open, onClose, onSave }: ComponentCreateP
   };
 
   const handleDesignSuggestSelect = (item: SuggestItem) => {
+    if (designTimerRef.current) { clearTimeout(designTimerRef.current); designTimerRef.current = null; }
     setDesignLeaders((prev) => [...prev, { name: item.name, org: item.org }]);
     setDesignLeaderInput("");
     setShowDesignSuggestions(false);
     setDesignSuggestions([]);
+    setDesignHoveredIndex(-1);
   };
 
   const handleAddDesignLeader = () => {
     if (!designLeaderInput.trim()) return;
+    if (designTimerRef.current) { clearTimeout(designTimerRef.current); designTimerRef.current = null; }
     setDesignLeaders((prev) => [...prev, { name: designLeaderInput.trim(), org: "Nova 추진팀" }]);
     setDesignLeaderInput("");
     setShowDesignSuggestions(false);
     setDesignSuggestions([]);
+    setDesignHoveredIndex(-1);
   };
 
   useEffect(() => {
     if (!showPlanSuggestions && !showDesignSuggestions) return;
     const handleClickOutside = (e: MouseEvent) => {
       if (showPlanSuggestions && planInputWrapRef.current && !planInputWrapRef.current.contains(e.target as Node)) {
+        if (planTimerRef.current) { clearTimeout(planTimerRef.current); planTimerRef.current = null; }
         setShowPlanSuggestions(false);
+        setPlanHoveredIndex(-1);
       }
       if (showDesignSuggestions && designInputWrapRef.current && !designInputWrapRef.current.contains(e.target as Node)) {
+        if (designTimerRef.current) { clearTimeout(designTimerRef.current); designTimerRef.current = null; }
         setShowDesignSuggestions(false);
+        setDesignHoveredIndex(-1);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);

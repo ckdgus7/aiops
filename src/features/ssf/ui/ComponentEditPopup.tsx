@@ -1,4 +1,4 @@
-import { useState, useEffect, type CSSProperties } from "react";
+import { useState, useEffect, useRef, useCallback, type CSSProperties } from "react";
 import { Button } from "@/shared/ui/global/Button";
 import { Input } from "@/shared/ui/global/Input";
 import { SelectBox } from "@/shared/ui/global/SelectBox";
@@ -47,6 +47,25 @@ interface LeaderItem {
   name: string;
   org: string;
 }
+
+interface SuggestItem {
+  name: string;
+  org: string;
+  id: string;
+}
+
+const MOCK_SUGGESTIONS: SuggestItem[] = [
+  { name: "김선경", org: "Nova 추진팀", id: "P12345678" },
+  { name: "김영수", org: "AI플랫폼팀", id: "P12345679" },
+  { name: "김지현", org: "DevOps팀", id: "P12345680" },
+  { name: "이택규", org: "Nova 추진팀", id: "P12345681" },
+  { name: "이상민", org: "클라우드팀", id: "P12345682" },
+  { name: "박관리", org: "Nova 추진팀", id: "P12345683" },
+  { name: "조우찬", org: "Nova 추진팀", id: "P12345684" },
+  { name: "최설계", org: "DevOps팀", id: "P12345685" },
+  { name: "홍길동", org: "AI플랫폼팀", id: "P12345686" },
+  { name: "전상세", org: "Nova 추진팀", id: "P12345687" },
+];
 
 const BASE_DOMAIN_OPTIONS = DOMAIN_MOCK_DATA
   .filter((d) => d.useYn === "사용")
@@ -134,6 +153,7 @@ const st = {
     gap: 10,
     alignItems: "flex-start",
     width: "100%",
+    position: "relative",
   } satisfies CSSProperties,
   editorLabel: {
     fontFamily: FONT,
@@ -216,6 +236,60 @@ const st = {
     alignItems: "center",
   } satisfies CSSProperties,
   footerRight: popupStyles.footerRight,
+  dropdown: {
+    position: "absolute",
+    top: "100%",
+    left: 0,
+    right: 0,
+    marginTop: 4,
+    backgroundColor: "#ffffff",
+    border: "1px solid #e4e4e7",
+    borderRadius: 8,
+    boxShadow: "0 4px 16px rgba(0, 0, 0, 0.08)",
+    zIndex: 10,
+    maxHeight: 240,
+    overflowY: "auto",
+  } satisfies CSSProperties,
+  dropdownItem: {
+    display: "flex",
+    alignItems: "center",
+    gap: 8,
+    padding: "10px 16px",
+    cursor: "pointer",
+    borderBottom: "1px solid #f4f4f5",
+  } satisfies CSSProperties,
+  dropdownItemHover: {
+    backgroundColor: "#f4f3ff",
+  } satisfies CSSProperties,
+  dropdownName: {
+    fontFamily: FONT,
+    fontSize: 14,
+    fontWeight: 500,
+    lineHeight: "20px",
+    color: "#3f3f46",
+  } satisfies CSSProperties,
+  dropdownOrg: {
+    fontFamily: FONT,
+    fontSize: 12,
+    fontWeight: 400,
+    lineHeight: "18px",
+    color: "#a1a1aa",
+  } satisfies CSSProperties,
+  dropdownId: {
+    fontFamily: FONT,
+    fontSize: 12,
+    fontWeight: 400,
+    lineHeight: "18px",
+    color: "#a1a1aa",
+    marginLeft: "auto",
+  } satisfies CSSProperties,
+  dropdownEmpty: {
+    padding: "16px",
+    textAlign: "center",
+    fontFamily: FONT,
+    fontSize: 13,
+    color: "#a1a1aa",
+  } satisfies CSSProperties,
 };
 
 function LeaderListItemRow({ leader, onDelete }: { leader: LeaderItem; onDelete: () => void }) {
@@ -232,6 +306,43 @@ function LeaderListItemRow({ leader, onDelete }: { leader: LeaderItem; onDelete:
       <button style={st.l3DeleteBtn} type="button" onClick={onDelete}>
         <DeleteIcon />
       </button>
+    </div>
+  );
+}
+
+function LeaderAutocompleteDropdown({
+  suggestions,
+  onSelect,
+  hoveredIndex,
+  setHoveredIndex,
+}: {
+  suggestions: SuggestItem[];
+  onSelect: (item: SuggestItem) => void;
+  hoveredIndex: number;
+  setHoveredIndex: (i: number) => void;
+}) {
+  if (suggestions.length === 0) {
+    return (
+      <div style={st.dropdown}>
+        <div style={st.dropdownEmpty}>검색 결과가 없습니다.</div>
+      </div>
+    );
+  }
+  return (
+    <div style={st.dropdown}>
+      {suggestions.map((item, idx) => (
+        <div
+          key={item.id}
+          style={idx === hoveredIndex ? { ...st.dropdownItem, ...st.dropdownItemHover } : st.dropdownItem}
+          onMouseEnter={() => setHoveredIndex(idx)}
+          onMouseLeave={() => setHoveredIndex(-1)}
+          onClick={() => onSelect(item)}
+        >
+          <span style={st.dropdownName}>{item.name}</span>
+          <span style={st.dropdownOrg}>{item.org}</span>
+          <span style={st.dropdownId}>{item.id}</span>
+        </div>
+      ))}
     </div>
   );
 }
@@ -253,6 +364,126 @@ export function ComponentEditPopup({ open, onClose, item }: ComponentEditPopupPr
   const [description, setDescription] = useState("");
   const [useYn, setUseYn] = useState("사용");
 
+  const [showPlanSuggestions, setShowPlanSuggestions] = useState(false);
+  const [planSuggestions, setPlanSuggestions] = useState<SuggestItem[]>([]);
+  const [planHoveredIndex, setPlanHoveredIndex] = useState(-1);
+  const planTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const planInputWrapRef = useRef<HTMLDivElement>(null);
+
+  const [showDesignSuggestions, setShowDesignSuggestions] = useState(false);
+  const [designSuggestions, setDesignSuggestions] = useState<SuggestItem[]>([]);
+  const [designHoveredIndex, setDesignHoveredIndex] = useState(-1);
+  const designTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const designInputWrapRef = useRef<HTMLDivElement>(null);
+
+  const filterPlanSuggestions = useCallback((query: string): SuggestItem[] => {
+    if (!query.trim()) return [];
+    const q = query.trim().toLowerCase();
+    return MOCK_SUGGESTIONS.filter(
+      (item) =>
+        item.name.toLowerCase().includes(q) &&
+        !planLeaders.some((l) => l.name === item.name && l.org === item.org)
+    );
+  }, [planLeaders]);
+
+  const filterDesignSuggestions = useCallback((query: string): SuggestItem[] => {
+    if (!query.trim()) return [];
+    const q = query.trim().toLowerCase();
+    return MOCK_SUGGESTIONS.filter(
+      (item) =>
+        item.name.toLowerCase().includes(q) &&
+        !designLeaders.some((l) => l.name === item.name && l.org === item.org)
+    );
+  }, [designLeaders]);
+
+  const handlePlanLeaderInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setPlanLeaderInput(val);
+    if (planTimerRef.current) clearTimeout(planTimerRef.current);
+    if (!val.trim()) {
+      setShowPlanSuggestions(false);
+      setPlanSuggestions([]);
+      return;
+    }
+    planTimerRef.current = setTimeout(() => {
+      setPlanSuggestions(filterPlanSuggestions(val));
+      setShowPlanSuggestions(true);
+      setPlanHoveredIndex(-1);
+    }, 1000);
+  };
+
+  const handlePlanSuggestSelect = (item: SuggestItem) => {
+    if (planTimerRef.current) { clearTimeout(planTimerRef.current); planTimerRef.current = null; }
+    setPlanLeaders((prev) => [...prev, { name: item.name, org: item.org }]);
+    setPlanLeaderInput("");
+    setShowPlanSuggestions(false);
+    setPlanSuggestions([]);
+    setPlanHoveredIndex(-1);
+  };
+
+  const handleAddPlanLeader = () => {
+    if (!planLeaderInput.trim()) return;
+    if (planTimerRef.current) { clearTimeout(planTimerRef.current); planTimerRef.current = null; }
+    setPlanLeaders((prev) => [...prev, { name: planLeaderInput.trim(), org: "Nova 추진팀" }]);
+    setPlanLeaderInput("");
+    setShowPlanSuggestions(false);
+    setPlanSuggestions([]);
+    setPlanHoveredIndex(-1);
+  };
+
+  const handleDesignLeaderInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setDesignLeaderInput(val);
+    if (designTimerRef.current) clearTimeout(designTimerRef.current);
+    if (!val.trim()) {
+      setShowDesignSuggestions(false);
+      setDesignSuggestions([]);
+      return;
+    }
+    designTimerRef.current = setTimeout(() => {
+      setDesignSuggestions(filterDesignSuggestions(val));
+      setShowDesignSuggestions(true);
+      setDesignHoveredIndex(-1);
+    }, 1000);
+  };
+
+  const handleDesignSuggestSelect = (item: SuggestItem) => {
+    if (designTimerRef.current) { clearTimeout(designTimerRef.current); designTimerRef.current = null; }
+    setDesignLeaders((prev) => [...prev, { name: item.name, org: item.org }]);
+    setDesignLeaderInput("");
+    setShowDesignSuggestions(false);
+    setDesignSuggestions([]);
+    setDesignHoveredIndex(-1);
+  };
+
+  const handleAddDesignLeader = () => {
+    if (!designLeaderInput.trim()) return;
+    if (designTimerRef.current) { clearTimeout(designTimerRef.current); designTimerRef.current = null; }
+    setDesignLeaders((prev) => [...prev, { name: designLeaderInput.trim(), org: "Nova 추진팀" }]);
+    setDesignLeaderInput("");
+    setShowDesignSuggestions(false);
+    setDesignSuggestions([]);
+    setDesignHoveredIndex(-1);
+  };
+
+  useEffect(() => {
+    if (!showPlanSuggestions && !showDesignSuggestions) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (showPlanSuggestions && planInputWrapRef.current && !planInputWrapRef.current.contains(e.target as Node)) {
+        if (planTimerRef.current) { clearTimeout(planTimerRef.current); planTimerRef.current = null; }
+        setShowPlanSuggestions(false);
+        setPlanHoveredIndex(-1);
+      }
+      if (showDesignSuggestions && designInputWrapRef.current && !designInputWrapRef.current.contains(e.target as Node)) {
+        if (designTimerRef.current) { clearTimeout(designTimerRef.current); designTimerRef.current = null; }
+        setShowDesignSuggestions(false);
+        setDesignHoveredIndex(-1);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [showPlanSuggestions, showDesignSuggestions]);
+
   useEffect(() => {
     if (open && item) {
       setDomainNameKo(item.domainNameKo);
@@ -264,24 +495,22 @@ export function ComponentEditPopup({ open, onClose, item }: ComponentEditPopupPr
       setDesignLeaders([{ name: item.designLeader, org: "Nova 추진팀" }]);
       setDescription(item.description);
       setUseYn(item.useYn);
+      setShowPlanSuggestions(false);
+      setPlanSuggestions([]);
+      setPlanHoveredIndex(-1);
+      setShowDesignSuggestions(false);
+      setDesignSuggestions([]);
+      setDesignHoveredIndex(-1);
     }
+    return () => {
+      if (planTimerRef.current) clearTimeout(planTimerRef.current);
+      if (designTimerRef.current) clearTimeout(designTimerRef.current);
+    };
   }, [open, item]);
 
   if (!open || !item) return null;
 
   const isValid = domainNameKo && nameKo.trim() && nameEn.trim() && planLeaders.length > 0 && designLeaders.length > 0;
-
-  const handleAddPlanLeader = () => {
-    if (!planLeaderInput.trim()) return;
-    setPlanLeaders((prev) => [...prev, { name: planLeaderInput.trim(), org: "Nova 추진팀" }]);
-    setPlanLeaderInput("");
-  };
-
-  const handleAddDesignLeader = () => {
-    if (!designLeaderInput.trim()) return;
-    setDesignLeaders((prev) => [...prev, { name: designLeaderInput.trim(), org: "Nova 추진팀" }]);
-    setDesignLeaderInput("");
-  };
 
   const handleSave = () => {
     if (!isValid) return;
@@ -348,10 +577,10 @@ export function ComponentEditPopup({ open, onClose, item }: ComponentEditPopupPr
               <span style={st.label}>L2기획리더</span>
               <div style={st.requiredMark} />
             </div>
-            <div style={st.inputWithBtn}>
+            <div style={st.inputWithBtn} ref={planInputWrapRef}>
               <Input
                 value={planLeaderInput}
-                onChange={(e) => setPlanLeaderInput(e.target.value)}
+                onChange={handlePlanLeaderInputChange}
                 placeholder="담당자를 선택하거나 검색하세요."
                 style={{ flex: 1 }}
               />
@@ -365,6 +594,14 @@ export function ComponentEditPopup({ open, onClose, item }: ComponentEditPopupPr
               >
                 추가
               </Button>
+              {showPlanSuggestions && (
+                <LeaderAutocompleteDropdown
+                  suggestions={planSuggestions}
+                  onSelect={handlePlanSuggestSelect}
+                  hoveredIndex={planHoveredIndex}
+                  setHoveredIndex={setPlanHoveredIndex}
+                />
+              )}
             </div>
             {planLeaders.length > 0 && (
               <div style={st.leaderList}>
@@ -384,10 +621,10 @@ export function ComponentEditPopup({ open, onClose, item }: ComponentEditPopupPr
               <span style={st.label}>L2설계리더</span>
               <div style={st.requiredMark} />
             </div>
-            <div style={st.inputWithBtn}>
+            <div style={st.inputWithBtn} ref={designInputWrapRef}>
               <Input
                 value={designLeaderInput}
-                onChange={(e) => setDesignLeaderInput(e.target.value)}
+                onChange={handleDesignLeaderInputChange}
                 placeholder="담당자를 선택하거나 검색하세요."
                 style={{ flex: 1 }}
               />
@@ -401,6 +638,14 @@ export function ComponentEditPopup({ open, onClose, item }: ComponentEditPopupPr
               >
                 추가
               </Button>
+              {showDesignSuggestions && (
+                <LeaderAutocompleteDropdown
+                  suggestions={designSuggestions}
+                  onSelect={handleDesignSuggestSelect}
+                  hoveredIndex={designHoveredIndex}
+                  setHoveredIndex={setDesignHoveredIndex}
+                />
+              )}
             </div>
             {designLeaders.length > 0 && (
               <div style={st.leaderList}>
