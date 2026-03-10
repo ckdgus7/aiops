@@ -24,6 +24,15 @@ function AddIcon() {
   );
 }
 
+function L2RoleIcon() {
+  return (
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+      <circle cx="10" cy="10" r="10" fill="#ede9fe" />
+      <text x="10" y="14" textAnchor="middle" fill="#7a5af8" fontSize="9" fontWeight="700" fontFamily="Pretendard, sans-serif">L2</text>
+    </svg>
+  );
+}
+
 function L3RoleIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -586,9 +595,22 @@ export function BusinessCreatePopup({ open, onClose, onSave }: BusinessCreatePop
               <span style={ps.label}>L2기획리더</span>
               <div style={ps.requiredMark} />
             </div>
-            <div style={ps.disabledInput}>
-              {l2PlanLeader || "컴포넌트(L2) 선택 시 출력됩니다."}
-            </div>
+            {l2PlanLeader ? (
+              <div style={ps.leaderItem}>
+                <div style={ps.leaderItemContent}>
+                  <span style={ps.leaderName}>{l2PlanLeader}</span>
+                  <L2RoleIcon />
+                  <div style={ps.leaderOrg}>
+                    <div style={ps.leaderOrgSep} />
+                    <span style={ps.leaderOrgText}>Nova 추진팀</span>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div style={ps.disabledInput}>
+                컴포넌트(L2) 선택 시 출력됩니다.
+              </div>
+            )}
           </div>
 
           <div style={ps.fieldRow}>
