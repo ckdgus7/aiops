@@ -7,7 +7,7 @@ import { useMdiStore } from "@/shared/model/mdi.store";
 import { usePageHeader } from "@/shared/hooks/usePageHeader";
 import type { BusinessSortKey, SortDir, BusinessItem } from "@/features/ssf/model/types";
 import { BUSINESS_MOCK_DATA, COMPONENT_MOCK_DATA } from "@/features/ssf/model/mock-data";
-import { BusinessCreatePopup } from "@/features/ssf/ui/BusinessCreatePopup";
+import { BusinessCreatePopup } from "@/features/ssf/ui/l3/BusinessCreatePopup";
 import { FONT, listStyles } from "@/shared/ui/styles";
 
 function SortIcon({ active, dir }: { active: boolean; dir: SortDir }) {

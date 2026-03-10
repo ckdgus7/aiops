@@ -8,7 +8,7 @@ import {
   DOMAIN_MOCK_DATA,
 } from "@/features/ssf/model/mock-data";
 import { Button } from "@/shared/ui/global/Button";
-import { BusinessEditPopup } from "@/features/ssf/ui/BusinessEditPopup";
+import { BusinessEditPopup } from "@/features/ssf/ui/l3/BusinessEditPopup";
 import { BusinessReference } from "@/features/ssf/ui/component/BusinessReference";
 import { HistoryPanel } from "@/features/ssf/ui/component/HistoryPanel";
 import { BpmnManagement } from "@/features/ssf/ui/component/BpmnManagement";
