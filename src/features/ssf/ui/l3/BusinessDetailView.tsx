@@ -2,11 +2,9 @@ import { useState, useEffect, type CSSProperties } from "react";
 import { useParams } from "react-router";
 import { useMdiStore } from "@/shared/model/mdi.store";
 import { usePageHeader } from "@/shared/hooks/usePageHeader";
-import {
-  BUSINESS_MOCK_DATA,
-  COMPONENT_MOCK_DATA,
-  DOMAIN_MOCK_DATA,
-} from "@/features/ssf/model/mock-data";
+import { useBusinessDetailQuery } from "@/features/ssf/api/business.queries";
+import { useComponentListQuery } from "@/features/ssf/api/component.queries";
+import { useDomainListQuery } from "@/features/ssf/api/domain.queries";
 import { Button } from "@/shared/ui/global/Button";
 import { BusinessEditPopup } from "@/features/ssf/ui/l3/BusinessEditPopup";
 import { BusinessReference } from "@/features/ssf/ui/component/BusinessReference";
@@ -54,7 +52,9 @@ export function BusinessDetailView() {
   const [historyIndex, setHistoryIndex] = useState(0);
   const [editOpen, setEditOpen] = useState(false);
 
-  const item = BUSINESS_MOCK_DATA.find((b) => b.businessId === id);
+  const { data: item } = useBusinessDetailQuery(id ?? "");
+  const { data: componentList = [] } = useComponentListQuery();
+  const { data: domainList = [] } = useDomainListQuery();
 
   useEffect(() => {
     addTab({
@@ -91,12 +91,12 @@ export function BusinessDetailView() {
     );
   }
 
-  const comp = COMPONENT_MOCK_DATA.find(
+  const comp = componentList.find(
     (c) =>
       c.nameKo === item.componentNameKo && c.domainNameKo === item.domainNameKo,
   );
 
-  const domain = DOMAIN_MOCK_DATA.find((d) => d.nameKo === item.domainNameKo);
+  const domain = domainList.find((d) => d.nameKo === item.domainNameKo);
 
   return (
     <div style={s.outer}>

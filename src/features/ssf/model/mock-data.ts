@@ -81,3 +81,31 @@ export const BUSINESS_MOCK_DATA: BusinessItem[] = Array.from({ length: 120 }, (_
     useYn: idx % 9 === 0 ? "미사용" : "사용",
   };
 });
+
+export function getDomainList(): DomainItem[] {
+  return DOMAIN_MOCK_DATA;
+}
+
+export function getDomainDetail(nameKo: string): DomainItem | undefined {
+  return DOMAIN_MOCK_DATA.find((d) => d.nameKo === nameKo);
+}
+
+export function getComponentList(): ComponentItem[] {
+  return COMPONENT_MOCK_DATA;
+}
+
+export function getComponentDetail(id: string): ComponentItem | undefined {
+  return COMPONENT_MOCK_DATA.find((c) => c.componentId === id);
+}
+
+export function getComponentByName(nameKo: string): ComponentItem | undefined {
+  return COMPONENT_MOCK_DATA.find((c) => c.nameKo === nameKo);
+}
+
+export function getBusinessList(): BusinessItem[] {
+  return BUSINESS_MOCK_DATA;
+}
+
+export function getBusinessDetail(businessId: string): BusinessItem | undefined {
+  return BUSINESS_MOCK_DATA.find((b) => b.businessId === businessId);
+}

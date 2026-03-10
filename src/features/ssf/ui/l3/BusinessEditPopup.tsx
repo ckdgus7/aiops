@@ -6,7 +6,7 @@ import { RadioGroup } from "@/shared/ui/global/RadioGroup";
 import { ToastEditor } from "@/shared/ui/service/ToastEditor";
 import { AlertModal } from "@/shared/ui/global/AlertModal";
 import { Snackbar } from "@/shared/ui/global/Snackbar";
-import { COMPONENT_MOCK_DATA } from "@/features/ssf/model/mock-data";
+import { useComponentListQuery } from "@/features/ssf/api/component.queries";
 import type { BusinessItem } from "@/features/ssf/model/types";
 import { FONT } from "@/shared/ui/styles";
 
@@ -403,6 +403,7 @@ interface BusinessEditPopupProps {
 }
 
 export function BusinessEditPopup({ open, onClose, onSave, item }: BusinessEditPopupProps) {
+  const { data: componentListData = [] } = useComponentListQuery();
   const [domainNameKo, setDomainNameKo] = useState("");
   const [componentNameKo, setComponentNameKo] = useState("");
   const [nameKo, setNameKo] = useState("");
@@ -512,17 +513,17 @@ export function BusinessEditPopup({ open, onClose, onSave, item }: BusinessEditP
   ], []);
 
   const componentOptions = useMemo(() => {
-    const names = [...new Set(COMPONENT_MOCK_DATA.map((c) => c.nameKo))];
+    const names = [...new Set(componentListData.map((c) => c.nameKo))];
     return names.map((n) => ({ label: n, value: n }));
-  }, []);
+  }, [componentListData]);
 
   const l2PlanLeader = useMemo(() => {
     if (!componentNameKo) return "";
-    const comp = COMPONENT_MOCK_DATA.find(
+    const comp = componentListData.find(
       (c) => c.nameKo === componentNameKo,
     );
     return comp?.planLeader ?? "";
-  }, [componentNameKo]);
+  }, [componentNameKo, componentListData]);
 
   if (!open || !item) return null;
 

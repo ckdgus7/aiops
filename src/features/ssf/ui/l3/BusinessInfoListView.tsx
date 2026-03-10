@@ -6,7 +6,8 @@ import { Button } from "@/shared/ui/global/Button";
 import { useMdiStore } from "@/shared/model/mdi.store";
 import { usePageHeader } from "@/shared/hooks/usePageHeader";
 import type { BusinessSortKey, SortDir, BusinessItem } from "@/features/ssf/model/types";
-import { BUSINESS_MOCK_DATA, COMPONENT_MOCK_DATA } from "@/features/ssf/model/mock-data";
+import { useBusinessListQuery } from "@/features/ssf/api/business.queries";
+import { useComponentListQuery } from "@/features/ssf/api/component.queries";
 import { BusinessCreatePopup } from "@/features/ssf/ui/l3/BusinessCreatePopup";
 import { FONT, listStyles } from "@/shared/ui/styles";
 
@@ -150,6 +151,8 @@ const COLUMNS: ColumnDef[] = [
 ];
 
 export function BusinessInfoListView() {
+  const { data: businessList = [] } = useBusinessListQuery();
+  const { data: componentListData = [] } = useComponentListQuery();
   const addTab = useMdiStore((st) => st.addTab);
   const navigate = useNavigate();
   useEffect(() => {
@@ -187,9 +190,9 @@ export function BusinessInfoListView() {
   ], []);
 
   const componentOptions = useMemo(() => {
-    const names = [...new Set(COMPONENT_MOCK_DATA.map((c) => c.nameKo))];
+    const names = [...new Set(componentListData.map((c) => c.nameKo))];
     return names.map((n) => ({ label: n, value: n }));
-  }, []);
+  }, [componentListData]);
 
   const handleSort = (key: BusinessSortKey) => {
     if (sortKey === key) {
@@ -208,7 +211,7 @@ export function BusinessInfoListView() {
     setPage(1);
   };
 
-  const filtered = BUSINESS_MOCK_DATA.filter((item) => {
+  const filtered = businessList.filter((item) => {
     if (domainFilter && item.domainNameKo !== domainFilter) return false;
     if (componentFilter.length > 0 && !componentFilter.includes(item.componentNameKo)) return false;
     if (appliedKeyword) {

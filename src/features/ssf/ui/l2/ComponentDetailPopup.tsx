@@ -4,7 +4,7 @@ import { Snackbar } from "@/shared/ui/global/Snackbar";
 import { ComponentDeletePopup } from "@/features/ssf/ui/l2/ComponentDeletePopup";
 import { ComponentEditPopup } from "@/features/ssf/ui/l2/ComponentEditPopup";
 import type { ComponentItem } from "@/features/ssf/model/types";
-import { DOMAIN_MOCK_DATA } from "@/features/ssf/model/mock-data";
+import { useDomainListQuery } from "@/features/ssf/api/domain.queries";
 import { FONT, popupStyles } from "@/shared/ui/styles";
 
 function CloseIcon() {
@@ -510,6 +510,7 @@ interface ComponentDetailPopupProps {
 }
 
 export function ComponentDetailPopup({ open, onClose, item, onDeleted }: ComponentDetailPopupProps) {
+  const { data: domainList = [] } = useDomainListQuery();
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [editSaveSnackbarOpen, setEditSaveSnackbarOpen] = useState(false);
@@ -538,9 +539,9 @@ export function ComponentDetailPopup({ open, onClose, item, onDeleted }: Compone
     />
   );
 
-  const domain = DOMAIN_MOCK_DATA.find(
+  const domain = domainList.find(
     (d) => d.nameKo === item.domainNameKo
-  ) ?? DOMAIN_MOCK_DATA.find(
+  ) ?? domainList.find(
     (d) => item.domainNameKo.includes(d.nameKo) || d.nameKo.includes(item.domainNameKo)
   );
 

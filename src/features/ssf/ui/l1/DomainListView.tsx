@@ -5,7 +5,7 @@ import { Button } from "@/shared/ui/global/Button";
 import { useMdiStore } from "@/shared/model/mdi.store";
 import { usePageHeader } from "@/shared/hooks/usePageHeader";
 import type { SortKey, SortDir, DomainItem } from "@/features/ssf/model/types";
-import { DOMAIN_MOCK_DATA } from "@/features/ssf/model/mock-data";
+import { useDomainListQuery } from "@/features/ssf/api/domain.queries";
 import { DomainCreatePopup } from "@/features/ssf/ui/l1/DomainCreatePopup";
 import { DomainFormPopup } from "@/features/ssf/ui/l1/DomainFormPopup";
 import { DomainDeletePopup } from "@/features/ssf/ui/l1/DomainDeletePopup";
@@ -88,6 +88,7 @@ const COLUMNS: { key: SortKey; label: string; width: number | string; align?: "l
 ];
 
 export function DomainListView() {
+  const { data: domainList = [] } = useDomainListQuery();
   const addTab = useMdiStore((st) => st.addTab);
   useEffect(() => {
     addTab({ id: "/ssf/domain", label: "도메인(L1)정보 관리", path: "/ssf/domain" });
@@ -117,7 +118,7 @@ export function DomainListView() {
     }
   };
 
-  const filtered = DOMAIN_MOCK_DATA.filter((item) => {
+  const filtered = domainList.filter((item) => {
     if (statusFilter === "사용" && item.useYn !== "사용") return false;
     if (statusFilter === "미사용" && item.useYn !== "미사용") return false;
     if (searchKeyword) {

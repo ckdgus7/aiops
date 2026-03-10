@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback, type CSSProperties } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo, type CSSProperties } from "react";
 import { Button } from "@/shared/ui/global/Button";
 import { Input } from "@/shared/ui/global/Input";
 import { SelectBox } from "@/shared/ui/global/SelectBox";
@@ -6,7 +6,7 @@ import { RadioGroup } from "@/shared/ui/global/RadioGroup";
 import { ToastEditor } from "@/shared/ui/service/ToastEditor";
 import { AlertModal } from "@/shared/ui/global/AlertModal";
 import type { ComponentItem } from "@/features/ssf/model/types";
-import { DOMAIN_MOCK_DATA } from "@/features/ssf/model/mock-data";
+import { useDomainListQuery } from "@/features/ssf/api/domain.queries";
 import { FONT, popupStyles } from "@/shared/ui/styles";
 
 function CloseIcon() {
@@ -68,15 +68,11 @@ const MOCK_SUGGESTIONS: SuggestItem[] = [
   { name: "전상세", org: "Nova 추진팀", id: "P12345687" },
 ];
 
-const BASE_DOMAIN_OPTIONS = DOMAIN_MOCK_DATA
-  .filter((d) => d.useYn === "사용")
-  .map((d) => ({ label: d.nameKo, value: d.nameKo }));
-
-function getDomainOptions(currentValue?: string) {
-  if (currentValue && !BASE_DOMAIN_OPTIONS.some((o) => o.value === currentValue)) {
-    return [{ label: currentValue, value: currentValue }, ...BASE_DOMAIN_OPTIONS];
+function getDomainOptions(baseDomainOptions: { label: string; value: string }[], currentValue?: string) {
+  if (currentValue && !baseDomainOptions.some((o) => o.value === currentValue)) {
+    return [{ label: currentValue, value: currentValue }, ...baseDomainOptions];
   }
-  return BASE_DOMAIN_OPTIONS;
+  return baseDomainOptions;
 }
 
 const USE_YN_OPTIONS = [
@@ -357,6 +353,11 @@ interface ComponentEditPopupProps {
 }
 
 export function ComponentEditPopup({ open, onClose, onDetailClose, onSaveSuccess, item }: ComponentEditPopupProps) {
+  const { data: domainListData = [] } = useDomainListQuery();
+  const baseDomainOptions = useMemo(
+    () => domainListData.filter((d) => d.useYn === "사용").map((d) => ({ label: d.nameKo, value: d.nameKo })),
+    [domainListData],
+  );
   const [domainNameKo, setDomainNameKo] = useState("");
   const [nameKo, setNameKo] = useState("");
   const [nameEn, setNameEn] = useState("");
@@ -555,7 +556,7 @@ export function ComponentEditPopup({ open, onClose, onDetailClose, onSaveSuccess
               required
               value={domainNameKo}
               onChange={setDomainNameKo}
-              options={getDomainOptions(item.domainNameKo)}
+              options={getDomainOptions(baseDomainOptions, item.domainNameKo)}
               placeholder="도메인(L1) 명을 선택하세요."
               disabled
             />

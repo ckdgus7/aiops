@@ -56,6 +56,7 @@ vite.config.ts  - Vite configuration
 - Q&A `/qna`, Q&A 상세 `/qna/:id`
 
 ### SSF관리
+- **API Layer** (`src/features/ssf/api/`): TanStack Query hooks wrapping mock data getters. `domain.queries.ts` (useDomainListQuery, useDomainDetailQuery), `component.queries.ts` (useComponentListQuery, useComponentByNameQuery), `business.queries.ts` (useBusinessListQuery, useBusinessDetailQuery). All UI files import query hooks instead of direct mock data.
 - 도메인(L1)정보 관리 `/ssf/domain` (fully implemented, files in `src/features/ssf/ui/l1/`: DomainListView, DomainCreatePopup, DomainDeletePopup, DomainDetailPopup, DomainEditPopup, DomainFormPopup. Filter bar with ChooseButton + search, data table with sorting/pagination, 13 mock rows, detail/create/edit/delete popups; row click → detail popup → edit or delete)
 - 컴포넌트(L2)정보 관리 `/ssf/component` (fully implemented, files in `src/features/ssf/ui/l2/`: ComponentInfoListView, ComponentCreatePopup, ComponentDeletePopup, ComponentDetailPopup, ComponentEditPopup. Filter bar with ChooseButton + 도메인(L1) SelectBox + 검색범위 SelectBox + search input, data table with 9 columns, column sorting, 사용여부 badges, pagination, 64 mock rows, 등록/detail/edit/delete popups)
 - 업무(L3)정보 관리 `/ssf/business` (fully implemented, files in `src/features/ssf/ui/l3/`: BusinessInfoListView, BusinessCreatePopup, BusinessEditPopup, BusinessDetailView. Filter bar, data table with 11 columns, sorting, pagination, 120 mock rows, 등록 button → BusinessCreatePopup, row click → navigates to detail page)

@@ -7,7 +7,7 @@ import { Snackbar } from "@/shared/ui/global/Snackbar";
 import { useMdiStore } from "@/shared/model/mdi.store";
 import { usePageHeader } from "@/shared/hooks/usePageHeader";
 import type { ComponentSortKey, SortDir, ComponentItem } from "@/features/ssf/model/types";
-import { COMPONENT_MOCK_DATA, DOMAIN_MOCK_DATA } from "@/features/ssf/model/mock-data";
+import { useComponentListQuery } from "@/features/ssf/api/component.queries";
 import { ComponentCreatePopup } from "@/features/ssf/ui/l2/ComponentCreatePopup";
 import { ComponentDetailPopup } from "@/features/ssf/ui/l2/ComponentDetailPopup";
 import { FONT, listStyles } from "@/shared/ui/styles";
@@ -113,6 +113,7 @@ const COLUMNS: { key: ComponentSortKey; label: string; width: number | string; a
 ];
 
 export function ComponentInfoListView() {
+  const { data: componentList = [] } = useComponentListQuery();
   const addTab = useMdiStore((st) => st.addTab);
   useEffect(() => {
     addTab({ id: "/ssf/component", label: "컴포넌트(L2)정보 관리", path: "/ssf/component" });
@@ -165,7 +166,7 @@ export function ComponentInfoListView() {
     setPage(1);
   };
 
-  const filtered = COMPONENT_MOCK_DATA.filter((item) => {
+  const filtered = componentList.filter((item) => {
     if (statusFilter === "사용" && item.useYn !== "사용") return false;
     if (statusFilter === "미사용" && item.useYn !== "미사용") return false;
     if (domainFilter && item.domainNameKo !== domainFilter) return false;
