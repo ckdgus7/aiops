@@ -8,8 +8,8 @@ import { useMdiStore } from "@/shared/model/mdi.store";
 import { usePageHeader } from "@/shared/hooks/usePageHeader";
 import type { ComponentSortKey, SortDir, ComponentItem } from "@/features/ssf/model/types";
 import { COMPONENT_MOCK_DATA, DOMAIN_MOCK_DATA } from "@/features/ssf/model/mock-data";
-import { ComponentCreatePopup } from "@/features/ssf/ui/ComponentCreatePopup";
-import { ComponentDetailPopup } from "@/features/ssf/ui/ComponentDetailPopup";
+import { ComponentCreatePopup } from "@/features/ssf/ui/l2/ComponentCreatePopup";
+import { ComponentDetailPopup } from "@/features/ssf/ui/l2/ComponentDetailPopup";
 import { FONT, listStyles } from "@/shared/ui/styles";
 
 function SortIcon({ active, dir }: { active: boolean; dir: SortDir }) {

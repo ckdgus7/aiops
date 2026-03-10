@@ -1,8 +1,8 @@
 import { useState, useEffect, type CSSProperties } from "react";
 import { Button } from "@/shared/ui/global/Button";
 import { Snackbar } from "@/shared/ui/global/Snackbar";
-import { ComponentDeletePopup } from "@/features/ssf/ui/ComponentDeletePopup";
-import { ComponentEditPopup } from "@/features/ssf/ui/ComponentEditPopup";
+import { ComponentDeletePopup } from "@/features/ssf/ui/l2/ComponentDeletePopup";
+import { ComponentEditPopup } from "@/features/ssf/ui/l2/ComponentEditPopup";
 import type { ComponentItem } from "@/features/ssf/model/types";
 import { DOMAIN_MOCK_DATA } from "@/features/ssf/model/mock-data";
 import { FONT, popupStyles } from "@/shared/ui/styles";
