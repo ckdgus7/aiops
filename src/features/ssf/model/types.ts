@@ -48,6 +48,8 @@ export interface FunctionItem {
   description: string;
   businessId: string;
   businessNameKo: string;
+  componentNameKo: string;
+  domainNameKo: string;
   planLeader: string;
   designLeader: string;
   useYn: string;

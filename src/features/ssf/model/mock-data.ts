@@ -128,15 +128,19 @@ const FUNC_DESCRIPTIONS = [
 export const FUNCTION_MOCK_DATA: FunctionItem[] = Array.from({ length: 80 }, (_, i) => {
   const idx = i;
   const bizIdx = idx % BIZ_NAMES_KO.length;
+  const compIdx = idx % COMP_NAMES_KO.length;
+  const domainIdx = idx % DOMAIN_NAMES.length;
   return {
     no: 80 - i,
-    functionId: `BZ-PTYMFC${String(Math.floor(idx / 3) + 28).padStart(3, "0")}-${String(idx + 62).padStart(4, "0")}-H${String(idx + 1).padStart(3, "0")}`,
+    functionId: `BP-AISKNC${String(Math.floor(idx / 3) + 507).padStart(3, "0")}-${String(idx + 1).padStart(4, "0")}-C${String(idx + 1).padStart(3, "0")}`,
     nameKo: FUNC_NAMES_KO[idx % FUNC_NAMES_KO.length],
     nameEn: FUNC_NAMES_EN[idx % FUNC_NAMES_EN.length],
     functionType: idx % 3 === 2 ? "Orchestration" as const : "Composite" as const,
-    description: FUNC_DESCRIPTIONS[idx % FUNC_DESCRIPTIONS.length],
-    businessId: `BZ-PTYTMFC${String(bizIdx + 1).padStart(3, "0")}`,
+    description: `L4 요구상세 ${FUNC_DESCRIPTIONS[idx % FUNC_DESCRIPTIONS.length]}`,
+    businessId: `BZ-BILSKNC${String(300 + bizIdx + 1).padStart(3, "0")}`,
     businessNameKo: BIZ_NAMES_KO[bizIdx],
+    componentNameKo: COMP_NAMES_KO[compIdx],
+    domainNameKo: DOMAIN_NAMES[domainIdx],
     planLeader: LEADERS_PLAN[idx % LEADERS_PLAN.length],
     designLeader: LEADERS_DESIGN[idx % LEADERS_DESIGN.length],
     useYn: idx % 11 === 0 ? "미사용" : "사용",

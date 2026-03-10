@@ -7,8 +7,6 @@ import { useMdiStore } from "@/shared/model/mdi.store";
 import { usePageHeader } from "@/shared/hooks/usePageHeader";
 import type { FunctionSortKey, SortDir } from "@/features/ssf/model/types";
 import { useFunctionListQuery } from "@/features/ssf/api/function.queries";
-import { useBusinessListQuery } from "@/features/ssf/api/business.queries";
-import { useComponentListQuery } from "@/features/ssf/api/component.queries";
 import { FONT, listStyles } from "@/shared/ui/styles";
 
 function SortIcon({ active, dir }: { active: boolean; dir: SortDir }) {
@@ -86,27 +84,23 @@ const USE_OPTIONS = [
 ];
 
 const SEARCH_KEY_OPTIONS = [
-  { label: "기능(L4)명(한글/영문)", value: "기능(L4)명(한글/영문)" },
+  { label: "기능(L4)명", value: "기능(L4)명" },
   { label: "기능(L4)ID", value: "기능(L4)ID" },
-  { label: "담당자명(L2기획리더/L3설계리더)", value: "담당자명(L2기획리더/L3설계리더)" },
 ];
 
 const s = {
   filterWrap: {
     ...listStyles.filterWrap,
-    rowGap: 16,
-    gap: undefined,
   } as CSSProperties,
   filterLeft: {
     display: "flex",
     alignItems: "center",
-    gap: 32,
+    gap: 8,
   } satisfies CSSProperties,
   filterRight: {
     display: "flex",
     alignItems: "center",
     gap: 8,
-    width: 554,
   } satisfies CSSProperties,
   searchWrap: {
     display: "flex",
@@ -139,50 +133,34 @@ const s = {
     justifyContent: "center",
     cursor: "pointer",
   } satisfies CSSProperties,
-  typeBadge: {
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 12,
-    padding: "3px 10px",
-    fontFamily: FONT,
-    fontSize: 10,
-    fontWeight: 500,
-    lineHeight: "12px",
-    whiteSpace: "nowrap",
-  } satisfies CSSProperties,
   tdEllipsis: {
     overflow: "hidden",
     textOverflow: "ellipsis",
     whiteSpace: "nowrap",
     maxWidth: 0,
   } satisfies CSSProperties,
-  tableWrap: {
-    width: "100%",
-    overflowX: "auto",
-  } satisfies CSSProperties,
 };
 
-type ColumnDef = { key: FunctionSortKey | "_checkbox"; label: string; width: number | string; align?: "left" | "center"; sortable?: boolean };
+type ColumnDef = { key: FunctionSortKey | "_checkbox"; label: string; width: number; align?: "left" | "center"; sortable?: boolean };
 
 const COLUMNS: ColumnDef[] = [
   { key: "_checkbox", label: "", width: 34, align: "center", sortable: false },
-  { key: "no", label: "No", width: 56, align: "center" },
-  { key: "functionId", label: "기능(L4) ID", width: 200, align: "left" },
-  { key: "nameKo", label: "기능(L4) 명", width: 145, align: "center" },
-  { key: "functionType", label: "기능유형", width: 100, align: "center" },
-  { key: "description", label: "기능(L4) 설명", width: "auto", align: "left" },
+  { key: "no", label: "No", width: 80, align: "center" },
+  { key: "functionId", label: "기능(L4) ID", width: 200, align: "center" },
+  { key: "nameKo", label: "기능(L4) 명", width: 186, align: "center" },
+  { key: "functionType", label: "기능(L4) 구성 방식", width: 140, align: "center" },
+  { key: "description", label: "기능(L4) 설명", width: 370, align: "left" },
   { key: "businessId", label: "업무(L3) ID", width: 140, align: "center" },
-  { key: "businessNameKo", label: "업무(L3) 명", width: 120, align: "center" },
-  { key: "planLeader", label: "L2기획리더", width: 90, align: "center" },
-  { key: "designLeader", label: "L3설계리더", width: 90, align: "center" },
-  { key: "useYn", label: "사용여부", width: 80, align: "center" },
+  { key: "businessNameKo", label: "업무(L3) 명", width: 140, align: "center" },
+  { key: "componentNameKo", label: "컴포넌트(L2) 명", width: 108, align: "center" },
+  { key: "domainNameKo", label: "도메인(L1)명", width: 108, align: "center" },
+  { key: "useYn", label: "사용여부", width: 120, align: "center" },
 ];
+
+const TABLE_TOTAL_WIDTH = COLUMNS.reduce((sum, col) => sum + col.width, 0);
 
 export function FunctionInfoListView() {
   const { data: functionList = [] } = useFunctionListQuery();
-  const { data: businessListData = [] } = useBusinessListQuery();
-  const { data: componentListData = [] } = useComponentListQuery();
   const addTab = useMdiStore((st) => st.addTab);
   useEffect(() => {
     addTab({ id: "/ssf/function", label: "기능(L4)정보 관리", path: "/ssf/function" });
@@ -192,10 +170,10 @@ export function FunctionInfoListView() {
   const [domainFilter, setDomainFilter] = useState("");
   const [componentFilter, setComponentFilter] = useState<string[]>([]);
   const [businessFilter, setBusinessFilter] = useState<string[]>([]);
-  const [searchKey, setSearchKey] = useState("기능(L4)명(한글/영문)");
+  const [searchKey, setSearchKey] = useState("기능(L4)명");
   const [searchKeywordDraft, setSearchKeywordDraft] = useState("");
   const [appliedKeyword, setAppliedKeyword] = useState("");
-  const [appliedSearchKey, setAppliedSearchKey] = useState("기능(L4)명(한글/영문)");
+  const [appliedSearchKey, setAppliedSearchKey] = useState("기능(L4)명");
   const [sortKey, setSortKey] = useState<FunctionSortKey | null>(null);
   const [sortDir, setSortDir] = useState<SortDir>(null);
   const [page, setPage] = useState(1);
@@ -203,31 +181,20 @@ export function FunctionInfoListView() {
   const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
   const [selectAll, setSelectAll] = useState(false);
 
-  const domainOptions = useMemo(() => [
-    { label: "마케팅 & 오퍼링", value: "마케팅 & 오퍼링" },
-    { label: "CRM", value: "CRM" },
-    { label: "파티", value: "파티" },
-    { label: "파트너", value: "파트너" },
-    { label: "엔터프라이즈 상품 카탈로그", value: "엔터프라이즈 상품 카탈로그" },
-    { label: "상품 주문", value: "상품 주문" },
-    { label: "서비스 주문", value: "서비스 주문" },
-    { label: "리소스 주문 & 풀필먼트", value: "리소스 주문 & 풀필먼트" },
-    { label: "통합 과금", value: "통합 과금" },
-    { label: "빌링", value: "빌링" },
-    { label: "AI & 데이터", value: "AI & 데이터" },
-    { label: "공통 비즈니스 서비스", value: "공통 비즈니스 서비스" },
-    { label: "엔터프라이즈 통합", value: "엔터프라이즈 통합" },
-  ], []);
+  const domainOptions = useMemo(() => {
+    const names = [...new Set(functionList.map((f) => f.domainNameKo))];
+    return names.map((n) => ({ label: n, value: n }));
+  }, [functionList]);
 
   const componentOptions = useMemo(() => {
-    const names = [...new Set(componentListData.map((c) => c.nameKo))];
+    const names = [...new Set(functionList.map((f) => f.componentNameKo))];
     return names.map((n) => ({ label: n, value: n }));
-  }, [componentListData]);
+  }, [functionList]);
 
   const businessOptions = useMemo(() => {
-    const names = [...new Set(businessListData.map((b) => b.nameKo))];
+    const names = [...new Set(functionList.map((f) => f.businessNameKo))];
     return names.map((n) => ({ label: n, value: n }));
-  }, [businessListData]);
+  }, [functionList]);
 
   const handleSort = (key: FunctionSortKey) => {
     if (sortKey === key) {
@@ -248,17 +215,16 @@ export function FunctionInfoListView() {
 
   const filtered = functionList.filter((item) => {
     if (useFilter !== "전체" && item.useYn !== useFilter) return false;
+    if (domainFilter && item.domainNameKo !== domainFilter) return false;
+    if (componentFilter.length > 0 && !componentFilter.includes(item.componentNameKo)) return false;
     if (businessFilter.length > 0 && !businessFilter.includes(item.businessNameKo)) return false;
     if (appliedKeyword) {
       const kw = appliedKeyword.toLowerCase();
-      if (appliedSearchKey === "기능(L4)명(한글/영문)") {
+      if (appliedSearchKey === "기능(L4)명") {
         return item.nameKo.toLowerCase().includes(kw) || item.nameEn.toLowerCase().includes(kw);
       }
       if (appliedSearchKey === "기능(L4)ID") {
         return item.functionId.toLowerCase().includes(kw);
-      }
-      if (appliedSearchKey === "담당자명(L2기획리더/L3설계리더)") {
-        return item.planLeader.toLowerCase().includes(kw) || item.designLeader.toLowerCase().includes(kw);
       }
     }
     return true;
@@ -286,7 +252,15 @@ export function FunctionInfoListView() {
   if (totalPages <= 7) {
     for (let i = 1; i <= totalPages; i++) pageNumbers.push(i);
   } else {
-    pageNumbers.push(1, 2, 3, 4, 5, "...", totalPages);
+    if (safePage <= 4) {
+      for (let i = 1; i <= 5; i++) pageNumbers.push(i);
+      pageNumbers.push("...", totalPages);
+    } else if (safePage >= totalPages - 3) {
+      pageNumbers.push(1, "...");
+      for (let i = totalPages - 4; i <= totalPages; i++) pageNumbers.push(i);
+    } else {
+      pageNumbers.push(1, "...", safePage - 1, safePage, safePage + 1, "...", totalPages);
+    }
   }
 
   const handleToggleRow = (no: number) => {
@@ -369,8 +343,8 @@ export function FunctionInfoListView() {
               value={searchKey}
               onChange={setSearchKey}
               options={SEARCH_KEY_OPTIONS}
-              placeholder="기능(L4) 명"
-              wrapperStyle={{ width: 290, flexShrink: 0 }}
+              placeholder="기능(L4)명"
+              wrapperStyle={{ width: 135, flexShrink: 0 }}
             />
             <div style={s.searchWrap}>
               <Input
@@ -469,96 +443,86 @@ export function FunctionInfoListView() {
             </div>
           </div>
 
-          <table style={listStyles.table}>
-            <colgroup>
-              {COLUMNS.map((col, idx) => (
-                <col
-                  key={idx}
-                  style={{ width: typeof col.width === "number" ? col.width : undefined }}
-                />
-              ))}
-            </colgroup>
-            <thead>
-              <tr>
-                {COLUMNS.map((col, idx) => {
-                  if (col.key === "_checkbox") {
-                    return (
-                      <th key="checkbox" style={listStyles.th}>
-                        <div style={listStyles.thInner}>
-                          <div style={s.checkboxCell} onClick={handleToggleSelectAll}>
-                            <CheckboxIcon checked={selectAll} />
+          <div style={{ width: "100%", overflowX: "auto" }}>
+            <table style={{ ...listStyles.table, minWidth: TABLE_TOTAL_WIDTH }}>
+              <colgroup>
+                {COLUMNS.map((col, idx) => (
+                  <col key={idx} style={{ width: col.width }} />
+                ))}
+              </colgroup>
+              <thead>
+                <tr>
+                  {COLUMNS.map((col, idx) => {
+                    if (col.key === "_checkbox") {
+                      return (
+                        <th key="checkbox" style={listStyles.th}>
+                          <div style={listStyles.thInner}>
+                            <div style={s.checkboxCell} onClick={handleToggleSelectAll}>
+                              <CheckboxIcon checked={selectAll} />
+                            </div>
                           </div>
+                        </th>
+                      );
+                    }
+                    const sortable = col.sortable !== false;
+                    return (
+                      <th
+                        key={idx}
+                        style={listStyles.th}
+                        onClick={() => sortable && handleSort(col.key as FunctionSortKey)}
+                      >
+                        <div style={listStyles.thInner}>
+                          <span>{col.label}</span>
+                          {sortable && (
+                            <SortIcon active={sortKey === col.key} dir={sortKey === col.key ? sortDir : null} />
+                          )}
                         </div>
                       </th>
                     );
-                  }
-                  const sortable = col.sortable !== false;
-                  return (
-                    <th
-                      key={idx}
-                      style={listStyles.th}
-                      onClick={() => sortable && handleSort(col.key as FunctionSortKey)}
-                    >
-                      <div style={listStyles.thInner}>
-                        <span>{col.label}</span>
-                        {sortable && (
-                          <SortIcon active={sortKey === col.key} dir={sortKey === col.key ? sortDir : null} />
-                        )}
-                      </div>
-                    </th>
-                  );
-                })}
-              </tr>
-            </thead>
-            <tbody>
-              {pageItems.length === 0 ? (
-                <tr>
-                  <td colSpan={COLUMNS.length} style={{ ...listStyles.td, padding: 40, color: "#a1a1aa" }}>
-                    데이터가 없습니다.
-                  </td>
+                  })}
                 </tr>
-              ) : (
-                pageItems.map((item) => (
-                  <tr
-                    key={item.no}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <td style={listStyles.td}>
-                      <div
-                        style={s.checkboxCell}
-                        onClick={(e) => { e.stopPropagation(); handleToggleRow(item.no); }}
-                      >
-                        <CheckboxIcon checked={selectedRows.has(item.no)} />
-                      </div>
-                    </td>
-                    <td style={listStyles.td}>{item.no}</td>
-                    <td style={{ ...listStyles.td, ...listStyles.tdLeft, ...s.tdEllipsis }} title={item.functionId}>{item.functionId}</td>
-                    <td style={{ ...listStyles.td, ...s.tdEllipsis }} title={item.nameKo}>{item.nameKo}</td>
-                    <td style={listStyles.td}>
-                      <span style={{
-                        ...s.typeBadge,
-                        color: item.functionType === "Composite" ? "#9b8afb" : "#f79009",
-                        backgroundColor: item.functionType === "Composite" ? "#f4f3ff" : "#fffaeb",
-                        borderWidth: 0,
-                      }}>
-                        {item.functionType}
-                      </span>
-                    </td>
-                    <td style={{ ...listStyles.td, ...listStyles.tdLeft, ...s.tdEllipsis }} title={item.description}>{item.description}</td>
-                    <td style={{ ...listStyles.td, ...s.tdEllipsis }} title={item.businessId}>{item.businessId}</td>
-                    <td style={{ ...listStyles.td, ...s.tdEllipsis }} title={item.businessNameKo}>{item.businessNameKo}</td>
-                    <td style={listStyles.td}>{item.planLeader}</td>
-                    <td style={listStyles.td}>{item.designLeader}</td>
-                    <td style={listStyles.td}>
-                      <span style={item.useYn === "사용" ? listStyles.useBadge : listStyles.unuseBadge}>
-                        {item.useYn}
-                      </span>
+              </thead>
+              <tbody>
+                {pageItems.length === 0 ? (
+                  <tr>
+                    <td colSpan={COLUMNS.length} style={{ ...listStyles.td, padding: 40, color: "#a1a1aa" }}>
+                      데이터가 없습니다.
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                ) : (
+                  pageItems.map((item) => (
+                    <tr
+                      key={item.no}
+                      style={{ cursor: "pointer" }}
+                    >
+                      <td style={listStyles.td}>
+                        <div
+                          style={s.checkboxCell}
+                          onClick={(e) => { e.stopPropagation(); handleToggleRow(item.no); }}
+                        >
+                          <CheckboxIcon checked={selectedRows.has(item.no)} />
+                        </div>
+                      </td>
+                      <td style={listStyles.td}>{item.no}</td>
+                      <td style={{ ...listStyles.td, ...listStyles.tdLeft, ...s.tdEllipsis }} title={item.functionId}>{item.functionId}</td>
+                      <td style={{ ...listStyles.td, ...s.tdEllipsis }} title={item.nameKo}>{item.nameKo}</td>
+                      <td style={{ ...listStyles.td, ...s.tdEllipsis }}>{item.functionType}</td>
+                      <td style={{ ...listStyles.td, ...listStyles.tdLeft, ...s.tdEllipsis }} title={item.description}>{item.description}</td>
+                      <td style={{ ...listStyles.td, ...s.tdEllipsis }} title={item.businessId}>{item.businessId}</td>
+                      <td style={{ ...listStyles.td, ...s.tdEllipsis }} title={item.businessNameKo}>{item.businessNameKo}</td>
+                      <td style={{ ...listStyles.td, ...s.tdEllipsis }} title={item.componentNameKo}>{item.componentNameKo}</td>
+                      <td style={{ ...listStyles.td, ...s.tdEllipsis }} title={item.domainNameKo}>{item.domainNameKo}</td>
+                      <td style={listStyles.td}>
+                        <span style={item.useYn === "사용" ? listStyles.useBadge : listStyles.unuseBadge}>
+                          {item.useYn}
+                        </span>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
