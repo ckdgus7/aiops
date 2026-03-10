@@ -198,6 +198,9 @@ src/
 * When modifying a screen, do not make any changes to other domains unless explicitly requested.
 * Please conduct a code review and verify that the build completes successfully, and check for any errors.
 * When components in the shared/ui/global, shared/ui/service, or shared/ui/popup folders are changed, modified, or deleted, make the same changes, modifications, or deletions in the corresponding stories as well.
+* Features must depend only on shared, and direct dependencies on other features are prohibited.
+* Pages should only compose features and must not be aware of their internal implementations.
+* For data integration such as APIs, create a features/api folder and implement it using @tanstack/react-query.
 
 
 ---
