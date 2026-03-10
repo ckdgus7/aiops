@@ -1,1 +1,0 @@
-import{j as e}from"./index-4vKZSMnB.js";import{B as t}from"./BlankPage-ChR68buW.js";import"./usePageHeader-CmoGXkei.js";function n(){return e.jsx(t,{title:"기능설계",gnbName:"기능관리",path:"/features/design"})}export{n as FeatureDesignPage};

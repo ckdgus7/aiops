@@ -1,1 +1,0 @@
-import{E as d,r}from"./index-4vKZSMnB.js";function b(e){const s=d(a=>a.setPageHeader),t=d(a=>a.resetPageHeader),u=r.useMemo(()=>e.breadcrumbItems.map(a=>a.label).join("/"),[e.breadcrumbItems]);r.useEffect(()=>{s(e)},[s,u,e.title,e.favoriteKey,e.badge,e.idBadge,e.actions,e.onBack,e.showRefresh,e.onRefresh]),r.useEffect(()=>()=>{t()},[t])}export{b as u};
