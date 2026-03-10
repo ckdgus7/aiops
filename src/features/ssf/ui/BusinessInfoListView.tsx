@@ -138,15 +138,15 @@ type ColumnDef = { key: BusinessSortKey | "_checkbox"; label: string; width: num
 
 const COLUMNS: ColumnDef[] = [
   { key: "_checkbox", label: "", width: 36, align: "center", sortable: false },
-  { key: "no", label: "No", width: 46, align: "center" },
-  { key: "businessId", label: "업무 ID", width: 140, align: "center" },
-  { key: "nameKo", label: "업무명", width: 115, align: "center" },
-  { key: "description", label: "업무 설명", width: "auto", align: "left" },
-  { key: "domainNameKo", label: "컴포넌트(L2) ID", width: 105, align: "center" },
-  { key: "componentNameKo", label: "컴포넌트명", width: 115, align: "center" },
-  { key: "planLeader", label: "L2기획리더", width: 90, align: "center" },
-  { key: "designLeader", label: "L3설계리더", width: 90, align: "center" },
-  { key: "useYn", label: "사용여부", width: 80, align: "center" },
+  { key: "no", label: "No", width: 56, align: "center" },
+  { key: "businessId", label: "업무(L3) ID", width: 170, align: "center" },
+  { key: "nameKo", label: "업무(L3) 명", width: 145, align: "center" },
+  { key: "description", label: "업무(L3) 설명", width: "auto", align: "left" },
+  { key: "domainNameKo", label: "컴포넌트(L2) ID", width: 125, align: "center" },
+  { key: "componentNameKo", label: "컴포넌트(L2) 명", width: 135, align: "center" },
+  { key: "planLeader", label: "L2기획리더", width: 105, align: "center" },
+  { key: "designLeader", label: "L3설계리더", width: 105, align: "center" },
+  { key: "useYn", label: "사용여부", width: 90, align: "center" },
 ];
 
 export function BusinessInfoListView() {
