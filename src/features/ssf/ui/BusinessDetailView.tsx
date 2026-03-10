@@ -279,11 +279,35 @@ function MiniPagination({
   current,
   total,
   perPage,
+  onPageChange,
 }: {
   current: number;
   total: number;
   perPage: number;
+  onPageChange?: (page: number) => void;
 }) {
+  const totalPages = Math.max(1, Math.ceil(total / perPage));
+  const start = total === 0 ? 0 : (current - 1) * perPage + 1;
+  const end = Math.min(current * perPage, total);
+  const canPrev = current > 1;
+  const canNext = current < totalPages;
+
+  const navBtnStyle = (disabled: boolean): CSSProperties => ({
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    width: 20,
+    height: 20,
+    border: "none",
+    background: "transparent",
+    cursor: disabled ? "default" : "pointer",
+    opacity: disabled ? 0.4 : 1,
+    padding: 0,
+    fontFamily: FONT,
+    fontSize: 14,
+    color: "#71717a",
+  });
+
   return (
     <div style={s.miniPagination}>
       <span style={s.paginationLabel}>Items per page:</span>
@@ -291,14 +315,53 @@ function MiniPagination({
         <option>{perPage}</option>
       </select>
       <span style={s.paginationLabel}>
-        {(current - 1) * perPage + 1}-{Math.min(current * perPage, total)} of{" "}
-        {total}
+        {start}-{end} of {total}
       </span>
-      <span style={s.paginationNav}>
-        {"< "}
-        {current}
-        {" >"}
-      </span>
+      <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+        <button
+          type="button"
+          style={navBtnStyle(!canPrev)}
+          disabled={!canPrev}
+          onClick={() => canPrev && onPageChange?.(1)}
+        >
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+            <path d="M6 2L3 5L6 8" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M9 2L6 5L9 8" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
+        <button
+          type="button"
+          style={navBtnStyle(!canPrev)}
+          disabled={!canPrev}
+          onClick={() => canPrev && onPageChange?.(current - 1)}
+        >
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+            <path d="M7 2L4 5L7 8" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
+        <span style={{ ...s.paginationLabel, fontWeight: 500, color: "#71717a", minWidth: 16, textAlign: "center" as const }}>{current}</span>
+        <button
+          type="button"
+          style={navBtnStyle(!canNext)}
+          disabled={!canNext}
+          onClick={() => canNext && onPageChange?.(current + 1)}
+        >
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+            <path d="M3 2L6 5L3 8" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
+        <button
+          type="button"
+          style={navBtnStyle(!canNext)}
+          disabled={!canNext}
+          onClick={() => canNext && onPageChange?.(totalPages)}
+        >
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+            <path d="M1 2L4 5L1 8" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M4 2L7 5L4 8" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
+      </div>
     </div>
   );
 }
@@ -971,6 +1034,12 @@ export function BusinessDetailView() {
   const [bpdVersionDesc, setBpdVersionDesc] = useState("");
   const [editOpen, setEditOpen] = useState(false);
   const [activeSsfTab, setActiveSsfTab] = useState<"EPC" | "TMFC" | null>("TMFC");
+  const [epcL3Page, setEpcL3Page] = useState(1);
+  const [tmfcL3Page, setTmfcL3Page] = useState(1);
+  const [funcL4Page, setFuncL4Page] = useState(1);
+  const [reqPage, setReqPage] = useState(1);
+  const [projectPage, setProjectPage] = useState(1);
+  const PAGE_SIZE = 5;
 
   const item = BUSINESS_MOCK_DATA.find((b) => b.businessId === id);
 
@@ -1111,13 +1180,14 @@ export function BusinessDetailView() {
                               연관 업무(L3)
                             </span>
                             <MiniPagination
-                              current={1}
+                              current={epcL3Page}
                               total={EPC_L3_ITEMS.length}
-                              perPage={5}
+                              perPage={PAGE_SIZE}
+                              onPageChange={setEpcL3Page}
                             />
                           </div>
                           <div style={s.relList}>
-                            {EPC_L3_ITEMS.map((l3) => (
+                            {EPC_L3_ITEMS.slice((epcL3Page - 1) * PAGE_SIZE, epcL3Page * PAGE_SIZE).map((l3) => (
                               <ListItemRow
                                 key={l3.id}
                                 badge={l3.id}
@@ -1172,13 +1242,14 @@ export function BusinessDetailView() {
                               연관 업무(L3)
                             </span>
                             <MiniPagination
-                              current={1}
+                              current={tmfcL3Page}
                               total={L3_ITEMS.length}
-                              perPage={5}
+                              perPage={PAGE_SIZE}
+                              onPageChange={setTmfcL3Page}
                             />
                           </div>
                           <div style={s.relList}>
-                            {L3_ITEMS.map((l3) => (
+                            {L3_ITEMS.slice((tmfcL3Page - 1) * PAGE_SIZE, tmfcL3Page * PAGE_SIZE).map((l3) => (
                               <ListItemRow
                                 key={l3.id}
                                 badge={l3.id}
@@ -1336,14 +1407,15 @@ export function BusinessDetailView() {
               <div style={s.relHeaderRow}>
                 <span style={s.relLabel}>기능(L4)</span>
                 <MiniPagination
-                  current={1}
+                  current={funcL4Page}
                   total={FUNC_L4_ITEMS.length}
-                  perPage={5}
+                  perPage={PAGE_SIZE}
+                  onPageChange={setFuncL4Page}
                 />
               </div>
               <div style={s.relList}>
-                {FUNC_L4_ITEMS.map((item) => (
-                  <L4ListItemRow key={item.id} item={item} />
+                {FUNC_L4_ITEMS.slice((funcL4Page - 1) * PAGE_SIZE, funcL4Page * PAGE_SIZE).map((fItem) => (
+                  <L4ListItemRow key={fItem.id} item={fItem} />
                 ))}
               </div>
             </div>
@@ -1369,13 +1441,14 @@ export function BusinessDetailView() {
               <div style={s.relHeaderRow}>
                 <span style={s.relLabel}>요구사항</span>
                 <MiniPagination
-                  current={1}
+                  current={reqPage}
                   total={REQ_ITEMS.length}
-                  perPage={5}
+                  perPage={PAGE_SIZE}
+                  onPageChange={setReqPage}
                 />
               </div>
               <div style={s.relList}>
-                {REQ_ITEMS.map((r) => (
+                {REQ_ITEMS.slice((reqPage - 1) * PAGE_SIZE, reqPage * PAGE_SIZE).map((r) => (
                   <ListItemRow
                     key={r.id}
                     badge={r.id}
@@ -1391,13 +1464,14 @@ export function BusinessDetailView() {
               <div style={s.relHeaderRow}>
                 <span style={s.relLabel}>연관 과제</span>
                 <MiniPagination
-                  current={1}
+                  current={projectPage}
                   total={PROJECT_ITEMS.length}
-                  perPage={5}
+                  perPage={PAGE_SIZE}
+                  onPageChange={setProjectPage}
                 />
               </div>
               <div style={s.relList}>
-                {PROJECT_ITEMS.map((p) => (
+                {PROJECT_ITEMS.slice((projectPage - 1) * PAGE_SIZE, projectPage * PAGE_SIZE).map((p) => (
                   <ListItemRow
                     key={p.id}
                     badge={p.id}
