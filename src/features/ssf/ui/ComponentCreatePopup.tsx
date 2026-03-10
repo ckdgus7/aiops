@@ -1,4 +1,4 @@
-import { useState, useEffect, type CSSProperties } from "react";
+import { useState, useEffect, useRef, useCallback, type CSSProperties } from "react";
 import { Button } from "@/shared/ui/global/Button";
 import { Input } from "@/shared/ui/global/Input";
 import { SelectBox } from "@/shared/ui/global/SelectBox";
@@ -24,6 +24,30 @@ export interface ComponentFormData {
   useYn: string;
 }
 
+interface LeaderItem {
+  name: string;
+  org: string;
+}
+
+interface SuggestItem {
+  name: string;
+  org: string;
+  id: string;
+}
+
+const MOCK_SUGGESTIONS: SuggestItem[] = [
+  { name: "김선경", org: "Nova 추진팀", id: "P12345678" },
+  { name: "김영수", org: "AI플랫폼팀", id: "P12345679" },
+  { name: "김지현", org: "DevOps팀", id: "P12345680" },
+  { name: "이택규", org: "Nova 추진팀", id: "P12345681" },
+  { name: "이상민", org: "클라우드팀", id: "P12345682" },
+  { name: "박관리", org: "Nova 추진팀", id: "P12345683" },
+  { name: "조우찬", org: "Nova 추진팀", id: "P12345684" },
+  { name: "최설계", org: "DevOps팀", id: "P12345685" },
+  { name: "홍길동", org: "AI플랫폼팀", id: "P12345686" },
+  { name: "전상세", org: "Nova 추진팀", id: "P12345687" },
+];
+
 function CloseIcon() {
   return (
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -38,6 +62,23 @@ function AddIcon() {
     <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
       <path d="M6 1V11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
       <path d="M1 6H11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function L2RoleIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <rect width="16" height="16" rx="4" fill="#7a5af8" />
+      <text x="8" y="12" textAnchor="middle" fill="white" fontSize="9" fontWeight="700" fontFamily="Pretendard">L2</text>
+    </svg>
+  );
+}
+
+function DeleteIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+      <path d="M4.5 9H13.5" stroke="#f04438" strokeWidth="1.5" strokeLinecap="round" />
     </svg>
   );
 }
@@ -107,6 +148,7 @@ const s = {
     gap: 10,
     alignItems: "flex-start",
     width: "100%",
+    position: "relative",
   } satisfies CSSProperties,
   editorLabel: {
     ...popupStyles.labelText,
@@ -123,6 +165,123 @@ const s = {
     alignItems: "center",
   } satisfies CSSProperties,
   footerRight: popupStyles.footerRight,
+  dropdown: {
+    position: "absolute",
+    top: "100%",
+    left: 0,
+    right: 0,
+    marginTop: 4,
+    backgroundColor: "#ffffff",
+    border: "1px solid #e4e4e7",
+    borderRadius: 8,
+    boxShadow: "0 4px 16px rgba(0, 0, 0, 0.08)",
+    zIndex: 10,
+    maxHeight: 240,
+    overflowY: "auto",
+  } satisfies CSSProperties,
+  dropdownItem: {
+    display: "flex",
+    alignItems: "center",
+    gap: 8,
+    padding: "10px 16px",
+    cursor: "pointer",
+    borderBottom: "1px solid #f4f4f5",
+  } satisfies CSSProperties,
+  dropdownItemHover: {
+    backgroundColor: "#f4f3ff",
+  } satisfies CSSProperties,
+  dropdownName: {
+    fontFamily: FONT,
+    fontSize: 14,
+    fontWeight: 500,
+    lineHeight: "20px",
+    color: "#3f3f46",
+  } satisfies CSSProperties,
+  dropdownOrg: {
+    fontFamily: FONT,
+    fontSize: 12,
+    fontWeight: 400,
+    lineHeight: "18px",
+    color: "#a1a1aa",
+  } satisfies CSSProperties,
+  dropdownId: {
+    fontFamily: FONT,
+    fontSize: 12,
+    fontWeight: 400,
+    lineHeight: "18px",
+    color: "#a1a1aa",
+    marginLeft: "auto",
+  } satisfies CSSProperties,
+  dropdownEmpty: {
+    padding: "16px",
+    textAlign: "center",
+    fontFamily: FONT,
+    fontSize: 13,
+    color: "#a1a1aa",
+  } satisfies CSSProperties,
+  leaderList: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 8,
+    width: "100%",
+  } satisfies CSSProperties,
+  leaderItem: {
+    display: "flex",
+    alignItems: "center",
+    gap: 8,
+    minHeight: 40,
+    padding: "8px 12px 8px 8px",
+    border: "1px solid #e4e4e7",
+    borderRadius: 4,
+    backgroundColor: "#ffffff",
+    boxSizing: "border-box",
+    width: "100%",
+  } satisfies CSSProperties,
+  leaderItemContent: {
+    display: "flex",
+    flex: 1,
+    alignItems: "center",
+    gap: 4,
+    minWidth: 0,
+  } satisfies CSSProperties,
+  leaderName: {
+    fontFamily: FONT,
+    fontSize: 14,
+    fontWeight: 400,
+    lineHeight: "20px",
+    color: "#3f3f46",
+    whiteSpace: "nowrap",
+  } satisfies CSSProperties,
+  leaderOrg: {
+    display: "flex",
+    alignItems: "center",
+    gap: 4,
+    opacity: 0.3,
+  } satisfies CSSProperties,
+  leaderOrgSep: {
+    width: 1,
+    height: 10,
+    backgroundColor: "black",
+  } satisfies CSSProperties,
+  leaderOrgText: {
+    fontFamily: FONT,
+    fontSize: 12,
+    fontWeight: 400,
+    lineHeight: "18px",
+    color: "black",
+    whiteSpace: "nowrap",
+  } satisfies CSSProperties,
+  deleteBtn: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 3,
+    border: "1px solid #f04438",
+    borderRadius: 4,
+    backgroundColor: "#ffffff",
+    cursor: "pointer",
+    flexShrink: 0,
+  } satisfies CSSProperties,
 };
 
 const DOMAIN_OPTIONS = [
@@ -146,32 +305,158 @@ const USE_YN_OPTIONS = [
   { label: "미사용", value: "미사용" },
 ];
 
+function LeaderListItemRow({ leader, onDelete }: { leader: LeaderItem; onDelete: () => void }) {
+  return (
+    <div style={s.leaderItem}>
+      <div style={s.leaderItemContent}>
+        <span style={s.leaderName}>{leader.name}</span>
+        <L2RoleIcon />
+        <div style={s.leaderOrg}>
+          <div style={s.leaderOrgSep} />
+          <span style={s.leaderOrgText}>{leader.org}</span>
+        </div>
+      </div>
+      <button style={s.deleteBtn} type="button" onClick={onDelete}>
+        <DeleteIcon />
+      </button>
+    </div>
+  );
+}
+
+function LeaderAutocompleteDropdown({
+  suggestions,
+  onSelect,
+  hoveredIndex,
+  setHoveredIndex,
+}: {
+  suggestions: SuggestItem[];
+  onSelect: (item: SuggestItem) => void;
+  hoveredIndex: number;
+  setHoveredIndex: (i: number) => void;
+}) {
+  if (suggestions.length === 0) {
+    return (
+      <div style={s.dropdown}>
+        <div style={s.dropdownEmpty}>검색 결과가 없습니다.</div>
+      </div>
+    );
+  }
+  return (
+    <div style={s.dropdown}>
+      {suggestions.map((item, idx) => (
+        <div
+          key={item.id}
+          style={idx === hoveredIndex ? { ...s.dropdownItem, ...s.dropdownItemHover } : s.dropdownItem}
+          onMouseEnter={() => setHoveredIndex(idx)}
+          onMouseLeave={() => setHoveredIndex(-1)}
+          onClick={() => onSelect(item)}
+        >
+          <span style={s.dropdownName}>{item.name}</span>
+          <span style={s.dropdownOrg}>{item.org}</span>
+          <span style={s.dropdownId}>{item.id}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export function ComponentCreatePopup({ open, onClose, onSave }: ComponentCreatePopupProps) {
   const [domainNameKo, setDomainNameKo] = useState("");
   const [nameKo, setNameKo] = useState("");
   const [nameEn, setNameEn] = useState("");
-  const [planLeader, setPlanLeader] = useState("");
+  const [planLeaderInput, setPlanLeaderInput] = useState("");
   const [designLeader, setDesignLeader] = useState("");
+  const [planLeaders, setPlanLeaders] = useState<LeaderItem[]>([]);
   const [description, setDescription] = useState("");
   const [useYn, setUseYn] = useState("사용");
   const [closeAlertOpen, setCloseAlertOpen] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+  const [showPlanSuggestions, setShowPlanSuggestions] = useState(false);
+  const [planSuggestions, setPlanSuggestions] = useState<SuggestItem[]>([]);
+  const [planHoveredIndex, setPlanHoveredIndex] = useState(-1);
+  const planTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const planInputWrapRef = useRef<HTMLDivElement>(null);
+
+  const filterSuggestions = useCallback((query: string): SuggestItem[] => {
+    if (!query.trim()) return [];
+    const q = query.trim().toLowerCase();
+    return MOCK_SUGGESTIONS.filter(
+      (item) =>
+        item.name.toLowerCase().includes(q) &&
+        !planLeaders.some((l) => l.name === item.name && l.org === item.org)
+    );
+  }, [planLeaders]);
+
+  const handlePlanLeaderInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setPlanLeaderInput(val);
+
+    if (planTimerRef.current) {
+      clearTimeout(planTimerRef.current);
+    }
+
+    if (!val.trim()) {
+      setShowPlanSuggestions(false);
+      setPlanSuggestions([]);
+      return;
+    }
+
+    planTimerRef.current = setTimeout(() => {
+      const filtered = filterSuggestions(val);
+      setPlanSuggestions(filtered);
+      setShowPlanSuggestions(true);
+      setPlanHoveredIndex(-1);
+    }, 1000);
+  };
+
+  const handlePlanSuggestSelect = (item: SuggestItem) => {
+    setPlanLeaders((prev) => [...prev, { name: item.name, org: item.org }]);
+    setPlanLeaderInput("");
+    setShowPlanSuggestions(false);
+    setPlanSuggestions([]);
+  };
+
+  const handleAddPlanLeader = () => {
+    if (!planLeaderInput.trim()) return;
+    setPlanLeaders((prev) => [...prev, { name: planLeaderInput.trim(), org: "Nova 추진팀" }]);
+    setPlanLeaderInput("");
+    setShowPlanSuggestions(false);
+    setPlanSuggestions([]);
+  };
+
+  useEffect(() => {
+    if (!showPlanSuggestions) return;
+    const handleClickOutside = (e: MouseEvent) => {
+      if (planInputWrapRef.current && !planInputWrapRef.current.contains(e.target as Node)) {
+        setShowPlanSuggestions(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [showPlanSuggestions]);
 
   useEffect(() => {
     if (open) {
       setDomainNameKo("");
       setNameKo("");
       setNameEn("");
-      setPlanLeader("");
+      setPlanLeaderInput("");
       setDesignLeader("");
+      setPlanLeaders([]);
       setDescription("");
       setUseYn("사용");
+      setShowPlanSuggestions(false);
+      setPlanSuggestions([]);
     }
+    return () => {
+      if (planTimerRef.current) clearTimeout(planTimerRef.current);
+    };
   }, [open]);
 
   if (!open) return null;
 
-  const isValid = domainNameKo && nameKo.trim() && nameEn.trim() && planLeader.trim() && designLeader.trim();
+  const isValid = domainNameKo && nameKo.trim() && nameEn.trim() && planLeaders.length > 0 && designLeader.trim();
 
   const handleCloseClick = () => {
     setCloseAlertOpen(true);
@@ -188,7 +473,7 @@ export function ComponentCreatePopup({ open, onClose, onSave }: ComponentCreateP
       domainNameKo,
       nameKo: nameKo.trim(),
       nameEn: nameEn.trim(),
-      planLeader: planLeader.trim(),
+      planLeader: planLeaders.map((l) => l.name).join(", "),
       designLeader: designLeader.trim(),
       description,
       useYn,
@@ -254,10 +539,10 @@ export function ComponentCreatePopup({ open, onClose, onSave }: ComponentCreateP
               <span style={s.label}>L2기획리더</span>
               <div style={s.requiredMark} />
             </div>
-            <div style={s.inputWithBtn}>
+            <div style={s.inputWithBtn} ref={planInputWrapRef}>
               <Input
-                value={planLeader}
-                onChange={(e) => setPlanLeader(e.target.value)}
+                value={planLeaderInput}
+                onChange={handlePlanLeaderInputChange}
                 placeholder="담당자를 선택하거나 검색하세요."
                 style={{ flex: 1 }}
               />
@@ -265,12 +550,32 @@ export function ComponentCreatePopup({ open, onClose, onSave }: ComponentCreateP
                 size="l"
                 variant="outlined"
                 color="positive"
-                disabled={!planLeader.trim()}
+                disabled={!planLeaderInput.trim()}
                 leadingIcon={<AddIcon />}
+                onClick={handleAddPlanLeader}
               >
                 추가
               </Button>
+              {showPlanSuggestions && (
+                <LeaderAutocompleteDropdown
+                  suggestions={planSuggestions}
+                  onSelect={handlePlanSuggestSelect}
+                  hoveredIndex={planHoveredIndex}
+                  setHoveredIndex={setPlanHoveredIndex}
+                />
+              )}
             </div>
+            {planLeaders.length > 0 && (
+              <div style={s.leaderList}>
+                {planLeaders.map((leader, idx) => (
+                  <LeaderListItemRow
+                    key={`${leader.name}-${idx}`}
+                    leader={leader}
+                    onDelete={() => setPlanLeaders((prev) => prev.filter((_, i) => i !== idx))}
+                  />
+                ))}
+              </div>
+            )}
           </div>
 
           <div style={s.fieldRow}>
