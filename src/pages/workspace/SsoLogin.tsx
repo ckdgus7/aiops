@@ -10,9 +10,28 @@ function setCookie(name: string, value: string, days: number) {
 
 function SpinnerIcon() {
   return (
-    <svg width="48" height="48" viewBox="0 0 48 48" fill="none" style={{ animation: "spin 1s linear infinite" }}>
-      <circle cx="24" cy="24" r="20" stroke="#e4e7ec" strokeWidth="4" fill="none" />
-      <path d="M44 24C44 12.954 35.046 4 24 4" stroke="#7a5af8" strokeWidth="4" strokeLinecap="round" fill="none" />
+    <svg
+      width="48"
+      height="48"
+      viewBox="0 0 48 48"
+      fill="none"
+      style={{ animation: "spin 1s linear infinite" }}
+    >
+      <circle
+        cx="24"
+        cy="24"
+        r="20"
+        stroke="#e4e7ec"
+        strokeWidth="4"
+        fill="none"
+      />
+      <path
+        d="M44 24C44 12.954 35.046 4 24 4"
+        stroke="#7a5af8"
+        strokeWidth="4"
+        strokeLinecap="round"
+        fill="none"
+      />
     </svg>
   );
 }
@@ -20,8 +39,21 @@ function SpinnerIcon() {
 function CheckIcon() {
   return (
     <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-      <circle cx="24" cy="24" r="20" stroke="#1ac057" strokeWidth="3" fill="none" />
-      <path d="M15 24L21 30L33 18" stroke="#1ac057" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+      <circle
+        cx="24"
+        cy="24"
+        r="20"
+        stroke="#1ac057"
+        strokeWidth="3"
+        fill="none"
+      />
+      <path
+        d="M15 24L21 30L33 18"
+        stroke="#1ac057"
+        strokeWidth="3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }
@@ -138,17 +170,19 @@ export function SsoLoginPage() {
   const navigate = useNavigate();
   const [status, setStatus] = useState<Status>("loading");
   const [currentStep, setCurrentStep] = useState(0);
-  const [userData, setUserData] = useState<{ id: string; name: string } | null>(null);
+  const [userData, setUserData] = useState<{ id: string; name: string } | null>(
+    null,
+  );
 
   useEffect(() => {
     const runSsoLogin = async () => {
       try {
         setCurrentStep(0);
-        await delay(600);
+        await delay(800);
 
         setCurrentStep(1);
         const response = await fetch("/ssoLoginData.json");
-        await delay(400);
+        await delay(600);
 
         if (!response.ok) {
           setStatus("error");
@@ -167,14 +201,14 @@ export function SsoLoginPage() {
 
         setUserData(data);
         setCurrentStep(2);
-        await delay(500);
+        await delay(600);
 
         setCookie("sso_id", data.id, 1);
         setCookie("sso_name", data.name, 1);
 
         setCurrentStep(3);
         setStatus("success");
-        await delay(800);
+        await delay(2500);
 
         navigate("/", { replace: true });
       } catch {
