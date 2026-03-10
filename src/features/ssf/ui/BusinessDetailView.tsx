@@ -308,6 +308,12 @@ const REQ_ITEMS = [
   { id: "RQ-LA-0014", text: "고객정보 연동 시스템 구축" },
   { id: "RQ-LA-0015", text: "결제 모듈 통합 관리" },
   { id: "RQ-LA-0016", text: "알림 서비스 고도화" },
+  { id: "RQ-LA-0017", text: "사용자 인증 체계 개선" },
+  { id: "RQ-LA-0018", text: "실시간 데이터 동기화" },
+  { id: "RQ-LA-0019", text: "API 게이트웨이 구축" },
+  { id: "RQ-LA-0020", text: "로그 모니터링 시스템" },
+  { id: "RQ-LA-0021", text: "배치 처리 자동화" },
+  { id: "RQ-LA-0022", text: "성능 최적화 작업" },
 ];
 
 const PROJECT_ITEMS = [
@@ -315,18 +321,38 @@ const PROJECT_ITEMS = [
   { id: "PJ-0002", text: "운영 안정화 프로젝트" },
   { id: "PJ-0003", text: "데이터 마이그레이션" },
   { id: "PJ-0004", text: "보안 체계 강화" },
+  { id: "PJ-0005", text: "클라우드 전환 프로젝트" },
+  { id: "PJ-0006", text: "AI 기반 자동화 구축" },
+  { id: "PJ-0007", text: "통합 모니터링 체계" },
+  { id: "PJ-0008", text: "레거시 시스템 현대화" },
+  { id: "PJ-0009", text: "DevOps 파이프라인 구축" },
+  { id: "PJ-0010", text: "마이크로서비스 전환" },
 ];
 
 const EPC_L3_ITEMS = [
   { id: "BZ-EPC001-001", text: "상품 카탈로그 조회" },
   { id: "BZ-EPC001-002", text: "상품 사양 관리" },
   { id: "BZ-EPC001-003", text: "상품 카테고리 관리" },
+  { id: "BZ-EPC001-004", text: "상품 가격 정책 관리" },
+  { id: "BZ-EPC001-005", text: "상품 번들 구성" },
+  { id: "BZ-EPC001-006", text: "상품 프로모션 관리" },
+  { id: "BZ-EPC001-007", text: "상품 라이프사이클 관리" },
+  { id: "BZ-EPC001-008", text: "상품 속성 정의" },
+  { id: "BZ-EPC001-009", text: "상품 유효성 검증" },
+  { id: "BZ-EPC001-010", text: "상품 배포 관리" },
 ];
 
 const L3_ITEMS = [
   { id: "BZ-SKNC001-001", text: "서비스 카탈로그 조회" },
   { id: "BZ-SKNC001-002", text: "서비스 사양 관리" },
   { id: "BZ-SKNC001-003", text: "고객 중심 서비스 뷰" },
+  { id: "BZ-SKNC001-004", text: "서비스 품질 모니터링" },
+  { id: "BZ-SKNC001-005", text: "서비스 요청 처리" },
+  { id: "BZ-SKNC001-006", text: "서비스 이력 관리" },
+  { id: "BZ-SKNC001-007", text: "서비스 레벨 관리" },
+  { id: "BZ-SKNC001-008", text: "서비스 장애 대응" },
+  { id: "BZ-SKNC001-009", text: "서비스 변경 관리" },
+  { id: "BZ-SKNC001-010", text: "서비스 리포트 생성" },
 ];
 
 const BPD_ITEMS = [
@@ -1176,7 +1202,6 @@ export function BusinessDetailView() {
             <div style={s.relSection}>
               <div style={s.relHeaderRow}>
                 <span style={s.relLabel}>기능(L4)</span>
-                <MiniPagination current={1} total={0} perPage={5} />
               </div>
               <NoDataArea />
             </div>
