@@ -69,13 +69,19 @@ function FullScreenViewer({ xml, onClose }: { xml: string; onClose: () => void }
   const viewerRef = useRef<NavigatedViewer | null>(null);
 
   const handleZoomIn = useCallback(() => {
-    const canvas = viewerRef.current?.get("canvas") as { zoom: (level: string | number, center?: string) => void } | undefined;
-    if (canvas) canvas.zoom("in" as never);
+    const canvas = viewerRef.current?.get("canvas") as { zoom: (level?: number | string, center?: string) => number } | undefined;
+    if (canvas) {
+      const current = canvas.zoom();
+      canvas.zoom(current * 1.2, "auto");
+    }
   }, []);
 
   const handleZoomOut = useCallback(() => {
-    const canvas = viewerRef.current?.get("canvas") as { zoom: (level: string | number, center?: string) => void } | undefined;
-    if (canvas) canvas.zoom("out" as never);
+    const canvas = viewerRef.current?.get("canvas") as { zoom: (level?: number | string, center?: string) => number } | undefined;
+    if (canvas) {
+      const current = canvas.zoom();
+      canvas.zoom(current / 1.2, "auto");
+    }
   }, []);
 
   const handleFit = useCallback(() => {
@@ -202,22 +208,28 @@ const BpmnViewer = forwardRef<BpmnViewerHandle, BpmnViewerProps>(function BpmnVi
   const [fullScreen, setFullScreen] = useState(false);
 
   const handleZoomIn = useCallback(() => {
-    const canvas = viewerRef.current?.get("canvas") as { zoom: (level: string | number, center?: string) => void } | undefined;
-    if (canvas) canvas.zoom("in" as never);
+    const canvas = viewerRef.current?.get("canvas") as { zoom: (level?: number | string, center?: string) => number } | undefined;
+    if (canvas) {
+      const current = canvas.zoom();
+      canvas.zoom(current * 1.2, "auto");
+    }
   }, []);
 
   const handleZoomOut = useCallback(() => {
-    const canvas = viewerRef.current?.get("canvas") as { zoom: (level: string | number, center?: string) => void } | undefined;
-    if (canvas) canvas.zoom("out" as never);
+    const canvas = viewerRef.current?.get("canvas") as { zoom: (level?: number | string, center?: string) => number } | undefined;
+    if (canvas) {
+      const current = canvas.zoom();
+      canvas.zoom(current / 1.2, "auto");
+    }
   }, []);
 
   const handleFitViewport = useCallback(() => {
-    const canvas = viewerRef.current?.get("canvas") as { zoom: (level: string, center?: string) => void } | undefined;
+    const canvas = viewerRef.current?.get("canvas") as { zoom: (level?: number | string, center?: string) => number } | undefined;
     if (canvas) canvas.zoom("fit-viewport", "auto");
   }, []);
 
   const handleResetZoom = useCallback(() => {
-    const canvas = viewerRef.current?.get("canvas") as { zoom: (level: number, center?: string) => void } | undefined;
+    const canvas = viewerRef.current?.get("canvas") as { zoom: (level?: number | string, center?: string) => number } | undefined;
     if (canvas) canvas.zoom(1, "auto");
   }, []);
 
@@ -330,8 +342,9 @@ const BpmnViewer = forwardRef<BpmnViewerHandle, BpmnViewerProps>(function BpmnVi
   return (
     <div style={containerStyle} className={className}>
       <div ref={containerRef} style={{ width: "100%", height: "100%" }} />
-      {error && <div style={errorStyle}>{error}</div>}
-      {!error && xml && !hideToolbar && (
+      {/* {error && <div style={errorStyle}>{error}</div>} */}
+      {xml && (
+      // {!error && xml && !hideToolbar && (
         <div style={toolbarStyle}>
           <button type="button" style={toolBtnStyle} onClick={handleZoomIn} title="확대">
             <ZoomInIcon />
