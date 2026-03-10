@@ -4,6 +4,7 @@ import { Input } from "@/shared/ui/global/Input";
 import { SelectBox } from "@/shared/ui/global/SelectBox";
 import { RadioGroup } from "@/shared/ui/global/RadioGroup";
 import { ToastEditor } from "@/shared/ui/service/ToastEditor";
+import { AlertModal } from "@/shared/ui/global/AlertModal";
 import type { ComponentItem } from "@/features/ssf/model/types";
 import { DOMAIN_MOCK_DATA } from "@/features/ssf/model/mock-data";
 import { FONT, popupStyles } from "@/shared/ui/styles";
@@ -350,10 +351,12 @@ function LeaderAutocompleteDropdown({
 interface ComponentEditPopupProps {
   open: boolean;
   onClose: () => void;
+  onDetailClose?: () => void;
+  onSaveSuccess?: () => void;
   item: ComponentItem | null;
 }
 
-export function ComponentEditPopup({ open, onClose, item }: ComponentEditPopupProps) {
+export function ComponentEditPopup({ open, onClose, onDetailClose, onSaveSuccess, item }: ComponentEditPopupProps) {
   const [domainNameKo, setDomainNameKo] = useState("");
   const [nameKo, setNameKo] = useState("");
   const [nameEn, setNameEn] = useState("");
@@ -363,6 +366,7 @@ export function ComponentEditPopup({ open, onClose, item }: ComponentEditPopupPr
   const [designLeaders, setDesignLeaders] = useState<LeaderItem[]>([]);
   const [description, setDescription] = useState("");
   const [useYn, setUseYn] = useState("사용");
+  const [closeAlertOpen, setCloseAlertOpen] = useState(false);
 
   const [showPlanSuggestions, setShowPlanSuggestions] = useState(false);
   const [planSuggestions, setPlanSuggestions] = useState<SuggestItem[]>([]);
@@ -512,18 +516,29 @@ export function ComponentEditPopup({ open, onClose, item }: ComponentEditPopupPr
 
   const isValid = domainNameKo && nameKo.trim() && nameEn.trim() && planLeaders.length > 0 && designLeaders.length > 0;
 
-  const handleSave = () => {
-    if (!isValid) return;
+  const handleCloseClick = () => {
+    setCloseAlertOpen(true);
+  };
+
+  const handleCloseConfirm = () => {
+    setCloseAlertOpen(false);
     onClose();
   };
 
+  const handleSave = () => {
+    if (!isValid) return;
+    onSaveSuccess?.();
+    onClose();
+    onDetailClose?.();
+  };
+
   return (
-    <div style={st.overlay} onClick={onClose}>
+    <div style={st.overlay} onClick={handleCloseClick}>
       <div style={st.popup} onClick={(e) => e.stopPropagation()}>
         <div style={st.headerWithMessage}>
           <div style={st.titleRow}>
             <span style={st.titleText}>컴포넌트(L2) 수정</span>
-            <button style={st.closeBtn} onClick={onClose} type="button">
+            <button style={st.closeBtn} onClick={handleCloseClick} type="button">
               <CloseIcon />
             </button>
           </div>
@@ -687,7 +702,7 @@ export function ComponentEditPopup({ open, onClose, item }: ComponentEditPopupPr
 
         <div style={st.footer}>
           <div style={st.footerLeft}>
-            <Button size="l" variant="outlined" color="info" onClick={onClose}>
+            <Button size="l" variant="outlined" color="info" onClick={handleCloseClick}>
               닫기
             </Button>
           </div>
@@ -697,6 +712,18 @@ export function ComponentEditPopup({ open, onClose, item }: ComponentEditPopupPr
             </Button>
           </div>
         </div>
+
+        <AlertModal
+          open={closeAlertOpen}
+          onClose={() => setCloseAlertOpen(false)}
+          type="warning"
+          message="입력한 값을 초기화하고 창을 닫습니다."
+          showCancel
+          cancelLabel="취소"
+          confirmLabel="확인"
+          onCancel={() => setCloseAlertOpen(false)}
+          onConfirm={handleCloseConfirm}
+        />
       </div>
     </div>
   );

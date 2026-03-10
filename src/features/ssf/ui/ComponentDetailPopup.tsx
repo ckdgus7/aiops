@@ -1,5 +1,6 @@
 import { useState, useEffect, type CSSProperties } from "react";
 import { Button } from "@/shared/ui/global/Button";
+import { Snackbar } from "@/shared/ui/global/Snackbar";
 import { ComponentDeletePopup } from "@/features/ssf/ui/ComponentDeletePopup";
 import { ComponentEditPopup } from "@/features/ssf/ui/ComponentEditPopup";
 import type { ComponentItem } from "@/features/ssf/model/types";
@@ -532,6 +533,7 @@ interface ComponentDetailPopupProps {
 export function ComponentDetailPopup({ open, onClose, item, onDeleted }: ComponentDetailPopupProps) {
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [editSaveSnackbarOpen, setEditSaveSnackbarOpen] = useState(false);
   const [l3Page, setL3Page] = useState(1);
 
   const totalL3 = MOCK_L3_ITEMS.length;
@@ -548,7 +550,14 @@ export function ComponentDetailPopup({ open, onClose, item, onDeleted }: Compone
     }
   }, [open]);
 
-  if (!open || !item) return null;
+  if (!open || !item) return (
+    <Snackbar
+      open={editSaveSnackbarOpen}
+      onClose={() => setEditSaveSnackbarOpen(false)}
+      type="success"
+      message="저장 되었습니다."
+    />
+  );
 
   const domain = DOMAIN_MOCK_DATA.find(
     (d) => d.nameKo === item.domainNameKo
@@ -693,6 +702,8 @@ export function ComponentDetailPopup({ open, onClose, item, onDeleted }: Compone
       <ComponentEditPopup
         open={editOpen}
         onClose={() => setEditOpen(false)}
+        onDetailClose={onClose}
+        onSaveSuccess={() => setEditSaveSnackbarOpen(true)}
         item={item}
       />
 
@@ -704,6 +715,13 @@ export function ComponentDetailPopup({ open, onClose, item, onDeleted }: Compone
           onClose();
           onDeleted?.();
         }}
+      />
+
+      <Snackbar
+        open={editSaveSnackbarOpen}
+        onClose={() => setEditSaveSnackbarOpen(false)}
+        type="success"
+        message="저장 되었습니다."
       />
     </>
   );
