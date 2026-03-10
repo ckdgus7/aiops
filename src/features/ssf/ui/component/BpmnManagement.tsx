@@ -1,6 +1,5 @@
-import { useState, useRef, type CSSProperties, type ReactNode } from "react";
+import { useState, type CSSProperties, type ReactNode } from "react";
 import { BpmnViewer } from "@/shared/ui/service/BpmnViewer";
-import type { BpmnViewerHandle } from "@/shared/ui/service/BpmnViewer";
 import { ToastEditor } from "@/shared/ui/service/ToastEditor";
 import { RadioGroup } from "@/shared/ui/global/RadioGroup";
 import { Button } from "@/shared/ui/global/Button";
@@ -264,35 +263,6 @@ function ExpandIcon({ expanded }: { expanded: boolean }) {
   );
 }
 
-function ZoomInIcon() {
-  return (
-    <svg width="18" height="24" viewBox="0 0 18 24" fill="none">
-      <circle cx="8" cy="12" r="5" stroke="#71717a" strokeWidth="1.2" />
-      <path d="M12 16L15 19" stroke="#71717a" strokeWidth="1.2" strokeLinecap="round" />
-      <path d="M8 10V14M6 12H10" stroke="#71717a" strokeWidth="1.2" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function ZoomOutIcon() {
-  return (
-    <svg width="18" height="24" viewBox="0 0 18 24" fill="none">
-      <circle cx="8" cy="12" r="5" stroke="#71717a" strokeWidth="1.2" />
-      <path d="M12 16L15 19" stroke="#71717a" strokeWidth="1.2" strokeLinecap="round" />
-      <path d="M6 12H10" stroke="#71717a" strokeWidth="1.2" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function FitIcon() {
-  return (
-    <svg width="18" height="24" viewBox="0 0 18 24" fill="none">
-      <rect x="3" y="8" width="12" height="8" rx="1" stroke="#71717a" strokeWidth="1.2" />
-      <path d="M6 8V7M12 8V7M6 16V17M12 16V17" stroke="#71717a" strokeWidth="1.2" strokeLinecap="round" />
-    </svg>
-  );
-}
-
 function EditIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
@@ -366,7 +336,6 @@ function AssetAccordion({
   selectedVersionIndex: number;
   onSelectVersion: (index: number) => void;
 }) {
-  const viewerRef = useRef<BpmnViewerHandle>(null);
   const history = bpd.history;
   const hasHistory = history && history.length > 0;
 
@@ -428,16 +397,9 @@ function AssetAccordion({
           )}
           <div style={s.assetBpdInfo}>
             <div style={s.bpdViewerContainer}>
-              <div style={s.bpdToolbar}>
-                <div style={s.bpdToolbarLeft}>
-                  <button type="button" style={s.bpdToolBtn} onClick={() => viewerRef.current?.zoomIn()}><ZoomInIcon /></button>
-                  <button type="button" style={s.bpdToolBtn} onClick={() => viewerRef.current?.zoomOut()}><ZoomOutIcon /></button>
-                  <button type="button" style={s.bpdToolBtn} onClick={() => viewerRef.current?.fitViewport()}><FitIcon /></button>
-                </div>
-              </div>
               <div style={s.bpdViewerArea}>
                 <div style={s.bpdPlaceholder}>
-                  <BpmnViewer ref={viewerRef} xml={activeBpmnXml} hideToolbar key={`bpmn-${bpd.id}-${selectedVersionIndex}`} />
+                  <BpmnViewer xml={activeBpmnXml} key={`bpmn-${bpd.id}-${selectedVersionIndex}`} />
                 </div>
               </div>
             </div>
@@ -861,28 +823,6 @@ const s = {
     flexDirection: "column",
     gap: 10,
     width: "100%",
-  } satisfies CSSProperties,
-  bpdToolbar: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-  } satisfies CSSProperties,
-  bpdToolbarLeft: {
-    display: "flex",
-    alignItems: "center",
-    gap: 8,
-  } satisfies CSSProperties,
-  bpdToolBtn: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    width: 24,
-    height: 30,
-    border: "1px solid #71717a",
-    borderRadius: 4,
-    background: "#ffffff",
-    cursor: "pointer",
-    padding: 3,
   } satisfies CSSProperties,
   bpdViewerArea: {
     width: "100%",
