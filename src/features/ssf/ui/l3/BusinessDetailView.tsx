@@ -10,7 +10,7 @@ import {
 import { Button } from "@/shared/ui/global/Button";
 import { BusinessEditPopup } from "@/features/ssf/ui/l3/BusinessEditPopup";
 import { BusinessReference } from "@/features/ssf/ui/component/BusinessReference";
-import { HistoryPanel } from "@/features/ssf/ui/component/HistoryPanel";
+import { HistoryPanel, HISTORY_DATA } from "@/features/ssf/ui/component/HistoryPanel";
 import { BpmnManagement } from "@/features/ssf/ui/component/BpmnManagement";
 import { RelatedInfo } from "@/features/ssf/ui/component/RelatedInfo";
 import { FONT } from "@/shared/ui/styles";
@@ -51,6 +51,7 @@ export function BusinessDetailView() {
   const { id } = useParams<{ id: string }>();
   const addTab = useMdiStore((st) => st.addTab);
   const [historyOpen, setHistoryOpen] = useState(true);
+  const [historyIndex, setHistoryIndex] = useState(0);
   const [editOpen, setEditOpen] = useState(false);
 
   const item = BUSINESS_MOCK_DATA.find((b) => b.businessId === id);
@@ -107,8 +108,14 @@ export function BusinessDetailView() {
               domain={domain}
               comp={comp}
               onHistoryToggle={() => setHistoryOpen(!historyOpen)}
+              historySnapshot={HISTORY_DATA[historyIndex]?.snapshot}
             />
-            {historyOpen && <HistoryPanel />}
+            {historyOpen && (
+              <HistoryPanel
+                activeIndex={historyIndex}
+                onSelect={setHistoryIndex}
+              />
+            )}
           </div>
           <BpmnManagement />
         </div>

@@ -26,11 +26,21 @@ interface CompItem {
   description: string;
 }
 
+interface HistorySnapshot {
+  nameKo: string;
+  planLeader: string;
+  designLeader: string;
+  description: string;
+  savedAt: string;
+  modifiedAt: string;
+}
+
 interface BusinessReferenceProps {
   item: BusinessItem;
   domain: DomainItem | undefined;
   comp: CompItem | undefined;
   onHistoryToggle: () => void;
+  historySnapshot?: HistorySnapshot;
 }
 
 const EPC_L3_ITEMS = [
@@ -257,10 +267,17 @@ function MiniPagination({
   );
 }
 
-export function BusinessReference({ item, domain, comp, onHistoryToggle }: BusinessReferenceProps) {
+export function BusinessReference({ item, domain, comp, onHistoryToggle, historySnapshot }: BusinessReferenceProps) {
   const [activeSsfTab, setActiveSsfTab] = useState<"EPC" | "TMFC" | null>("TMFC");
   const [epcL3Page, setEpcL3Page] = useState(1);
   const [tmfcL3Page, setTmfcL3Page] = useState(1);
+
+  const displayName = historySnapshot?.nameKo ?? item.nameKo;
+  const displayPlanLeader = historySnapshot?.planLeader ?? item.planLeader;
+  const displayDesignLeader = historySnapshot?.designLeader ?? item.designLeader;
+  const displayDescription = historySnapshot?.description ?? item.description;
+  const displaySavedAt = historySnapshot?.savedAt ?? "2025-11-28 15:24";
+  const displayModifiedAt = historySnapshot?.modifiedAt ?? "2025-11-28 15:24";
 
   return (
     <div style={{ ...s.container, flex: 1 }}>
@@ -279,16 +296,16 @@ export function BusinessReference({ item, domain, comp, onHistoryToggle }: Busin
       />
       <div style={s.mainFields}>
         <LabelValue label="업무(L3) ID" value={item.businessId} />
-        <LabelValue label="업무(L3) 명" value={item.nameKo} />
+        <LabelValue label="업무(L3) 명" value={displayName} />
         <div style={s.fieldRow}>
-          <LabelValue label="L2기획리더" value={item.planLeader} />
-          <LabelValue label="L3설계리더" value={item.designLeader} />
+          <LabelValue label="L2기획리더" value={displayPlanLeader} />
+          <LabelValue label="L3설계리더" value={displayDesignLeader} />
         </div>
         <div style={s.fieldRow}>
-          <LabelValue label="저장일시" value="2025-11-28 15:24" />
-          <LabelValue label="마지막 수정일시" value="2025-11-28 15:24" />
+          <LabelValue label="저장일시" value={displaySavedAt} />
+          <LabelValue label="마지막 수정일시" value={displayModifiedAt} />
         </div>
-        <LabelValue label="업무(L3) 설명" value={item.description} fullWidth />
+        <LabelValue label="업무(L3) 설명" value={displayDescription} fullWidth />
 
         <div style={s.ssfSection}>
           <span style={s.ssfLabel}>SSF 정보</span>

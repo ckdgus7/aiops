@@ -1,17 +1,24 @@
 import { type CSSProperties } from "react";
 import { FONT } from "@/shared/ui/styles";
 
-interface HistoryItemData {
+export interface HistoryItemData {
   type: string;
   typeColor: string;
   typeBg: string;
   typeBorderColor: string;
   user: string;
   date: string;
-  active: boolean;
+  snapshot: {
+    nameKo: string;
+    planLeader: string;
+    designLeader: string;
+    description: string;
+    savedAt: string;
+    modifiedAt: string;
+  };
 }
 
-const HISTORY_DATA: HistoryItemData[] = [
+export const HISTORY_DATA: HistoryItemData[] = [
   {
     type: "수정",
     typeColor: "#f79009",
@@ -19,7 +26,14 @@ const HISTORY_DATA: HistoryItemData[] = [
     typeBorderColor: "#f79009",
     user: "전우치",
     date: "2025-11-28 15:24",
-    active: true,
+    snapshot: {
+      nameKo: "대리점정보관리",
+      planLeader: "이택규",
+      designLeader: "조우찬",
+      description: "대리점 기본 정보 및 계약 정보를 관리하는 업무입니다.",
+      savedAt: "2025-11-28 15:24",
+      modifiedAt: "2025-11-28 15:24",
+    },
   },
   {
     type: "수정",
@@ -28,7 +42,14 @@ const HISTORY_DATA: HistoryItemData[] = [
     typeBorderColor: "#f79009",
     user: "홍길동",
     date: "2025-11-20 09:15",
-    active: false,
+    snapshot: {
+      nameKo: "대리점정보관리",
+      planLeader: "이택규",
+      designLeader: "박민수",
+      description: "대리점 기본 정보를 관리하는 업무입니다.",
+      savedAt: "2025-11-20 09:15",
+      modifiedAt: "2025-11-20 09:15",
+    },
   },
   {
     type: "저장",
@@ -37,9 +58,21 @@ const HISTORY_DATA: HistoryItemData[] = [
     typeBorderColor: "#1ac057",
     user: "이순신",
     date: "2025-11-15 14:30",
-    active: false,
+    snapshot: {
+      nameKo: "대리점정보관리",
+      planLeader: "김철수",
+      designLeader: "박민수",
+      description: "대리점 정보를 등록하고 조회하는 업무입니다.",
+      savedAt: "2025-11-15 14:30",
+      modifiedAt: "2025-11-15 14:30",
+    },
   },
 ];
+
+interface HistoryPanelProps {
+  activeIndex: number;
+  onSelect: (index: number) => void;
+}
 
 function HistoryItem({
   type,
@@ -51,6 +84,7 @@ function HistoryItem({
   isFirst,
   isLast,
   active,
+  onClick,
 }: {
   type: string;
   typeColor: string;
@@ -61,9 +95,10 @@ function HistoryItem({
   isFirst?: boolean;
   isLast?: boolean;
   active?: boolean;
+  onClick?: () => void;
 }) {
   return (
-    <div style={s.historyItem}>
+    <div style={{ ...s.historyItem, cursor: "pointer" }} onClick={onClick}>
       <div style={s.historyMark}>
         {!isFirst && <div style={s.historyLineTop} />}
         <div
@@ -85,14 +120,14 @@ function HistoryItem({
         >
           {type}
         </span>
-        <span style={s.historyUser}>{user}</span>
+        <span style={{ ...s.historyUser, fontWeight: active ? 600 : 400 }}>{user}</span>
         <span style={s.historyDate}>{date}</span>
       </div>
     </div>
   );
 }
 
-export function HistoryPanel() {
+export function HistoryPanel({ activeIndex, onSelect }: HistoryPanelProps) {
   return (
     <div style={s.historyPanel}>
       <div style={s.historyList}>
@@ -107,7 +142,8 @@ export function HistoryPanel() {
             date={h.date}
             isFirst={i === 0}
             isLast={i === HISTORY_DATA.length - 1}
-            active={h.active}
+            active={i === activeIndex}
+            onClick={() => onSelect(i)}
           />
         ))}
       </div>
