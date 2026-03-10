@@ -35,8 +35,10 @@ export function ToastEditor({
   const isInternalChange = useRef(false);
   const onChangeRef = useRef(onChange);
   const maxLengthRef = useRef(maxLength);
+  const valueRef = useRef(value);
   onChangeRef.current = onChange;
   maxLengthRef.current = maxLength;
+  valueRef.current = value;
 
   useEffect(() => {
     if (!editorRef.current) return;
@@ -46,7 +48,7 @@ export function ToastEditor({
       initialEditType: "wysiwyg",
       previewStyle: "vertical",
       height: height === "auto" ? `${minHeight}px` : height,
-      initialValue: value || "",
+      initialValue: "",
       placeholder,
       hideModeSwitch: false,
       toolbarItems: [
@@ -75,7 +77,20 @@ export function ToastEditor({
 
     instanceRef.current = editor;
 
+    const frameId = requestAnimationFrame(() => {
+      const v = valueRef.current;
+      if (editor && v) {
+        const current = editor.getHTML();
+        if (current !== v) {
+          isInternalChange.current = true;
+          editor.setHTML(v);
+          isInternalChange.current = false;
+        }
+      }
+    });
+
     return () => {
+      cancelAnimationFrame(frameId);
       editor.destroy();
       instanceRef.current = null;
     };
@@ -83,10 +98,14 @@ export function ToastEditor({
 
   useEffect(() => {
     if (!instanceRef.current || isInternalChange.current) return;
-    const current = instanceRef.current.getHTML();
-    if (current !== value) {
-      instanceRef.current.setHTML(value || "");
-    }
+    const frameId = requestAnimationFrame(() => {
+      if (!instanceRef.current) return;
+      const current = instanceRef.current.getHTML();
+      if (current !== value) {
+        instanceRef.current.setHTML(value || "");
+      }
+    });
+    return () => cancelAnimationFrame(frameId);
   }, [value]);
 
   return (
