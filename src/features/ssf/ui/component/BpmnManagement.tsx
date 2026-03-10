@@ -5,31 +5,85 @@ import { RadioGroup } from "@/shared/ui/global/RadioGroup";
 import { Button } from "@/shared/ui/global/Button";
 import { FONT } from "@/shared/ui/styles";
 
-const BPD_ITEMS = [
-  {
-    id: "bpd-1",
-    name: "Biz Process Diagram 01",
-    version: "v 2.11.029",
-    status: "Deployed" as const,
-    url: "https://aidevops.nova.com/bizasset/asset/bpd/XSyRe1g6UOdG9FChcYmacQ",
-  },
-  {
-    id: "bpd-2",
-    name: "Biz Process Diagram 02",
-    version: "v 1.02.000.01",
-    status: "Deployed" as const,
-    url: "https://aidevops.nova.com/bizasset/asset/bpd/XSyRe1g6UOdG9FChcYmacQ",
-    history: [
-      { version: "v 1.02.000.01", status: "Deployed" as const, user: "전우치", date: "2025-11-28 15:24", active: true },
-      { version: "v 1.02.000", status: "Retired" as const, user: "전우치", date: "2025-11-28 15:24", active: false },
-      { version: "v 1.01.000", status: "Retired" as const, user: "전우치", date: "2025-11-28 15:24", active: false },
-      { version: "v 1.00.000", status: "Retired" as const, user: "전우치", date: "2025-11-28 15:24", active: false },
-    ],
-    spec: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-  },
-];
+function makeBpmnXml(tasks: { id: string; name: string }[]) {
+  const startId = "StartEvent_1";
+  const endSuccessId = "EndEvent_Success";
+  const endRejectedId = "EndEvent_Rejected";
+  const gatewayId = "Gateway_Approval";
 
-const BPMN_XML = `<?xml version="1.0" encoding="UTF-8"?>
+  const taskElements = tasks.map(
+    (t) =>
+      `    <bpmn:userTask id="${t.id}" name="${t.name}">\n` +
+      `      <bpmn:incoming>Flow_to_${t.id}</bpmn:incoming>\n` +
+      `      <bpmn:outgoing>Flow_from_${t.id}</bpmn:outgoing>\n` +
+      `    </bpmn:userTask>`,
+  );
+
+  const flowElements: string[] = [];
+  let prevRef = startId;
+  tasks.forEach((t) => {
+    flowElements.push(
+      `    <bpmn:sequenceFlow id="Flow_to_${t.id}" sourceRef="${prevRef}" targetRef="${t.id}"/>`,
+    );
+    prevRef = t.id;
+  });
+  flowElements.push(
+    `    <bpmn:sequenceFlow id="Flow_from_${prevRef}" sourceRef="${prevRef}" targetRef="${gatewayId}"/>`,
+  );
+  flowElements.push(
+    `    <bpmn:sequenceFlow id="Flow_yes" name="Yes" sourceRef="${gatewayId}" targetRef="${endSuccessId}"/>`,
+  );
+  flowElements.push(
+    `    <bpmn:sequenceFlow id="Flow_no" name="No" sourceRef="${gatewayId}" targetRef="${endRejectedId}"/>`,
+  );
+
+  const xStart = 150;
+  let xCursor = xStart;
+  const yMain = 120;
+  const shapes: string[] = [];
+  const edges: string[] = [];
+
+  shapes.push(
+    `      <bpmndi:BPMNShape id="${startId}_di" bpmnElement="${startId}">\n        <dc:Bounds x="${xCursor}" y="${yMain}" width="36" height="36"/>\n      </bpmndi:BPMNShape>`,
+  );
+  let prevX = xCursor + 18;
+  xCursor += 100;
+
+  tasks.forEach((t) => {
+    shapes.push(
+      `      <bpmndi:BPMNShape id="${t.id}_di" bpmnElement="${t.id}">\n        <dc:Bounds x="${xCursor}" y="${yMain - 20}" width="120" height="80"/>\n      </bpmndi:BPMNShape>`,
+    );
+    edges.push(
+      `      <bpmndi:BPMNEdge id="Flow_to_${t.id}_di" bpmnElement="Flow_to_${t.id}">\n        <di:waypoint x="${prevX}" y="${yMain + 18}"/>\n        <di:waypoint x="${xCursor}" y="${yMain + 18}"/>\n      </bpmndi:BPMNEdge>`,
+    );
+    prevX = xCursor + 120;
+    xCursor += 170;
+  });
+
+  shapes.push(
+    `      <bpmndi:BPMNShape id="${gatewayId}_di" bpmnElement="${gatewayId}" isMarkerVisible="true">\n        <dc:Bounds x="${xCursor}" y="${yMain - 5}" width="50" height="50"/>\n      </bpmndi:BPMNShape>`,
+  );
+  edges.push(
+    `      <bpmndi:BPMNEdge id="Flow_from_${tasks[tasks.length - 1].id}_di" bpmnElement="Flow_from_${tasks[tasks.length - 1].id}">\n        <di:waypoint x="${prevX}" y="${yMain + 18}"/>\n        <di:waypoint x="${xCursor}" y="${yMain + 18}"/>\n      </bpmndi:BPMNEdge>`,
+  );
+  const gx = xCursor + 50;
+  xCursor += 120;
+
+  shapes.push(
+    `      <bpmndi:BPMNShape id="${endSuccessId}_di" bpmnElement="${endSuccessId}">\n        <dc:Bounds x="${xCursor}" y="${yMain}" width="36" height="36"/>\n      </bpmndi:BPMNShape>`,
+  );
+  edges.push(
+    `      <bpmndi:BPMNEdge id="Flow_yes_di" bpmnElement="Flow_yes">\n        <di:waypoint x="${gx}" y="${yMain + 18}"/>\n        <di:waypoint x="${xCursor}" y="${yMain + 18}"/>\n      </bpmndi:BPMNEdge>`,
+  );
+
+  shapes.push(
+    `      <bpmndi:BPMNShape id="${endRejectedId}_di" bpmnElement="${endRejectedId}">\n        <dc:Bounds x="${gx - 18}" y="${yMain + 130}" width="36" height="36"/>\n      </bpmndi:BPMNShape>`,
+  );
+  edges.push(
+    `      <bpmndi:BPMNEdge id="Flow_no_di" bpmnElement="Flow_no">\n        <di:waypoint x="${gx - 18 + 18}" y="${yMain + 45}"/>\n        <di:waypoint x="${gx - 18 + 18}" y="${yMain + 130}"/>\n      </bpmndi:BPMNEdge>`,
+  );
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
@@ -38,91 +92,132 @@ const BPMN_XML = `<?xml version="1.0" encoding="UTF-8"?>
   xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
   id="Definitions_1"
   targetNamespace="http://bpmn.io/schema/bpmn">
-  <bpmn:process id="Process_ApprovalFlow" name="Approval Process" isExecutable="false">
-    <bpmn:startEvent id="StartEvent_1" name="Start">
-      <bpmn:outgoing>Flow_1</bpmn:outgoing>
+  <bpmn:process id="Process_1" isExecutable="false">
+    <bpmn:startEvent id="${startId}" name="Start">
+      <bpmn:outgoing>Flow_to_${tasks[0].id}</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:userTask id="Task_Request" name="Submit Request">
-      <bpmn:incoming>Flow_1</bpmn:incoming>
-      <bpmn:outgoing>Flow_2</bpmn:outgoing>
-    </bpmn:userTask>
-    <bpmn:userTask id="Task_Review" name="Manager Review">
-      <bpmn:incoming>Flow_2</bpmn:incoming>
-      <bpmn:outgoing>Flow_3</bpmn:outgoing>
-    </bpmn:userTask>
-    <bpmn:exclusiveGateway id="Gateway_Approval" name="Approved?">
-      <bpmn:incoming>Flow_3</bpmn:incoming>
-      <bpmn:outgoing>Flow_4</bpmn:outgoing>
-      <bpmn:outgoing>Flow_5</bpmn:outgoing>
+${taskElements.join("\n")}
+    <bpmn:exclusiveGateway id="${gatewayId}" name="Approved?">
+      <bpmn:incoming>Flow_from_${tasks[tasks.length - 1].id}</bpmn:incoming>
+      <bpmn:outgoing>Flow_yes</bpmn:outgoing>
+      <bpmn:outgoing>Flow_no</bpmn:outgoing>
     </bpmn:exclusiveGateway>
-    <bpmn:serviceTask id="Task_Process" name="Process Request">
-      <bpmn:incoming>Flow_4</bpmn:incoming>
-      <bpmn:outgoing>Flow_6</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:endEvent id="EndEvent_Success" name="Completed">
-      <bpmn:incoming>Flow_6</bpmn:incoming>
+    <bpmn:endEvent id="${endSuccessId}" name="Completed">
+      <bpmn:incoming>Flow_yes</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:endEvent id="EndEvent_Rejected" name="Rejected">
-      <bpmn:incoming>Flow_5</bpmn:incoming>
+    <bpmn:endEvent id="${endRejectedId}" name="Rejected">
+      <bpmn:incoming>Flow_no</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_1" sourceRef="StartEvent_1" targetRef="Task_Request"/>
-    <bpmn:sequenceFlow id="Flow_2" sourceRef="Task_Request" targetRef="Task_Review"/>
-    <bpmn:sequenceFlow id="Flow_3" sourceRef="Task_Review" targetRef="Gateway_Approval"/>
-    <bpmn:sequenceFlow id="Flow_4" name="Yes" sourceRef="Gateway_Approval" targetRef="Task_Process"/>
-    <bpmn:sequenceFlow id="Flow_5" name="No" sourceRef="Gateway_Approval" targetRef="EndEvent_Rejected"/>
-    <bpmn:sequenceFlow id="Flow_6" sourceRef="Task_Process" targetRef="EndEvent_Success"/>
+${flowElements.join("\n")}
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
-    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_ApprovalFlow">
-      <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
-        <dc:Bounds x="150" y="120" width="36" height="36"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Task_Request_di" bpmnElement="Task_Request">
-        <dc:Bounds x="250" y="100" width="120" height="80"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Task_Review_di" bpmnElement="Task_Review">
-        <dc:Bounds x="420" y="100" width="120" height="80"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_Approval_di" bpmnElement="Gateway_Approval" isMarkerVisible="true">
-        <dc:Bounds x="610" y="110" width="50" height="50"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Task_Process_di" bpmnElement="Task_Process">
-        <dc:Bounds x="760" y="100" width="120" height="80"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="EndEvent_Success_di" bpmnElement="EndEvent_Success">
-        <dc:Bounds x="930" y="120" width="36" height="36"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="EndEvent_Rejected_di" bpmnElement="EndEvent_Rejected">
-        <dc:Bounds x="760" y="250" width="36" height="36"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_1_di" bpmnElement="Flow_1">
-        <di:waypoint x="186" y="138"/>
-        <di:waypoint x="250" y="138"/>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_2_di" bpmnElement="Flow_2">
-        <di:waypoint x="370" y="138"/>
-        <di:waypoint x="420" y="138"/>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_3_di" bpmnElement="Flow_3">
-        <di:waypoint x="540" y="138"/>
-        <di:waypoint x="610" y="135"/>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_4_di" bpmnElement="Flow_4">
-        <di:waypoint x="660" y="135"/>
-        <di:waypoint x="760" y="138"/>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_5_di" bpmnElement="Flow_5">
-        <di:waypoint x="635" y="160"/>
-        <di:waypoint x="635" y="268"/>
-        <di:waypoint x="760" y="268"/>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_6_di" bpmnElement="Flow_6">
-        <di:waypoint x="880" y="138"/>
-        <di:waypoint x="930" y="138"/>
-      </bpmndi:BPMNEdge>
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
+${shapes.join("\n")}
+${edges.join("\n")}
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>`;
+}
+
+const BPMN_XML_V4 = makeBpmnXml([
+  { id: "Task_Request", name: "Submit Request" },
+  { id: "Task_Review", name: "Manager Review" },
+  { id: "Task_Process", name: "Process Request" },
+]);
+
+const BPMN_XML_V3 = makeBpmnXml([
+  { id: "Task_Request", name: "Submit Request" },
+  { id: "Task_Review", name: "Team Review" },
+]);
+
+const BPMN_XML_V2 = makeBpmnXml([
+  { id: "Task_Draft", name: "Draft Request" },
+  { id: "Task_Review", name: "Lead Review" },
+]);
+
+const BPMN_XML_V1 = makeBpmnXml([
+  { id: "Task_Init", name: "Initial Request" },
+  { id: "Task_Approve", name: "Approval" },
+]);
+
+const BPMN_XML_DEFAULT = makeBpmnXml([
+  { id: "Task_Request", name: "Submit Request" },
+  { id: "Task_Review", name: "Manager Review" },
+]);
+
+interface HistoryEntry {
+  version: string;
+  status: "Deployed" | "Retired";
+  user: string;
+  date: string;
+  bpmnXml: string;
+  spec: string;
+}
+
+interface BpdItem {
+  id: string;
+  name: string;
+  version: string;
+  status: "Deployed" | "Retired";
+  url: string;
+  bpmnXml: string;
+  spec?: string;
+  history?: HistoryEntry[];
+}
+
+const BPD_ITEMS: BpdItem[] = [
+  {
+    id: "bpd-1",
+    name: "Biz Process Diagram 01",
+    version: "v 2.11.029",
+    status: "Deployed",
+    url: "https://aidevops.nova.com/bizasset/asset/bpd/XSyRe1g6UOdG9FChcYmacQ",
+    bpmnXml: BPMN_XML_DEFAULT,
+  },
+  {
+    id: "bpd-2",
+    name: "Biz Process Diagram 02",
+    version: "v 1.02.000.01",
+    status: "Deployed",
+    url: "https://aidevops.nova.com/bizasset/asset/bpd/XSyRe1g6UOdG9FChcYmacQ",
+    bpmnXml: BPMN_XML_V4,
+    spec: "v1.02.000.01 — 최신 배포 버전입니다. Submit Request → Manager Review → Process Request 3단계 승인 프로세스로 구성됩니다. 요청 제출 후 관리자 검토를 거쳐 최종 처리 단계에서 업무가 완료됩니다.",
+    history: [
+      {
+        version: "v 1.02.000.01",
+        status: "Deployed",
+        user: "전우치",
+        date: "2025-11-28 15:24",
+        bpmnXml: BPMN_XML_V4,
+        spec: "v1.02.000.01 — 최신 배포 버전입니다. Submit Request → Manager Review → Process Request 3단계 승인 프로세스로 구성됩니다. 요청 제출 후 관리자 검토를 거쳐 최종 처리 단계에서 업무가 완료됩니다.",
+      },
+      {
+        version: "v 1.02.000",
+        status: "Retired",
+        user: "전우치",
+        date: "2025-11-28 15:24",
+        bpmnXml: BPMN_XML_V3,
+        spec: "v1.02.000 — Submit Request → Team Review 2단계 프로세스입니다. 팀 단위 검토를 통한 승인 절차를 적용하여 기존 대비 검토 단계를 간소화하였습니다.",
+      },
+      {
+        version: "v 1.01.000",
+        status: "Retired",
+        user: "전우치",
+        date: "2025-11-28 15:24",
+        bpmnXml: BPMN_XML_V2,
+        spec: "v1.01.000 — Draft Request → Lead Review 구조입니다. 초안 작성 후 리드 검토를 거치는 간소화된 승인 프로세스로, 소규모 업무에 적합합니다.",
+      },
+      {
+        version: "v 1.00.000",
+        status: "Retired",
+        user: "전우치",
+        date: "2025-11-28 15:24",
+        bpmnXml: BPMN_XML_V1,
+        spec: "v1.00.000 — 최초 버전입니다. Initial Request → Approval 기본 2단계 구조로, 업무 요청과 승인의 기본 흐름을 정의합니다.",
+      },
+    ],
+  },
+];
 
 function SectionHeader({ title, right }: { title: string; right?: ReactNode }) {
   return (
@@ -229,6 +324,7 @@ function BpdVersionItem({
   isFirst,
   isLast,
   active,
+  onClick,
 }: {
   version: string;
   status: "Deployed" | "Retired";
@@ -237,16 +333,17 @@ function BpdVersionItem({
   isFirst: boolean;
   isLast: boolean;
   active: boolean;
+  onClick: () => void;
 }) {
   return (
-    <div style={s.bpdVerRow}>
+    <div style={{ ...s.bpdVerRow, cursor: "pointer" }} onClick={onClick}>
       <div style={s.historyMark}>
         {!isFirst && <div style={s.historyLineTop} />}
         <div style={{ ...s.historyDot, backgroundColor: active ? "#7a5af8" : "#d4d4d8" }} />
         {!isLast && <div style={s.historyLineBottom} />}
       </div>
       <div style={s.bpdVerContent}>
-        <span style={s.bpdVersionText}>{version}</span>
+        <span style={{ ...s.bpdVersionText, fontWeight: active ? 700 : 400 }}>{version}</span>
         <VersionBadge status={status} />
         <span style={s.bpdVerUser}>{user}</span>
         <span style={s.bpdVerDate}>{date}</span>
@@ -256,24 +353,37 @@ function BpdVersionItem({
 }
 
 function AssetAccordion({
-  name,
-  version,
-  status,
-  url,
-  history,
-  spec,
+  bpd,
   expanded,
   onToggle,
+  selectedVersionIndex,
+  onSelectVersion,
 }: {
-  name: string;
-  version: string;
-  status: "Deployed" | "Retired";
-  url: string;
-  history?: { version: string; status: "Deployed" | "Retired"; user: string; date: string; active: boolean }[];
-  spec?: string;
+  bpd: BpdItem;
   expanded: boolean;
   onToggle: () => void;
+  selectedVersionIndex: number;
+  onSelectVersion: (index: number) => void;
 }) {
+  const history = bpd.history;
+  const hasHistory = history && history.length > 0;
+
+  const activeBpmnXml = hasHistory
+    ? history[selectedVersionIndex]?.bpmnXml ?? bpd.bpmnXml
+    : bpd.bpmnXml;
+
+  const activeSpec = hasHistory
+    ? history[selectedVersionIndex]?.spec ?? bpd.spec
+    : bpd.spec;
+
+  const activeVersion = hasHistory
+    ? history[selectedVersionIndex]?.version ?? bpd.version
+    : bpd.version;
+
+  const activeStatus = hasHistory
+    ? history[selectedVersionIndex]?.status ?? bpd.status
+    : bpd.status;
+
   return (
     <div style={s.assetAccordion}>
       <div style={s.assetHeader}>
@@ -282,12 +392,12 @@ function AssetAccordion({
         </div>
         <div style={s.assetInfo}>
           <div style={s.assetLabelRow}>
-            <VersionBadge status={status} />
-            <span style={s.assetVersion}>{version}</span>
-            <span style={s.assetName}>{name}</span>
+            <VersionBadge status={activeStatus} />
+            <span style={s.assetVersion}>{activeVersion}</span>
+            <span style={s.assetName}>{bpd.name}</span>
           </div>
           <div style={s.assetUrlRow}>
-            <a href={url} target="_blank" rel="noopener noreferrer" style={s.assetUrl}>{url}</a>
+            <a href={bpd.url} target="_blank" rel="noopener noreferrer" style={s.assetUrl}>{bpd.url}</a>
           </div>
         </div>
         <button type="button" style={s.lvToggleBtn} onClick={onToggle}>
@@ -297,7 +407,7 @@ function AssetAccordion({
 
       {expanded && (
         <div style={s.assetMain}>
-          {history && history.length > 0 && (
+          {hasHistory && (
             <div style={s.assetHistoryCol}>
               {history.map((h, i) => (
                 <BpdVersionItem
@@ -308,7 +418,8 @@ function AssetAccordion({
                   date={h.date}
                   isFirst={i === 0}
                   isLast={i === history.length - 1}
-                  active={h.active}
+                  active={i === selectedVersionIndex}
+                  onClick={() => onSelectVersion(i)}
                 />
               ))}
             </div>
@@ -324,23 +435,23 @@ function AssetAccordion({
               </div>
               <div style={s.bpdViewerArea}>
                 <div style={s.bpdPlaceholder}>
-                  <BpmnViewer xml={BPMN_XML} />
+                  <BpmnViewer xml={activeBpmnXml} key={`bpmn-${bpd.id}-${selectedVersionIndex}`} />
                 </div>
               </div>
             </div>
             <div style={s.bpdSeparator} />
-            {spec && (
+            {activeSpec && (
               <div style={s.bpdSpecSection}>
                 <div style={s.bpdSpecHeader}>
                   <div style={s.bpdSpecLabelRow}>
                     <span style={s.fieldLabel}>BPD 명세</span>
                     <button style={s.historyBtn} type="button">
                       <HistoryIcon />
-                      <span style={s.historyBtnText}>3 History</span>
+                      <span style={s.historyBtnText}>{hasHistory ? `${history.length} History` : "3 History"}</span>
                     </button>
                   </div>
                 </div>
-                <p style={s.bpdSpecText}>{spec}</p>
+                <p style={s.bpdSpecText}>{activeSpec}</p>
                 <div style={s.bpdSpecActions}>
                   <button type="button" style={s.bpdEditBtn}>
                     <EditIcon />
@@ -362,6 +473,7 @@ export function BpmnManagement() {
   const [bpdSpec, setBpdSpec] = useState("");
   const [bpdVersionType, setBpdVersionType] = useState("Major");
   const [bpdVersionDesc, setBpdVersionDesc] = useState("");
+  const [selectedVersions, setSelectedVersions] = useState<Record<string, number>>({});
 
   return (
     <div style={s.bpdContainer}>
@@ -429,14 +541,13 @@ export function BpmnManagement() {
           {BPD_ITEMS.map((bpd) => (
             <AssetAccordion
               key={bpd.id}
-              name={bpd.name}
-              version={bpd.version}
-              status={bpd.status}
-              url={bpd.url}
-              history={"history" in bpd ? bpd.history : undefined}
-              spec={"spec" in bpd ? bpd.spec : undefined}
+              bpd={bpd}
               expanded={expandedBpd === bpd.id}
               onToggle={() => setExpandedBpd(expandedBpd === bpd.id ? null : bpd.id)}
+              selectedVersionIndex={selectedVersions[bpd.id] ?? 0}
+              onSelectVersion={(index) =>
+                setSelectedVersions((prev) => ({ ...prev, [bpd.id]: index }))
+              }
             />
           ))}
         </div>
