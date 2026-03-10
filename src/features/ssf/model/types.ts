@@ -38,3 +38,19 @@ export interface BusinessItem {
 }
 
 export type BusinessSortKey = keyof BusinessItem;
+
+export interface FunctionItem {
+  no: number;
+  functionId: string;
+  nameKo: string;
+  nameEn: string;
+  functionType: "Composite" | "Orchestration";
+  description: string;
+  businessId: string;
+  businessNameKo: string;
+  planLeader: string;
+  designLeader: string;
+  useYn: string;
+}
+
+export type FunctionSortKey = keyof FunctionItem;

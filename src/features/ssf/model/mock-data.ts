@@ -1,4 +1,4 @@
-import type { DomainItem, ComponentItem, BusinessItem } from "./types";
+import type { DomainItem, ComponentItem, BusinessItem, FunctionItem } from "./types";
 
 export const DOMAIN_MOCK_DATA: DomainItem[] = [
   { no: 13, abbr: "MKT", nameKo: "마케팅", nameEn: "Marketing", description: "마케팅 관련 업무 도메인으로, 캠페인 관리, 프로모션 기획 및 실행, 고객 분석 등을 포함합니다.", useYn: "사용" },
@@ -108,4 +108,41 @@ export function getBusinessList(): BusinessItem[] {
 
 export function getBusinessDetail(businessId: string): BusinessItem | undefined {
   return BUSINESS_MOCK_DATA.find((b) => b.businessId === businessId);
+}
+
+const FUNC_NAMES_KO = ["서비스기술방식 등록", "서비스기술방식별 속성 관리", "서비스기술방식그룹 관리", "고객인증", "본인인증", "업무승인 요청 및 처리", "데이터 검증", "이력 조회", "알림 발송", "통계 집계", "권한 검증", "코드 매핑", "배치 실행", "API 연동 처리", "로그 수집", "파일 업로드", "데이터 동기화", "캐시 관리", "세션 관리", "암호화 처리", "결제 처리", "환불 처리", "정산 집계", "보고서 생성", "대시보드 데이터 조회", "사용자 프로필 관리", "메시지 큐 처리", "스케줄러 실행", "외부 연동 처리", "모니터링 알림"];
+const FUNC_NAMES_EN = ["Service Tech Registration", "Service Tech Attr Mgmt", "Service Tech Group Mgmt", "Customer Auth", "Identity Verification", "Approval Request Processing", "Data Validation", "History Inquiry", "Notification Dispatch", "Statistics Aggregation", "Permission Verification", "Code Mapping", "Batch Execution", "API Integration Processing", "Log Collection", "File Upload", "Data Synchronization", "Cache Management", "Session Management", "Encryption Processing", "Payment Processing", "Refund Processing", "Settlement Aggregation", "Report Generation", "Dashboard Data Query", "User Profile Mgmt", "Message Queue Processing", "Scheduler Execution", "External Integration", "Monitoring Alert"];
+const FUNC_DESCRIPTIONS = [
+  "서비스 기술 방식을 신규 등록하고 관련 속성을 설정하는 기능입니다.",
+  "서비스 기술 방식별 세부 속성을 관리하고 변경 이력을 추적합니다.",
+  "서비스 기술 방식 그룹을 생성, 수정, 삭제하는 기능입니다.",
+  "고객 인증 프로세스를 처리하고 인증 결과를 반환합니다.",
+  "본인 확인 절차를 수행하고 인증 토큰을 발급합니다.",
+  "업무 승인 요청을 생성하고 승인/반려 처리를 수행합니다.",
+  "입력 데이터의 유효성을 검증하고 오류를 반환합니다.",
+  "시스템 이력 데이터를 조회하고 필터링하는 기능입니다.",
+  "이메일, SMS, 푸시 등 다양한 채널로 알림을 발송합니다.",
+  "실시간 또는 배치로 통계 데이터를 집계하고 저장합니다.",
+];
+
+export const FUNCTION_MOCK_DATA: FunctionItem[] = Array.from({ length: 80 }, (_, i) => {
+  const idx = i;
+  const bizIdx = idx % BIZ_NAMES_KO.length;
+  return {
+    no: 80 - i,
+    functionId: `BZ-PTYMFC${String(Math.floor(idx / 3) + 28).padStart(3, "0")}-${String(idx + 62).padStart(4, "0")}-H${String(idx + 1).padStart(3, "0")}`,
+    nameKo: FUNC_NAMES_KO[idx % FUNC_NAMES_KO.length],
+    nameEn: FUNC_NAMES_EN[idx % FUNC_NAMES_EN.length],
+    functionType: idx % 3 === 2 ? "Orchestration" as const : "Composite" as const,
+    description: FUNC_DESCRIPTIONS[idx % FUNC_DESCRIPTIONS.length],
+    businessId: `BZ-PTYTMFC${String(bizIdx + 1).padStart(3, "0")}`,
+    businessNameKo: BIZ_NAMES_KO[bizIdx],
+    planLeader: LEADERS_PLAN[idx % LEADERS_PLAN.length],
+    designLeader: LEADERS_DESIGN[idx % LEADERS_DESIGN.length],
+    useYn: idx % 11 === 0 ? "미사용" : "사용",
+  };
+});
+
+export function getFunctionList(): FunctionItem[] {
+  return FUNCTION_MOCK_DATA;
 }

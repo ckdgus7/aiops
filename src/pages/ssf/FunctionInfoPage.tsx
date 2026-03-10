@@ -1,5 +1,5 @@
-import { BlankPage } from "@/shared/ui/service/BlankPage";
+import { FunctionInfoListView } from "@/features/ssf/ui/l4/FunctionInfoListView";
 
 export function FunctionInfoPage() {
-  return <BlankPage title="기능(L4)정보 관리" gnbName="SSF관리" path="/ssf/function" />;
+  return <FunctionInfoListView />;
 }
