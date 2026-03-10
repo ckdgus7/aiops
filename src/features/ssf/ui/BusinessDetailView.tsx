@@ -8,7 +8,7 @@ import {
   DOMAIN_MOCK_DATA,
 } from "@/features/ssf/model/mock-data";
 import { BpmnViewer } from "@/shared/ui/service/BpmnViewer";
-import { TiptapEditor } from "@/shared/ui/service/TiptapEditor";
+import { ToastEditor } from "@/shared/ui/service/ToastEditor";
 import { RadioGroup } from "@/shared/ui/global/RadioGroup";
 import { Button } from "@/shared/ui/global/Button";
 import { BusinessEditPopup } from "@/features/ssf/ui/BusinessEditPopup";
@@ -1087,7 +1087,7 @@ export function BusinessDetailView() {
                       <span style={s.addLabel}>업무(L3) BPD 명세</span>
                       <div style={s.addRequiredDot} />
                     </div>
-                    <TiptapEditor
+                    <ToastEditor
                       value={bpdSpec}
                       onChange={setBpdSpec}
                       placeholder="업무(L3) BPD 명세를 입력하세요."
@@ -1117,7 +1117,7 @@ export function BusinessDetailView() {
                     <div style={s.addLabelRow}>
                       <span style={s.addLabel}>Version 설명</span>
                     </div>
-                    <TiptapEditor
+                    <ToastEditor
                       value={bpdVersionDesc}
                       onChange={setBpdVersionDesc}
                       placeholder="설명을 입력할 수 있습니다."

@@ -2,7 +2,7 @@ import { useState, useEffect, type CSSProperties } from "react";
 import { useParams, useNavigate } from "react-router";
 import { Button } from "@/shared/ui/global/Button";
 import { usePageHeader } from "@/shared/hooks/usePageHeader";
-import { TiptapEditor } from "@/shared/ui/service/TiptapEditor";
+import { ToastEditor } from "@/shared/ui/service/ToastEditor";
 import { AlertModal } from "@/shared/ui/global/AlertModal";
 import { Snackbar } from "@/shared/ui/global/Snackbar";
 import { useMdiStore } from "@/shared/model/mdi.store";
@@ -153,7 +153,7 @@ function CommentEditor({ onSubmit }: CommentEditorProps) {
 
   return (
     <div style={ds.commentEditorWrap}>
-      <TiptapEditor
+      <ToastEditor
         value={content}
         onChange={setContent}
         placeholder="댓글을 입력해주세요."
