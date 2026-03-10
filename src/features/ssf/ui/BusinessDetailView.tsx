@@ -130,6 +130,133 @@ function ListItemRow({ badge, badgeColor, badgeBg, text }: ListItemRowProps) {
   );
 }
 
+function L4LevelBadge({ id }: { id: string }) {
+  return (
+    <span
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 2,
+        borderRadius: 12,
+        border: "1px solid #9b8afb",
+        backgroundColor: "#ffffff",
+        paddingLeft: 3,
+        paddingRight: 10,
+        paddingTop: 3,
+        paddingBottom: 3,
+        flexShrink: 0,
+      }}
+    >
+      <span
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: 12,
+          height: 12,
+          borderRadius: 8,
+          backgroundColor: "#9b8afb",
+          fontFamily: FONT,
+          fontSize: 8,
+          fontWeight: 700,
+          color: "#ffffff",
+          lineHeight: "1",
+        }}
+      >
+        L4
+      </span>
+      <span
+        style={{
+          fontFamily: FONT,
+          fontSize: 10,
+          fontWeight: 500,
+          lineHeight: "12px",
+          color: "#9b8afb",
+          whiteSpace: "nowrap",
+        }}
+      >
+        {id}
+      </span>
+    </span>
+  );
+}
+
+function L4TypeBadge({ type }: { type: "Composite" | "Orchestration" }) {
+  return (
+    <span
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: 12,
+        backgroundColor: "#9b8afb",
+        padding: "3px 10px",
+        fontFamily: FONT,
+        fontSize: 10,
+        fontWeight: 500,
+        lineHeight: "12px",
+        color: "#fafafa",
+        whiteSpace: "nowrap",
+        flexShrink: 0,
+      }}
+    >
+      {type}
+    </span>
+  );
+}
+
+function AssetIconBtn({ iconType }: { iconType: "bpd" | "sd" }) {
+  return (
+    <div
+      style={{
+        width: 24,
+        height: 24,
+        borderRadius: 5,
+        backgroundColor: "#7a5af8",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        flexShrink: 0,
+        cursor: "pointer",
+      }}
+    >
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+        {iconType === "bpd" ? (
+          <>
+            <rect x="1" y="2" width="12" height="10" rx="1.5" stroke="white" strokeWidth="1.2" />
+            <path d="M4 6H10" stroke="white" strokeWidth="1" strokeLinecap="round" />
+            <path d="M4 8.5H8" stroke="white" strokeWidth="1" strokeLinecap="round" />
+          </>
+        ) : (
+          <>
+            <circle cx="7" cy="5" r="2.5" stroke="white" strokeWidth="1.2" />
+            <path d="M3 12C3 9.79 4.79 8 7 8C9.21 8 11 9.79 11 12" stroke="white" strokeWidth="1.2" strokeLinecap="round" />
+          </>
+        )}
+      </svg>
+    </div>
+  );
+}
+
+function L4ListItemRow({ item }: { item: { id: string; type: "Composite" | "Orchestration"; text: string } }) {
+  return (
+    <div style={s.listItem}>
+      <div style={s.listItemLeft}>
+        <L4LevelBadge id={item.id} />
+        <L4TypeBadge type={item.type} />
+        <span style={s.listText}>{item.text}</span>
+      </div>
+      <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+        <AssetIconBtn iconType="bpd" />
+        <AssetIconBtn iconType="sd" />
+        <button type="button" style={s.listArrowBtn}>
+          <ChevronIcon />
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function SectionHeader({ title, right }: { title: string; right?: ReactNode }) {
   return (
     <div style={s.sectionHeader}>
@@ -295,6 +422,12 @@ const HISTORY_DATA = [
     date: "2025-11-15 14:30",
     active: false,
   },
+];
+
+const FUNC_L4_ITEMS = [
+  { id: "BZ-PTYMFC028-0062-H001", type: "Composite" as const, text: "서비스기술방식 등록" },
+  { id: "BZ-PTYMFC028-0062-H002", type: "Composite" as const, text: "서비스기술방식별 속도종류 등록" },
+  { id: "BZ-PTYMFC028-0062-H004", type: "Orchestration" as const, text: "서비스기술방식그룹 관리" },
 ];
 
 const FLOW_ITEMS = [
@@ -1198,12 +1331,21 @@ export function BusinessDetailView() {
         <div style={s.rightCol}>
           <SectionHeader title="연관 정보" />
           <div style={s.rightMain}>
-            {/* 기능(L4) - empty state */}
+            {/* 기능(L4) */}
             <div style={s.relSection}>
               <div style={s.relHeaderRow}>
                 <span style={s.relLabel}>기능(L4)</span>
+                <MiniPagination
+                  current={1}
+                  total={FUNC_L4_ITEMS.length}
+                  perPage={5}
+                />
               </div>
-              <NoDataArea />
+              <div style={s.relList}>
+                {FUNC_L4_ITEMS.map((item) => (
+                  <L4ListItemRow key={item.id} item={item} />
+                ))}
+              </div>
             </div>
 
             {/* 업무Flow */}
