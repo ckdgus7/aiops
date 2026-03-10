@@ -44,13 +44,6 @@ function BpdIcon() {
   );
 }
 
-function DeleteIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-      <path d="M4.5 9H13.5" stroke="#f04438" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  );
-}
 
 interface L3Item {
   id: string;
@@ -385,17 +378,6 @@ const st = {
     cursor: "pointer",
     flexShrink: 0,
   } satisfies CSSProperties,
-  l3DeleteBtn: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 3,
-    border: "1px solid #f04438",
-    borderRadius: 4,
-    backgroundColor: "#ffffff",
-    cursor: "pointer",
-    flexShrink: 0,
-  } satisfies CSSProperties,
   historyItem: {
     display: "flex",
     gap: 8,
@@ -515,9 +497,6 @@ function L3ListItem({ item }: { item: L3Item }) {
       )}
       <button style={st.l3IconBtn} type="button">
         <LinkIcon />
-      </button>
-      <button style={st.l3DeleteBtn} type="button">
-        <DeleteIcon />
       </button>
     </div>
   );
