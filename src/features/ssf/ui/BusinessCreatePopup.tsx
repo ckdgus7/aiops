@@ -3,6 +3,8 @@ import { SelectBox } from "@/shared/ui/global/SelectBox";
 import { Input } from "@/shared/ui/global/Input";
 import { Button } from "@/shared/ui/global/Button";
 import { ToastEditor } from "@/shared/ui/service/ToastEditor";
+import { AlertModal } from "@/shared/ui/global/AlertModal";
+import { Snackbar } from "@/shared/ui/global/Snackbar";
 import { COMPONENT_MOCK_DATA } from "@/features/ssf/model/mock-data";
 import { FONT } from "@/shared/ui/styles";
 
@@ -408,6 +410,8 @@ export function BusinessCreatePopup({ open, onClose, onSave }: BusinessCreatePop
   const [designLeaderInput, setDesignLeaderInput] = useState("");
   const [designLeaders, setDesignLeaders] = useState<LeaderItem[]>([]);
   const [description, setDescription] = useState("");
+  const [closeAlertOpen, setCloseAlertOpen] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const [showDesignSuggestions, setShowDesignSuggestions] = useState(false);
   const [designSuggestions, setDesignSuggestions] = useState<SuggestItem[]>([]);
@@ -536,16 +540,19 @@ export function BusinessCreatePopup({ open, onClose, onSave }: BusinessCreatePop
   const handleSave = () => {
     if (!isValid) return;
     onSave?.();
-    onClose();
+    setSnackbarOpen(true);
+    setTimeout(() => {
+      onClose();
+    }, 1500);
   };
 
   return (
-    <div style={ps.overlay} onClick={onClose}>
+    <div style={ps.overlay} onClick={() => setCloseAlertOpen(true)}>
       <div style={ps.popup} onClick={(e) => e.stopPropagation()}>
         <div style={ps.header}>
           <div style={ps.titleRow}>
             <span style={ps.titleText}>업무(L3) 신규 등록</span>
-            <button style={ps.closeBtn} onClick={onClose} type="button">
+            <button style={ps.closeBtn} onClick={() => setCloseAlertOpen(true)} type="button">
               <CloseIcon />
             </button>
           </div>
@@ -558,7 +565,7 @@ export function BusinessCreatePopup({ open, onClose, onSave }: BusinessCreatePop
         <div style={ps.main}>
           <div style={ps.fieldRow}>
             <SelectBox
-              label="도메인(L1) 명(한글)을 선택하세요."
+              label="도메인(한글) 명"
               required
               value={domainNameKo}
               onChange={setDomainNameKo}
@@ -569,7 +576,7 @@ export function BusinessCreatePopup({ open, onClose, onSave }: BusinessCreatePop
 
           <div style={ps.fieldRow}>
             <SelectBox
-              label="컴포넌트(L2) 명(한글)을 선택하세요."
+              label="컴포넌트(한글) 명"
               required
               value={componentNameKo}
               onChange={setComponentNameKo}
@@ -675,7 +682,7 @@ export function BusinessCreatePopup({ open, onClose, onSave }: BusinessCreatePop
 
         <div style={ps.footer}>
           <div style={ps.footerLeft}>
-            <Button size="l" variant="outlined" color="info" onClick={onClose}>
+            <Button size="l" variant="outlined" color="info" onClick={() => setCloseAlertOpen(true)}>
               닫기
             </Button>
           </div>
@@ -692,6 +699,26 @@ export function BusinessCreatePopup({ open, onClose, onSave }: BusinessCreatePop
           </div>
         </div>
       </div>
+      <Snackbar
+        open={snackbarOpen}
+        onClose={() => setSnackbarOpen(false)}
+        type="success"
+        message="저장 되었습니다."
+      />
+      <AlertModal
+        open={closeAlertOpen}
+        onClose={() => setCloseAlertOpen(false)}
+        type="warning"
+        message="입력한 값을 초기화하고 창을 닫습니다."
+        showCancel
+        cancelLabel="취소"
+        confirmLabel="확인"
+        onCancel={() => setCloseAlertOpen(false)}
+        onConfirm={() => {
+          setCloseAlertOpen(false);
+          onClose();
+        }}
+      />
     </div>
   );
 }
