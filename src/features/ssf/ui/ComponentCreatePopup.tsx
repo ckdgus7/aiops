@@ -365,8 +365,9 @@ export function ComponentCreatePopup({ open, onClose, onSave }: ComponentCreateP
   const [nameKo, setNameKo] = useState("");
   const [nameEn, setNameEn] = useState("");
   const [planLeaderInput, setPlanLeaderInput] = useState("");
-  const [designLeader, setDesignLeader] = useState("");
+  const [designLeaderInput, setDesignLeaderInput] = useState("");
   const [planLeaders, setPlanLeaders] = useState<LeaderItem[]>([]);
+  const [designLeaders, setDesignLeaders] = useState<LeaderItem[]>([]);
   const [description, setDescription] = useState("");
   const [useYn, setUseYn] = useState("사용");
   const [closeAlertOpen, setCloseAlertOpen] = useState(false);
@@ -378,7 +379,13 @@ export function ComponentCreatePopup({ open, onClose, onSave }: ComponentCreateP
   const planTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const planInputWrapRef = useRef<HTMLDivElement>(null);
 
-  const filterSuggestions = useCallback((query: string): SuggestItem[] => {
+  const [showDesignSuggestions, setShowDesignSuggestions] = useState(false);
+  const [designSuggestions, setDesignSuggestions] = useState<SuggestItem[]>([]);
+  const [designHoveredIndex, setDesignHoveredIndex] = useState(-1);
+  const designTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const designInputWrapRef = useRef<HTMLDivElement>(null);
+
+  const filterPlanSuggestions = useCallback((query: string): SuggestItem[] => {
     if (!query.trim()) return [];
     const q = query.trim().toLowerCase();
     return MOCK_SUGGESTIONS.filter(
@@ -387,6 +394,16 @@ export function ComponentCreatePopup({ open, onClose, onSave }: ComponentCreateP
         !planLeaders.some((l) => l.name === item.name && l.org === item.org)
     );
   }, [planLeaders]);
+
+  const filterDesignSuggestions = useCallback((query: string): SuggestItem[] => {
+    if (!query.trim()) return [];
+    const q = query.trim().toLowerCase();
+    return MOCK_SUGGESTIONS.filter(
+      (item) =>
+        item.name.toLowerCase().includes(q) &&
+        !designLeaders.some((l) => l.name === item.name && l.org === item.org)
+    );
+  }, [designLeaders]);
 
   const handlePlanLeaderInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = e.target.value;
@@ -403,7 +420,7 @@ export function ComponentCreatePopup({ open, onClose, onSave }: ComponentCreateP
     }
 
     planTimerRef.current = setTimeout(() => {
-      const filtered = filterSuggestions(val);
+      const filtered = filterPlanSuggestions(val);
       setPlanSuggestions(filtered);
       setShowPlanSuggestions(true);
       setPlanHoveredIndex(-1);
@@ -425,16 +442,56 @@ export function ComponentCreatePopup({ open, onClose, onSave }: ComponentCreateP
     setPlanSuggestions([]);
   };
 
+  const handleDesignLeaderInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setDesignLeaderInput(val);
+
+    if (designTimerRef.current) {
+      clearTimeout(designTimerRef.current);
+    }
+
+    if (!val.trim()) {
+      setShowDesignSuggestions(false);
+      setDesignSuggestions([]);
+      return;
+    }
+
+    designTimerRef.current = setTimeout(() => {
+      const filtered = filterDesignSuggestions(val);
+      setDesignSuggestions(filtered);
+      setShowDesignSuggestions(true);
+      setDesignHoveredIndex(-1);
+    }, 1000);
+  };
+
+  const handleDesignSuggestSelect = (item: SuggestItem) => {
+    setDesignLeaders((prev) => [...prev, { name: item.name, org: item.org }]);
+    setDesignLeaderInput("");
+    setShowDesignSuggestions(false);
+    setDesignSuggestions([]);
+  };
+
+  const handleAddDesignLeader = () => {
+    if (!designLeaderInput.trim()) return;
+    setDesignLeaders((prev) => [...prev, { name: designLeaderInput.trim(), org: "Nova 추진팀" }]);
+    setDesignLeaderInput("");
+    setShowDesignSuggestions(false);
+    setDesignSuggestions([]);
+  };
+
   useEffect(() => {
-    if (!showPlanSuggestions) return;
+    if (!showPlanSuggestions && !showDesignSuggestions) return;
     const handleClickOutside = (e: MouseEvent) => {
-      if (planInputWrapRef.current && !planInputWrapRef.current.contains(e.target as Node)) {
+      if (showPlanSuggestions && planInputWrapRef.current && !planInputWrapRef.current.contains(e.target as Node)) {
         setShowPlanSuggestions(false);
+      }
+      if (showDesignSuggestions && designInputWrapRef.current && !designInputWrapRef.current.contains(e.target as Node)) {
+        setShowDesignSuggestions(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [showPlanSuggestions]);
+  }, [showPlanSuggestions, showDesignSuggestions]);
 
   useEffect(() => {
     if (open) {
@@ -442,21 +499,27 @@ export function ComponentCreatePopup({ open, onClose, onSave }: ComponentCreateP
       setNameKo("");
       setNameEn("");
       setPlanLeaderInput("");
-      setDesignLeader("");
+      setDesignLeaderInput("");
       setPlanLeaders([]);
+      setDesignLeaders([]);
       setDescription("");
       setUseYn("사용");
       setShowPlanSuggestions(false);
       setPlanSuggestions([]);
+      setPlanHoveredIndex(-1);
+      setShowDesignSuggestions(false);
+      setDesignSuggestions([]);
+      setDesignHoveredIndex(-1);
     }
     return () => {
       if (planTimerRef.current) clearTimeout(planTimerRef.current);
+      if (designTimerRef.current) clearTimeout(designTimerRef.current);
     };
   }, [open]);
 
   if (!open) return null;
 
-  const isValid = domainNameKo && nameKo.trim() && nameEn.trim() && planLeaders.length > 0 && designLeader.trim();
+  const isValid = domainNameKo && nameKo.trim() && nameEn.trim() && planLeaders.length > 0 && designLeaders.length > 0;
 
   const handleCloseClick = () => {
     setCloseAlertOpen(true);
@@ -474,7 +537,7 @@ export function ComponentCreatePopup({ open, onClose, onSave }: ComponentCreateP
       nameKo: nameKo.trim(),
       nameEn: nameEn.trim(),
       planLeader: planLeaders.map((l) => l.name).join(", "),
-      designLeader: designLeader.trim(),
+      designLeader: designLeaders.map((l) => l.name).join(", "),
       description,
       useYn,
     });
@@ -583,10 +646,10 @@ export function ComponentCreatePopup({ open, onClose, onSave }: ComponentCreateP
               <span style={s.label}>L2설계리더</span>
               <div style={s.requiredMark} />
             </div>
-            <div style={s.inputWithBtn}>
+            <div style={s.inputWithBtn} ref={designInputWrapRef}>
               <Input
-                value={designLeader}
-                onChange={(e) => setDesignLeader(e.target.value)}
+                value={designLeaderInput}
+                onChange={handleDesignLeaderInputChange}
                 placeholder="담당자를 선택하거나 검색하세요."
                 style={{ flex: 1 }}
               />
@@ -594,12 +657,32 @@ export function ComponentCreatePopup({ open, onClose, onSave }: ComponentCreateP
                 size="l"
                 variant="outlined"
                 color="positive"
-                disabled={!designLeader.trim()}
+                disabled={!designLeaderInput.trim()}
                 leadingIcon={<AddIcon />}
+                onClick={handleAddDesignLeader}
               >
                 추가
               </Button>
+              {showDesignSuggestions && (
+                <LeaderAutocompleteDropdown
+                  suggestions={designSuggestions}
+                  onSelect={handleDesignSuggestSelect}
+                  hoveredIndex={designHoveredIndex}
+                  setHoveredIndex={setDesignHoveredIndex}
+                />
+              )}
             </div>
+            {designLeaders.length > 0 && (
+              <div style={s.leaderList}>
+                {designLeaders.map((leader, idx) => (
+                  <LeaderListItemRow
+                    key={`design-${leader.name}-${idx}`}
+                    leader={leader}
+                    onDelete={() => setDesignLeaders((prev) => prev.filter((_, i) => i !== idx))}
+                  />
+                ))}
+              </div>
+            )}
           </div>
 
           <div style={s.fieldRow}>
