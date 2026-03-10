@@ -1,7 +1,14 @@
-import { useEffect, useRef, useCallback, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useCallback, useState, forwardRef, useImperativeHandle, type CSSProperties } from "react";
 import NavigatedViewer from "bpmn-js/lib/NavigatedViewer";
 import "bpmn-js/dist/assets/diagram-js.css";
 import "bpmn-js/dist/assets/bpmn-font/css/bpmn.css";
+
+interface BpmnViewerHandle {
+  zoomIn: () => void;
+  zoomOut: () => void;
+  fitViewport: () => void;
+  resetZoom: () => void;
+}
 
 interface BpmnViewerProps {
   xml: string;
@@ -10,24 +17,26 @@ interface BpmnViewerProps {
   onImport?: (warnings: string[]) => void;
   onElementClick?: (element: { id: string; type: string; businessObject?: unknown }) => void;
   fitOnImport?: boolean;
+  hideToolbar?: boolean;
   width?: number | string;
   height?: number | string;
   style?: CSSProperties;
   className?: string;
 }
 
-function BpmnViewer({
+const BpmnViewer = forwardRef<BpmnViewerHandle, BpmnViewerProps>(function BpmnViewer({
   xml,
   onLoading,
   onError,
   onImport,
   onElementClick,
   fitOnImport = true,
+  hideToolbar = false,
   width = "100%",
   height = 500,
   style,
   className,
-}: BpmnViewerProps) {
+}: BpmnViewerProps, ref) {
   const containerRef = useRef<HTMLDivElement>(null);
   const viewerRef = useRef<NavigatedViewer | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -59,6 +68,13 @@ function BpmnViewer({
       canvas.zoom(1, "auto");
     }
   }, []);
+
+  useImperativeHandle(ref, () => ({
+    zoomIn: handleZoomIn,
+    zoomOut: handleZoomOut,
+    fitViewport: handleFitViewport,
+    resetZoom: handleResetZoom,
+  }), [handleZoomIn, handleZoomOut, handleFitViewport, handleResetZoom]);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -167,7 +183,7 @@ function BpmnViewer({
     <div style={containerStyle} className={className}>
       <div ref={containerRef} style={{ width: "100%", height: "100%" }} />
       {error && <div style={errorStyle}>{error}</div>}
-      {!error && xml && (
+      {!error && xml && !hideToolbar && (
         <div style={toolbarStyle}>
           <button type="button" style={toolBtnStyle} onClick={handleZoomIn} title="확대">
             +
@@ -185,7 +201,7 @@ function BpmnViewer({
       )}
     </div>
   );
-}
+});
 
 export { BpmnViewer };
-export type { BpmnViewerProps };
+export type { BpmnViewerProps, BpmnViewerHandle };

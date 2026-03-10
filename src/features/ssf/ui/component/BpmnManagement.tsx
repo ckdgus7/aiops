@@ -1,5 +1,6 @@
-import { useState, type CSSProperties, type ReactNode } from "react";
+import { useState, useRef, type CSSProperties, type ReactNode } from "react";
 import { BpmnViewer } from "@/shared/ui/service/BpmnViewer";
+import type { BpmnViewerHandle } from "@/shared/ui/service/BpmnViewer";
 import { ToastEditor } from "@/shared/ui/service/ToastEditor";
 import { RadioGroup } from "@/shared/ui/global/RadioGroup";
 import { Button } from "@/shared/ui/global/Button";
@@ -365,6 +366,7 @@ function AssetAccordion({
   selectedVersionIndex: number;
   onSelectVersion: (index: number) => void;
 }) {
+  const viewerRef = useRef<BpmnViewerHandle>(null);
   const history = bpd.history;
   const hasHistory = history && history.length > 0;
 
@@ -428,14 +430,14 @@ function AssetAccordion({
             <div style={s.bpdViewerContainer}>
               <div style={s.bpdToolbar}>
                 <div style={s.bpdToolbarLeft}>
-                  <button type="button" style={s.bpdToolBtn}><ZoomInIcon /></button>
-                  <button type="button" style={s.bpdToolBtn}><ZoomOutIcon /></button>
-                  <button type="button" style={s.bpdToolBtn}><FitIcon /></button>
+                  <button type="button" style={s.bpdToolBtn} onClick={() => viewerRef.current?.zoomIn()}><ZoomInIcon /></button>
+                  <button type="button" style={s.bpdToolBtn} onClick={() => viewerRef.current?.zoomOut()}><ZoomOutIcon /></button>
+                  <button type="button" style={s.bpdToolBtn} onClick={() => viewerRef.current?.fitViewport()}><FitIcon /></button>
                 </div>
               </div>
               <div style={s.bpdViewerArea}>
                 <div style={s.bpdPlaceholder}>
-                  <BpmnViewer xml={activeBpmnXml} key={`bpmn-${bpd.id}-${selectedVersionIndex}`} />
+                  <BpmnViewer ref={viewerRef} xml={activeBpmnXml} hideToolbar key={`bpmn-${bpd.id}-${selectedVersionIndex}`} />
                 </div>
               </div>
             </div>
