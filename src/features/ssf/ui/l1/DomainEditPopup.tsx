@@ -1,20 +1,20 @@
 import { useState } from "react";
-import { DomainFormPopup } from "@/features/ssf/ui/DomainFormPopup";
+import { DomainFormPopup } from "@/features/ssf/ui/l1/DomainFormPopup";
 import { Snackbar } from "@/shared/ui/global/Snackbar";
-import type { DomainFormData } from "@/features/ssf/ui/DomainFormPopup";
+import type { DomainFormData } from "@/features/ssf/ui/l1/DomainFormPopup";
+import type { DomainItem } from "@/features/ssf/model/types";
 
-interface DomainCreatePopupProps {
+interface DomainEditPopupProps {
   open: boolean;
   onClose: () => void;
   onSave?: (data: DomainFormData) => void;
+  onDelete?: () => void;
+  initialData?: DomainItem | null;
 }
 
-export function DomainCreatePopup({
-  open,
-  onClose,
-  onSave,
-}: DomainCreatePopupProps) {
+export function DomainEditPopup({ open, onClose, onSave, onDelete, initialData }: DomainEditPopupProps) {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+
   const handleSave = (data: DomainFormData) => {
     onSave?.(data);
     setSnackbarOpen(true);
@@ -26,7 +26,9 @@ export function DomainCreatePopup({
         open={open}
         onClose={onClose}
         onSave={handleSave}
-        mode="create"
+        onDelete={onDelete}
+        mode="edit"
+        initialData={initialData}
       />
       <Snackbar
         open={snackbarOpen}
@@ -37,5 +39,3 @@ export function DomainCreatePopup({
     </>
   );
 }
-
-export type { DomainFormData };

@@ -6,10 +6,10 @@ import { useMdiStore } from "@/shared/model/mdi.store";
 import { usePageHeader } from "@/shared/hooks/usePageHeader";
 import type { SortKey, SortDir, DomainItem } from "@/features/ssf/model/types";
 import { DOMAIN_MOCK_DATA } from "@/features/ssf/model/mock-data";
-import { DomainCreatePopup } from "@/features/ssf/ui/DomainCreatePopup";
-import { DomainFormPopup } from "@/features/ssf/ui/DomainFormPopup";
-import { DomainDeletePopup } from "@/features/ssf/ui/DomainDeletePopup";
-import { DomainDetailPopup } from "@/features/ssf/ui/DomainDetailPopup";
+import { DomainCreatePopup } from "@/features/ssf/ui/l1/DomainCreatePopup";
+import { DomainFormPopup } from "@/features/ssf/ui/l1/DomainFormPopup";
+import { DomainDeletePopup } from "@/features/ssf/ui/l1/DomainDeletePopup";
+import { DomainDetailPopup } from "@/features/ssf/ui/l1/DomainDetailPopup";
 import { listStyles } from "@/shared/ui/styles";
 
 function SortIcon({ active, dir }: { active: boolean; dir: SortDir }) {
