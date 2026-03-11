@@ -436,13 +436,14 @@ export function QnADetailView() {
         onConfirm={() => {
           setCommentDeleteAlertOpen(false);
           setPendingDeleteComment(null);
+          setCommentDeleteSnackbarOpen(true);
         }}
       />
 
       <Snackbar
         open={commentDeleteSnackbarOpen}
         onClose={() => setCommentDeleteSnackbarOpen(false)}
-        message="댓글이 삭제되었습니다."
+        message="삭제했습니다."
         type="success"
       />
 
