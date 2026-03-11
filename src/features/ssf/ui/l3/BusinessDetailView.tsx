@@ -7,10 +7,10 @@ import { useComponentListQuery } from "@/features/ssf/api/component.queries";
 import { useDomainListQuery } from "@/features/ssf/api/domain.queries";
 import { Button } from "@/shared/ui/global/Button";
 import { BusinessEditPopup } from "@/features/ssf/ui/l3/BusinessEditPopup";
-import { BusinessReference } from "@/features/ssf/ui/component/BusinessReference";
-import { HistoryPanel, HISTORY_DATA } from "@/features/ssf/ui/component/HistoryPanel";
-import { BpmnManagement } from "@/features/ssf/ui/component/BpmnManagement";
-import { RelatedInfo } from "@/features/ssf/ui/component/RelatedInfo";
+import { BusinessReference } from "@/features/ssf/ui/l3/component/BusinessReference";
+import { HistoryPanel, HISTORY_DATA } from "@/features/ssf/ui/l3/component/HistoryPanel";
+import { BpmnManagement } from "@/features/ssf/ui/l3/component/BpmnManagement";
+import { RelatedInfo } from "@/features/ssf/ui/l3/component/RelatedInfo";
 import { FONT } from "@/shared/ui/styles";
 
 function NoDataIcon() {
