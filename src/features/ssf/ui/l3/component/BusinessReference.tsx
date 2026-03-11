@@ -1,4 +1,8 @@
 import { useState, type CSSProperties, type ReactNode } from "react";
+import { DomainDetail } from "@/features/ssf/ui/l1/component/DomainDetail";
+import { ComponentDetail } from "@/features/ssf/ui/l2/component/ComponentDetail";
+import type { ComponentDetailData } from "@/features/ssf/ui/l2/component/ComponentDetail";
+import type { DomainItem } from "@/features/ssf/model/types";
 import { FONT } from "@/shared/ui/styles";
 
 interface BusinessItem {
@@ -9,13 +13,6 @@ interface BusinessItem {
   description: string;
   componentNameKo: string;
   domainNameKo: string;
-}
-
-interface DomainItem {
-  nameKo: string;
-  abbr: string;
-  nameEn: string;
-  description: string;
 }
 
 interface CompItem {
@@ -37,24 +34,11 @@ interface HistorySnapshot {
 
 interface BusinessReferenceProps {
   item: BusinessItem;
-  domain: DomainItem | undefined;
+  domain: Partial<DomainItem> | undefined;
   comp: CompItem | undefined;
   onHistoryToggle: () => void;
   historySnapshot?: HistorySnapshot;
 }
-
-const EPC_L3_ITEMS = [
-  { id: "BZ-EPC001-001", text: "상품 카탈로그 조회" },
-  { id: "BZ-EPC001-002", text: "상품 사양 관리" },
-  { id: "BZ-EPC001-003", text: "상품 카테고리 관리" },
-  { id: "BZ-EPC001-004", text: "상품 가격 정책 관리" },
-  { id: "BZ-EPC001-005", text: "상품 번들 구성" },
-  { id: "BZ-EPC001-006", text: "상품 프로모션 관리" },
-  { id: "BZ-EPC001-007", text: "상품 라이프사이클 관리" },
-  { id: "BZ-EPC001-008", text: "상품 속성 정의" },
-  { id: "BZ-EPC001-009", text: "상품 유효성 검증" },
-  { id: "BZ-EPC001-010", text: "상품 배포 관리" },
-];
 
 const L3_ITEMS = [
   { id: "BZ-SKNC001-001", text: "서비스 카탈로그 조회" },
@@ -68,22 +52,6 @@ const L3_ITEMS = [
   { id: "BZ-SKNC001-009", text: "서비스 변경 관리" },
   { id: "BZ-SKNC001-010", text: "서비스 리포트 생성" },
 ];
-
-const PAGE_SIZE = 5;
-
-function ChevronIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
-      <path
-        d="M6.75 4.5L11.25 9L6.75 13.5"
-        stroke="#71717a"
-        strokeWidth="1.2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
 
 function HistoryIcon() {
   return (
@@ -137,29 +105,6 @@ function LabelValue({ label, value, fullWidth }: { label: string; value: ReactNo
   );
 }
 
-function ListItemRow({ badge, badgeColor, badgeBg, text }: { badge: string; badgeColor: string; badgeBg?: string; text: string }) {
-  return (
-    <div style={s.listItem}>
-      <div style={s.listItemLeft}>
-        <span
-          style={{
-            ...s.listBadge,
-            color: badgeColor,
-            borderColor: badgeColor,
-            backgroundColor: badgeBg || "transparent",
-          }}
-        >
-          {badge}
-        </span>
-        <span style={s.listText}>{text}</span>
-      </div>
-      <button type="button" style={s.listArrowBtn}>
-        <ChevronIcon />
-      </button>
-    </div>
-  );
-}
-
 function LevelBadge({ level, code, color, name, active, onClick }: {
   level: string;
   code: string;
@@ -196,81 +141,36 @@ function LevelBadge({ level, code, color, name, active, onClick }: {
   );
 }
 
-function MiniPagination({
-  current,
-  total,
-  perPage,
-  onPageChange,
-}: {
-  current: number;
-  total: number;
-  perPage: number;
-  onPageChange?: (page: number) => void;
-}) {
-  const totalPages = Math.max(1, Math.ceil(total / perPage));
-  const start = total === 0 ? 0 : (current - 1) * perPage + 1;
-  const end = Math.min(current * perPage, total);
-  const canPrev = current > 1;
-  const canNext = current < totalPages;
-
-  const navBtnStyle = (disabled: boolean): CSSProperties => ({
-    display: "inline-flex",
-    alignItems: "center",
-    justifyContent: "center",
-    width: 20,
-    height: 20,
-    border: "none",
-    background: "transparent",
-    cursor: disabled ? "default" : "pointer",
-    opacity: disabled ? 0.4 : 1,
-    padding: 0,
-    fontFamily: FONT,
-    fontSize: 14,
-    color: "#71717a",
-  });
-
-  return (
-    <div style={s.miniPagination}>
-      <span style={s.paginationLabel}>Items per page:</span>
-      <select style={s.paginationSelect} defaultValue={perPage}>
-        <option>{perPage}</option>
-      </select>
-      <span style={s.paginationLabel}>
-        {start}-{end} of {total}
-      </span>
-      <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-        <button type="button" style={navBtnStyle(!canPrev)} disabled={!canPrev} onClick={() => canPrev && onPageChange?.(1)}>
-          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-            <path d="M6 2L3 5L6 8" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M9 2L6 5L9 8" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </button>
-        <button type="button" style={navBtnStyle(!canPrev)} disabled={!canPrev} onClick={() => canPrev && onPageChange?.(current - 1)}>
-          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-            <path d="M7 2L4 5L7 8" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </button>
-        <span style={{ ...s.paginationLabel, fontWeight: 500, color: "#71717a", minWidth: 16, textAlign: "center" as const }}>{current}</span>
-        <button type="button" style={navBtnStyle(!canNext)} disabled={!canNext} onClick={() => canNext && onPageChange?.(current + 1)}>
-          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-            <path d="M3 2L6 5L3 8" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </button>
-        <button type="button" style={navBtnStyle(!canNext)} disabled={!canNext} onClick={() => canNext && onPageChange?.(totalPages)}>
-          <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-            <path d="M1 2L4 5L1 8" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M4 2L7 5L4 8" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </button>
-      </div>
-    </div>
-  );
-}
-
 export function BusinessReference({ item, domain, comp, onHistoryToggle, historySnapshot }: BusinessReferenceProps) {
   const [activeSsfTab, setActiveSsfTab] = useState<"EPC" | "TMFC" | null>("TMFC");
-  const [epcL3Page, setEpcL3Page] = useState(1);
-  const [tmfcL3Page, setTmfcL3Page] = useState(1);
+
+  const domainData: DomainItem = {
+    no: 0,
+    abbr: domain?.abbr || "EPC",
+    nameKo: domain?.nameKo || item.domainNameKo,
+    nameEn: domain?.nameEn || "Enterprise Product Catalog",
+    description: domain?.description || "엔터프라이즈 상품 카탈로그는 상품의 전체 라이프사이클을 관리하고, 상품 사양 및 카테고리를 체계적으로 구성하는 역할을 합니다.",
+    useYn: "Y",
+  };
+
+  const componentSnapshot = {
+    componentId: comp?.componentId || "TMFC006",
+    nameKo: item.componentNameKo,
+    nameEn: comp?.nameEn || "Service Catalog Management",
+    planLeader: comp?.planLeader || item.planLeader,
+    designLeader: comp?.designLeader || item.designLeader,
+    description: comp?.description || "서비스 카탈로그 관리 구성 요소는 수행 가능한 모든 서비스 요구 사항을 식별하고 정의하는 서비스 사양 모음을 구성하는 역할을 합니다.",
+    useYn: "Y",
+    domain: domainData,
+    l3Items: L3_ITEMS.map((l3) => ({ id: l3.id, name: l3.text, hasBpd: false })),
+  };
+
+  const componentDetailData: ComponentDetailData = {
+    ...componentSnapshot,
+    history: [
+      { name: "최신", date: "2025-11-28 15:24", snapshot: componentSnapshot },
+    ],
+  };
 
   const displayName = historySnapshot?.nameKo ?? item.nameKo;
   const displayPlanLeader = historySnapshot?.planLeader ?? item.planLeader;
@@ -331,63 +231,20 @@ export function BusinessReference({ item, domain, comp, onHistoryToggle, history
 
             {activeSsfTab === "EPC" && (
               <div style={s.lvContent}>
-                <div style={s.lvFieldRow}>
-                  <LabelValue label="Domain ID" value={domain?.abbr || "EPC"} />
-                  <LabelValue label="Domain(한글)" value={domain?.nameKo || item.domainNameKo} />
-                  <LabelValue label="Domain명" value={domain?.nameEn || "Enterprise Product Catalog"} />
-                </div>
-                <LabelValue
-                  label="Domain 설명"
-                  value={
-                    domain?.description ||
-                    "엔터프라이즈 상품 카탈로그는 상품의 전체 라이프사이클을 관리하고, 상품 사양 및 카테고리를 체계적으로 구성하는 역할을 합니다."
-                  }
-                  fullWidth
+                <DomainDetail
+                  data={domainData}
+                  showUseYn={false}
                 />
-                <div style={s.relSection}>
-                  <div style={s.relHeaderRow}>
-                    <span style={{ ...s.fieldLabel, fontSize: 14 }}>연관 업무(L3)</span>
-                    <MiniPagination current={epcL3Page} total={EPC_L3_ITEMS.length} perPage={PAGE_SIZE} onPageChange={setEpcL3Page} />
-                  </div>
-                  <div style={s.relList}>
-                    {EPC_L3_ITEMS.slice((epcL3Page - 1) * PAGE_SIZE, epcL3Page * PAGE_SIZE).map((l3) => (
-                      <ListItemRow key={l3.id} badge={l3.id} badgeColor="#3e1c96" badgeBg="rgba(62,28,150,0.05)" text={l3.text} />
-                    ))}
-                  </div>
-                </div>
               </div>
             )}
 
             {activeSsfTab === "TMFC" && (
               <div style={s.lvContent}>
-                <div style={s.lvFieldRow}>
-                  <LabelValue label="Component ID" value={comp?.componentId || "TMFC006"} />
-                  <LabelValue label="Component(한글)" value={item.componentNameKo} />
-                  <LabelValue label="Component명" value={comp?.nameEn || "Service Catalog Management"} />
-                </div>
-                <div style={s.lvFieldRow}>
-                  <LabelValue label="L2기획리더" value={comp?.planLeader || item.planLeader} />
-                  <LabelValue label="L2설계리더" value={comp?.designLeader || item.designLeader} />
-                </div>
-                <LabelValue
-                  label="Component 설명"
-                  value={
-                    comp?.description ||
-                    "서비스 카탈로그 관리 구성 요소는 수행 가능한 모든 서비스 요구 사항을 식별하고 정의하는 서비스 사양 모음을 구성하는 역할을 합니다."
-                  }
-                  fullWidth
+                <ComponentDetail
+                  data={componentDetailData}
+                  showUseYn={false}
+                  showDomainBox={false}
                 />
-                <div style={s.relSection}>
-                  <div style={s.relHeaderRow}>
-                    <span style={{ ...s.fieldLabel, fontSize: 14 }}>연관 업무(L3)</span>
-                    <MiniPagination current={tmfcL3Page} total={L3_ITEMS.length} perPage={PAGE_SIZE} onPageChange={setTmfcL3Page} />
-                  </div>
-                  <div style={s.relList}>
-                    {L3_ITEMS.slice((tmfcL3Page - 1) * PAGE_SIZE, tmfcL3Page * PAGE_SIZE).map((l3) => (
-                      <ListItemRow key={l3.id} badge={l3.id} badgeColor="#7a5af8" badgeBg="rgba(122,90,248,0.05)" text={l3.text} />
-                    ))}
-                  </div>
-                </div>
               </div>
             )}
           </div>
@@ -570,11 +427,6 @@ const s = {
     gap: 16,
     padding: "16px 16px 24px",
   } satisfies CSSProperties,
-  lvFieldRow: {
-    display: "flex",
-    gap: 32,
-    width: "100%",
-  } satisfies CSSProperties,
   historyBtn: {
     display: "flex",
     alignItems: "center",
@@ -590,100 +442,5 @@ const s = {
     fontWeight: 500,
     lineHeight: "20px",
     color: "#71717a",
-  } satisfies CSSProperties,
-  relSection: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 8,
-  } satisfies CSSProperties,
-  relHeaderRow: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    minHeight: 48,
-  } satisfies CSSProperties,
-  relList: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 8,
-  } satisfies CSSProperties,
-  listItem: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: 8,
-    padding: "8px 12px 8px 8px",
-    border: "1px solid #e4e4e7",
-    borderRadius: 4,
-    backgroundColor: "#ffffff",
-    minHeight: 40,
-  } satisfies CSSProperties,
-  listItemLeft: {
-    display: "flex",
-    alignItems: "center",
-    gap: 4,
-    flex: 1,
-    minWidth: 0,
-  } satisfies CSSProperties,
-  listBadge: {
-    fontFamily: FONT,
-    fontSize: 10,
-    fontWeight: 500,
-    lineHeight: "12px",
-    borderWidth: 1,
-    borderStyle: "solid",
-    borderRadius: 12,
-    padding: "3px 10px",
-    whiteSpace: "nowrap",
-    flexShrink: 0,
-  } satisfies CSSProperties,
-  listText: {
-    fontFamily: FONT,
-    fontSize: 14,
-    fontWeight: 400,
-    lineHeight: "20px",
-    color: "#3f3f46",
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    whiteSpace: "nowrap",
-    flex: 1,
-    minWidth: 0,
-  } satisfies CSSProperties,
-  listArrowBtn: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    width: 24,
-    height: 24,
-    border: "1px solid #71717a",
-    borderRadius: 4,
-    background: "#ffffff",
-    cursor: "pointer",
-    padding: 3,
-    flexShrink: 0,
-  } satisfies CSSProperties,
-  miniPagination: {
-    display: "flex",
-    alignItems: "center",
-    gap: 8,
-  } satisfies CSSProperties,
-  paginationLabel: {
-    fontFamily: FONT,
-    fontSize: 10,
-    fontWeight: 400,
-    lineHeight: "16px",
-    color: "#a1a1aa",
-    whiteSpace: "nowrap",
-  } satisfies CSSProperties,
-  paginationSelect: {
-    fontFamily: FONT,
-    fontSize: 10,
-    fontWeight: 400,
-    color: "#3f3f46",
-    border: "1px solid #e4e4e7",
-    borderRadius: 4,
-    padding: "2px 4px",
-    height: 20,
-    outline: "none",
   } satisfies CSSProperties,
 };
