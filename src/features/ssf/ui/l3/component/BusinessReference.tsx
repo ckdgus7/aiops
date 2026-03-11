@@ -244,6 +244,7 @@ export function BusinessReference({ item, domain, comp, onHistoryToggle, history
                   data={componentDetailData}
                   showUseYn={false}
                   showDomainBox={false}
+                  showHistoryBox={false}
                 />
               </div>
             )}

@@ -35,6 +35,7 @@ interface ComponentDetailProps {
   data: ComponentDetailData;
   showUseYn?: boolean;
   showDomainBox?: boolean;
+  showHistoryBox?: boolean;
 }
 
 function HistoryIcon() {
@@ -440,7 +441,7 @@ function L3ListItem({ item }: { item: L3Item }) {
   );
 }
 
-export function ComponentDetail({ data, showUseYn = true, showDomainBox = true }: ComponentDetailProps) {
+export function ComponentDetail({ data, showUseYn = true, showDomainBox = true, showHistoryBox = true }: ComponentDetailProps) {
   const [l3Page, setL3Page] = useState(1);
   const [activeHistoryIndex, setActiveHistoryIndex] = useState(0);
 
@@ -478,10 +479,12 @@ export function ComponentDetail({ data, showUseYn = true, showDomainBox = true }
                 <span style={s.value}>{displayData.nameEn}</span>
               </div>
             </div>
-            <button style={s.historyBtn} type="button">
-              <HistoryIcon />
-              <span style={s.historyBtnText}>{data.history.length} History</span>
-            </button>
+            {showHistoryBox && (
+              <button style={s.historyBtn} type="button">
+                <HistoryIcon />
+                <span style={s.historyBtnText}>{data.history.length} History</span>
+              </button>
+            )}
           </div>
 
           <div style={s.infoRow}>
@@ -508,13 +511,15 @@ export function ComponentDetail({ data, showUseYn = true, showDomainBox = true }
           )}
         </div>
 
-        <div style={s.rightCol}>
-          <HistoryTimeline
-            entries={data.history}
-            activeIndex={activeHistoryIndex}
-            onSelect={handleHistorySelect}
-          />
-        </div>
+        {showHistoryBox && (
+          <div style={s.rightCol}>
+            <HistoryTimeline
+              entries={data.history}
+              activeIndex={activeHistoryIndex}
+              onSelect={handleHistorySelect}
+            />
+          </div>
+        )}
       </div>
 
       {showDomainBox && (
