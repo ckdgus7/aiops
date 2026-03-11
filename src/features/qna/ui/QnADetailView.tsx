@@ -204,6 +204,8 @@ export function QnADetailView() {
   const [commentDeleteSnackbarOpen, setCommentDeleteSnackbarOpen] = useState(false);
   const [commentSnackbarOpen, setCommentSnackbarOpen] = useState(false);
   const [_pendingDeleteComment, setPendingDeleteComment] = useState<QnAComment | null>(null);
+  const [editingComment, setEditingComment] = useState<QnAComment | null>(null);
+  const [editingCommentContent, setEditingCommentContent] = useState("");
   const { data: detail, isLoading, isError } = useQnADetailQuery(qnaId);
 
   const handleGoBack = () => {
@@ -245,8 +247,9 @@ export function QnADetailView() {
     setCommentSnackbarOpen(true);
   };
 
-  const handleCommentEdit = (_comment: QnAComment) => {
-    // edit logic placeholder
+  const handleCommentEdit = (comment: QnAComment) => {
+    setEditingComment(comment);
+    setEditingCommentContent(comment.content);
   };
 
   const handleCommentDelete = (comment: QnAComment) => {
@@ -358,6 +361,25 @@ export function QnADetailView() {
                     onDelete={handleCommentDelete}
                   />
                 ))}
+              </div>
+            )}
+
+            {editingComment && (
+              <div style={ds.commentEditorWrap}>
+                <ToastEditor
+                  value={editingCommentContent}
+                  onChange={setEditingCommentContent}
+                  placeholder="댓글을 수정해주세요."
+                  minHeight={150}
+                />
+                <div style={ds.commentEditorBtnRow}>
+                  <Button size="m" variant="outlined" color="info" onClick={() => setEditingComment(null)}>
+                    취소
+                  </Button>
+                  <Button size="m" variant="filled" color="positive" onClick={() => setEditingComment(null)}>
+                    수정
+                  </Button>
+                </div>
               </div>
             )}
           </div>
