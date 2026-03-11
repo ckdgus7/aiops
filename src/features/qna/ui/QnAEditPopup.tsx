@@ -49,9 +49,9 @@ function DeleteIcon() {
 }
 
 const CATEGORY_OPTIONS = [
-  { label: "공지", value: "공지" },
-  { label: "이용문의", value: "이용문의" },
-  { label: "기술", value: "기술" },
+  { label: "계정", value: "계정" },
+  { label: "이용방법", value: "이용방법" },
+  { label: "기타문의", value: "기타문의" },
 ];
 
 interface UploadedFile {
@@ -164,7 +164,7 @@ export function QnAEditPopup({ open, onClose, detail }: QnAEditPopupProps) {
           <div style={ps.formSection}>
             <div style={ps.fieldGroup}>
               <div style={ps.fieldLabel}>
-                <span style={ps.labelText}>분류</span>
+                <span style={ps.labelText}>문의유형</span>
                 <span style={ps.requiredDot} />
               </div>
               <RadioGroup
@@ -178,7 +178,7 @@ export function QnAEditPopup({ open, onClose, detail }: QnAEditPopupProps) {
 
             <div style={ps.fieldGroup}>
               <Input
-                label="제목"
+                label="제목명"
                 required
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
