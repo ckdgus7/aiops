@@ -206,10 +206,15 @@ export function QnADetailView() {
   const [_pendingDeleteComment, setPendingDeleteComment] = useState<QnAComment | null>(null);
   const { data: detail, isLoading, isError } = useQnADetailQuery(qnaId);
 
+  const handleGoBack = () => {
+    navigate("/notices/");
+  };
+
   usePageHeader({
     breadcrumbItems: [{ label: "게시판" }, { label: "Q&A" }, { label: "상세" }],
-    title: "Q&A",
-    favoriteKey: "Q&A",
+    title: detail?.title ?? "Q&A",
+    favoriteKey: detail?.title ?? "Q&A",
+    onBack: handleGoBack,
   });
 
   useEffect(() => {
