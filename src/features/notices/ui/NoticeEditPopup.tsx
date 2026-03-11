@@ -2,6 +2,8 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { RadioGroup } from "@/shared/ui/global/RadioGroup";
 import { Input } from "@/shared/ui/global/Input";
 import { Button } from "@/shared/ui/global/Button";
+import { Checkbox } from "@/shared/ui/global/Checkbox";
+import { DatePicker } from "@/shared/ui/global/DatePicker";
 import { ToastEditor } from "@/shared/ui/service/ToastEditor";
 import type { NoticeDetail } from "@/features/notices/model/types";
 import { popupStyles as ps } from "@/shared/ui/styles";
@@ -50,12 +52,8 @@ function DeleteIcon() {
 
 const CATEGORY_OPTIONS = [
   { label: "공통", value: "공통" },
-  { label: "업무", value: "업무" },
   { label: "서비스", value: "서비스" },
-];
-
-const POST_TYPE_OPTIONS = [
-  { label: "즉시", value: "즉시" },
+  { label: "업무", value: "업무" },
 ];
 
 interface EditFile {
@@ -71,8 +69,8 @@ function mapCategoryToRadio(notice: NoticeDetail): string {
 export function NoticeEditPopup({ open, onClose, notice }: NoticeEditPopupProps) {
   const [category, setCategory] = useState("공통");
   const [title, setTitle] = useState("");
-  const [author, setAuthor] = useState("Admin");
-  const [postType, setPostType] = useState("즉시");
+  const [publishDate, setPublishDate] = useState("");
+  const [pinned, setPinned] = useState(false);
   const [content, setContent] = useState("");
   const [files, setFiles] = useState<EditFile[]>([]);
   const [isDragging, setIsDragging] = useState(false);
@@ -92,7 +90,8 @@ export function NoticeEditPopup({ open, onClose, notice }: NoticeEditPopupProps)
     if (open && notice) {
       setCategory(mapCategoryToRadio(notice));
       setTitle(notice.title);
-      setAuthor(notice.author);
+      setPublishDate(notice.createdAt?.split(" ")[0] ?? "");
+      setPinned(false);
       setContent(notice.content);
       setFiles(
         notice.attachments.map((a) => ({
@@ -178,7 +177,7 @@ export function NoticeEditPopup({ open, onClose, notice }: NoticeEditPopupProps)
           <div style={ps.formSection}>
             <div style={ps.fieldGroup}>
               <div style={ps.fieldLabel}>
-                <span style={ps.labelText}>분류</span>
+                <span style={ps.labelText}>공지유형</span>
                 <span style={ps.requiredDot} />
               </div>
               <RadioGroup
@@ -193,7 +192,7 @@ export function NoticeEditPopup({ open, onClose, notice }: NoticeEditPopupProps)
             <div style={ps.fieldRow}>
               <div style={{ flex: 540, minWidth: 0 }}>
                 <Input
-                  label="제목"
+                  label="제목명"
                   required
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
@@ -202,26 +201,23 @@ export function NoticeEditPopup({ open, onClose, notice }: NoticeEditPopupProps)
                 />
               </div>
               <div style={{ flex: 244, minWidth: 0 }}>
-                <Input
-                  label="작성자"
-                  value={author}
-                  onChange={(e) => setAuthor(e.target.value)}
-                  readOnly
+                <DatePicker
+                  label="게시일"
+                  required
+                  value={publishDate}
+                  onChange={setPublishDate}
                 />
               </div>
             </div>
 
-            <div style={ps.fieldGroup}>
+            <div style={{ ...ps.fieldGroup, alignItems: "flex-start" }}>
               <div style={ps.fieldLabel}>
-                <span style={ps.labelText}>게시</span>
-                <span style={ps.requiredDot} />
+                <span style={ps.labelText}>상단고정</span>
               </div>
-              <RadioGroup
-                value={postType}
-                onChange={setPostType}
-                options={POST_TYPE_OPTIONS}
-                size="m"
-                gap={16}
+              <Checkbox
+                checked={pinned}
+                onChange={setPinned}
+                label="사용"
               />
             </div>
 
