@@ -1,9 +1,10 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router";
 import { Button } from "@/shared/ui/global/Button";
 import { usePageHeader } from "@/shared/hooks/usePageHeader";
 import { useMdiStore } from "@/shared/model/mdi.store";
 import { useNoticeDetailQuery, useAdjacentNoticeQuery } from "@/features/notices/api/notices.queries";
+import { NoticeEditPopup } from "@/features/notices/ui/NoticeEditPopup";
 import { FONT, detailStyles } from "@/shared/ui/styles";
 
 function FileIcon() {
@@ -29,13 +30,26 @@ export function NoticeDetailView() {
   const addTab = useMdiStore((st) => st.addTab);
   const noticeId = Number(id) || 0;
 
+  const [editPopupOpen, setEditPopupOpen] = useState(false);
+
   const { data: notice, isLoading, isError } = useNoticeDetailQuery(noticeId);
   const { data: adjacent } = useAdjacentNoticeQuery(noticeId);
 
+  const handleGoList = () => {
+    navigate("/notices");
+  };
+
   usePageHeader({
     breadcrumbItems: [{ label: "게시판" }, { label: "공지사항" }, { label: "상세" }],
-    title: "공지사항",
-    favoriteKey: "공지사항",
+    title: notice?.title ?? "공지사항",
+    favoriteKey: notice?.title ?? "공지사항",
+    onBack: handleGoList,
+    actions: (
+      <>
+        <Button size="m" variant="outlined" color="negative">삭제</Button>
+        <Button size="m" variant="outlined" color="info" onClick={() => setEditPopupOpen(true)}>수정</Button>
+      </>
+    ),
   });
 
   useEffect(() => {
@@ -47,10 +61,6 @@ export function NoticeDetailView() {
       });
     }
   }, [notice, noticeId, addTab]);
-
-  const handleGoList = () => {
-    navigate("/notices");
-  };
 
   if (isLoading) {
     return (
@@ -165,6 +175,12 @@ export function NoticeDetailView() {
           </div>
         </div>
       </div>
+
+      <NoticeEditPopup
+        open={editPopupOpen}
+        onClose={() => setEditPopupOpen(false)}
+        notice={notice}
+      />
     </div>
   );
 }
