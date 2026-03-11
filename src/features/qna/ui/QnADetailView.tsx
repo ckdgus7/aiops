@@ -207,7 +207,7 @@ export function QnADetailView() {
   const { data: detail, isLoading, isError } = useQnADetailQuery(qnaId);
 
   const handleGoBack = () => {
-    navigate("/notices/");
+    navigate("/qna");
   };
 
   usePageHeader({
