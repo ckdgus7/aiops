@@ -388,7 +388,7 @@ export function QnADetailView() {
         onCancel={() => setDeleteAlertOpen(false)}
         onConfirm={() => {
           setDeleteAlertOpen(false);
-          setDeleteSnackbarOpen(true);
+          navigate("/qna");
         }}
       />
 
