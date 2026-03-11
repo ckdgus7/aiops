@@ -290,7 +290,7 @@ export function QnADetailView() {
             </div>
             <div style={detailStyles.metaItem}>
               <span style={detailStyles.metaLabel}>처리상태</span>
-              <span style={detailStyles.metaValue}>{detail.views}</span>
+              <span style={detailStyles.metaValue}>{detail.status}</span>
             </div>
           </div>
 

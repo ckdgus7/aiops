@@ -104,6 +104,7 @@ export function getQnADetail(id: number): QnADetail | null {
     author: item.author,
     createdAt: item.createdAt,
     views: 100 + item.no * 7,
+    status: item.status,
     content:
       "안녕하세요.\n\n" +
       item.title.replace(".", "") +

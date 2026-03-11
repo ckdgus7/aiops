@@ -52,6 +52,7 @@ export interface QnADetail {
   author: string;
   createdAt: string;
   views: number;
+  status: "답변완료" | "답변대기";
   content: string;
   attachments: QnAAttachment[];
   comments: QnAComment[];
