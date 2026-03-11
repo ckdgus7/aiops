@@ -5,6 +5,7 @@ import { usePageHeader } from "@/shared/hooks/usePageHeader";
 import { useMdiStore } from "@/shared/model/mdi.store";
 import { useNoticeDetailQuery, useAdjacentNoticeQuery } from "@/features/notices/api/notices.queries";
 import { NoticeEditPopup } from "@/features/notices/ui/NoticeEditPopup";
+import { AlertModal } from "@/shared/ui/global/AlertModal";
 import { FONT, detailStyles } from "@/shared/ui/styles";
 
 function FileIcon() {
@@ -31,6 +32,7 @@ export function NoticeDetailView() {
   const noticeId = Number(id) || 0;
 
   const [editPopupOpen, setEditPopupOpen] = useState(false);
+  const [deleteAlertOpen, setDeleteAlertOpen] = useState(false);
 
   const { data: notice, isLoading, isError } = useNoticeDetailQuery(noticeId);
   const { data: adjacent } = useAdjacentNoticeQuery(noticeId);
@@ -46,7 +48,7 @@ export function NoticeDetailView() {
     onBack: handleGoList,
     actions: (
       <>
-        <Button size="m" variant="outlined" color="negative">삭제</Button>
+        <Button size="m" variant="outlined" color="negative" onClick={() => setDeleteAlertOpen(true)}>삭제</Button>
         <Button size="m" variant="outlined" color="info" onClick={() => setEditPopupOpen(true)}>수정</Button>
       </>
     ),
@@ -180,6 +182,27 @@ export function NoticeDetailView() {
         open={editPopupOpen}
         onClose={() => setEditPopupOpen(false)}
         notice={notice}
+      />
+
+      <AlertModal
+        open={deleteAlertOpen}
+        onClose={() => setDeleteAlertOpen(false)}
+        type="warning"
+        message={
+          <>
+            등록된 정보를 삭제하시겠습니까?
+            <br />
+            이 작업은 복구할 수 없습니다.
+          </>
+        }
+        showCancel
+        cancelLabel="취소"
+        confirmLabel="확인"
+        onCancel={() => setDeleteAlertOpen(false)}
+        onConfirm={() => {
+          setDeleteAlertOpen(false);
+          navigate("/notices");
+        }}
       />
     </div>
   );
