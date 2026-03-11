@@ -3,6 +3,7 @@ import { Button } from "@/shared/ui/global/Button";
 import { Snackbar } from "@/shared/ui/global/Snackbar";
 import { ComponentDeletePopup } from "@/features/ssf/ui/l2/ComponentDeletePopup";
 import { ComponentEditPopup } from "@/features/ssf/ui/l2/ComponentEditPopup";
+import { DomainDetail } from "@/features/ssf/ui/l1/component/DomainDetail";
 import type { ComponentItem } from "@/features/ssf/model/types";
 import { useDomainListQuery } from "@/features/ssf/api/domain.queries";
 import { FONT, popupStyles } from "@/shared/ui/styles";
@@ -610,24 +611,17 @@ export function ComponentDetailPopup({ open, onClose, item, onDeleted }: Compone
             </div>
 
             <div style={st.domainBox}>
-              <div style={st.domainRow}>
-                <div style={st.labelControl}>
-                  <span style={st.label}>도메인(약어)</span>
-                  <span style={st.value}>{domain?.abbr ?? "-"}</span>
-                </div>
-                <div style={st.labelControl}>
-                  <span style={st.label}>도메인(한글)</span>
-                  <span style={st.value}>{item.domainNameKo}</span>
-                </div>
-                <div style={st.labelControl}>
-                  <span style={st.label}>도메인(영문)</span>
-                  <span style={st.value}>{domain?.nameEn ?? "-"}</span>
-                </div>
-              </div>
-              <div style={st.labelControlFull}>
-                <span style={st.label}>도메인(L1) 설명</span>
-                <span style={st.value}>{domain?.description ?? "-"}</span>
-              </div>
+              <DomainDetail
+                data={domain ?? {
+                  no: 0,
+                  abbr: "-",
+                  nameKo: item.domainNameKo,
+                  nameEn: "-",
+                  description: "-",
+                  useYn: "-",
+                }}
+                showUseYn={false}
+              />
             </div>
 
             <div style={st.labelControlFull}>
