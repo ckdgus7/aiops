@@ -1,12 +1,9 @@
-import { useState, useEffect, type CSSProperties } from "react";
+import { useEffect } from "react";
 import { useParams, useNavigate } from "react-router";
 import { Button } from "@/shared/ui/global/Button";
 import { usePageHeader } from "@/shared/hooks/usePageHeader";
-import { AlertModal } from "@/shared/ui/global/AlertModal";
-import { Snackbar } from "@/shared/ui/global/Snackbar";
 import { useMdiStore } from "@/shared/model/mdi.store";
-import { useNoticeDetailQuery } from "@/features/notices/api/notices.queries";
-import { NoticeEditPopup } from "@/features/notices/ui/NoticeEditPopup";
+import { useNoticeDetailQuery, useAdjacentNoticeQuery } from "@/features/notices/api/notices.queries";
 import { FONT, detailStyles } from "@/shared/ui/styles";
 
 function FileIcon() {
@@ -26,38 +23,14 @@ function BackIcon() {
   );
 }
 
-function getCategoryBadgeStyle(category: string): CSSProperties {
-  if (category === "공통") {
-    return {
-      backgroundColor: "#fafaff",
-      border: "1px solid #7a5af8",
-      color: "#7a5af8",
-    };
-  }
-  if (category === "업무") {
-    return {
-      backgroundColor: "#eff8ff",
-      border: "1px solid #2e90fa",
-      color: "#2e90fa",
-    };
-  }
-  return {
-    backgroundColor: "#f0fdf4",
-    border: "1px solid #16a34a",
-    color: "#16a34a",
-  };
-}
-
 export function NoticeDetailView() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const addTab = useMdiStore((st) => st.addTab);
   const noticeId = Number(id) || 0;
 
-  const [editPopupOpen, setEditPopupOpen] = useState(false);
-  const [deleteAlertOpen, setDeleteAlertOpen] = useState(false);
-  const [deleteSnackbarOpen, setDeleteSnackbarOpen] = useState(false);
   const { data: notice, isLoading, isError } = useNoticeDetailQuery(noticeId);
+  const { data: adjacent } = useAdjacentNoticeQuery(noticeId);
 
   usePageHeader({
     breadcrumbItems: [{ label: "게시판" }, { label: "공지사항" }, { label: "상세" }],
@@ -171,46 +144,27 @@ export function NoticeDetailView() {
             </Button>
           </div>
           <div style={detailStyles.btnRight}>
-            <Button size="l" variant="outlined" color="info" onClick={() => setEditPopupOpen(true)}>
-              수정
+            <Button
+              size="l"
+              variant="outlined"
+              color="info"
+              disabled={!adjacent?.prevId}
+              onClick={() => { if (adjacent?.prevId) navigate(`/notices/${adjacent.prevId}`); }}
+            >
+              이전
             </Button>
-            <Button size="l" variant="outlined" color="info" onClick={() => setDeleteAlertOpen(true)}>
-              삭제
+            <Button
+              size="l"
+              variant="outlined"
+              color="info"
+              disabled={!adjacent?.nextId}
+              onClick={() => { if (adjacent?.nextId) navigate(`/notices/${adjacent.nextId}`); }}
+            >
+              다음
             </Button>
           </div>
         </div>
       </div>
-
-      <NoticeEditPopup
-        open={editPopupOpen}
-        onClose={() => setEditPopupOpen(false)}
-        notice={notice}
-      />
-
-      <AlertModal
-        open={deleteAlertOpen}
-        onClose={() => setDeleteAlertOpen(false)}
-        type="warning"
-        message={
-          <>
-            등록된 정보를 삭제하시겠습니까?
-            <br />
-            이 작업은 복구할 수 없습니다.
-          </>
-        }
-        showCancel
-        cancelLabel="취소"
-        confirmLabel="삭제"
-        onCancel={() => setDeleteAlertOpen(false)}
-        onConfirm={() => setDeleteSnackbarOpen(true)}
-      />
-
-      <Snackbar
-        open={deleteSnackbarOpen}
-        onClose={() => setDeleteSnackbarOpen(false)}
-        message="삭제 되었습니다."
-        type="success"
-      />
     </div>
   );
 }

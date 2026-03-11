@@ -60,6 +60,15 @@ function generateAttachments(notice: Notice): NoticeDetail["attachments"] {
   return result;
 }
 
+export function getAdjacentNoticeIds(no: number): { prevId: number | null; nextId: number | null } {
+  const sorted = [...NOTICE_MOCK_DATA].sort((a, b) => b.no - a.no);
+  const idx = sorted.findIndex((n) => n.no === no);
+  if (idx === -1) return { prevId: null, nextId: null };
+  const prevId = idx > 0 ? sorted[idx - 1].no : null;
+  const nextId = idx < sorted.length - 1 ? sorted[idx + 1].no : null;
+  return { prevId, nextId };
+}
+
 export function getNoticeDetail(no: number): NoticeDetail | null {
   const notice = NOTICE_MOCK_DATA.find((n) => n.no === no);
   if (!notice) return null;

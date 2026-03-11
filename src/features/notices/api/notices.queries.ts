@@ -1,6 +1,6 @@
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import type { Notice } from "../model/types";
-import { NOTICE_MOCK_DATA, getNoticeDetail } from "../model/mock-data";
+import { NOTICE_MOCK_DATA, getNoticeDetail, getAdjacentNoticeIds } from "../model/mock-data";
 
 interface NoticeListParams {
   category?: string;
@@ -23,6 +23,7 @@ const keys = {
   all: ["notices"] as const,
   list: (params: NoticeListParams) => ["notices", "list", params] as const,
   detail: (id: number) => ["notices", "detail", id] as const,
+  adjacent: (id: number) => ["notices", "adjacent", id] as const,
 };
 
 function filterAndSort(params: NoticeListParams): NoticeListResponse {
@@ -102,6 +103,14 @@ export function useNoticeDetailQuery(id: number) {
       if (!detail) throw new Error(`Notice ${id} not found`);
       return detail;
     },
+    enabled: id > 0,
+  });
+}
+
+export function useAdjacentNoticeQuery(id: number) {
+  return useQuery({
+    queryKey: keys.adjacent(id),
+    queryFn: () => getAdjacentNoticeIds(id),
     enabled: id > 0,
   });
 }
