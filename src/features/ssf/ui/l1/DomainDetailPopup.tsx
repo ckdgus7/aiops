@@ -96,7 +96,7 @@ export function DomainDetailPopup({ open, onClose, data, onEdit, onDelete }: Dom
           </div>
 
           <div style={s.main}>
-            <DomainDetail domainId={data.nameKo} showUseYn />
+            <DomainDetail data={data} showUseYn />
           </div>
 
           <div style={s.footer}>

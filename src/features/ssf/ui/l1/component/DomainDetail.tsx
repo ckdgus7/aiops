@@ -1,9 +1,9 @@
 import type { CSSProperties } from "react";
-import { useDomainDetailQuery } from "@/features/ssf/api/domain.queries";
+import type { DomainItem } from "@/features/ssf/model/types";
 import { FONT } from "@/shared/ui/styles";
 
 interface DomainDetailProps {
-  domainId: string;
+  data: DomainItem;
   showUseYn?: boolean;
 }
 
@@ -51,25 +51,9 @@ const s = {
     lineHeight: "20px",
     color: "#3f3f46",
   } satisfies CSSProperties,
-  loading: {
-    fontFamily: FONT,
-    fontSize: 14,
-    color: "#a1a1aa",
-    padding: 16,
-  } satisfies CSSProperties,
 };
 
-export function DomainDetail({ domainId, showUseYn = true }: DomainDetailProps) {
-  const { data, isLoading } = useDomainDetailQuery(domainId);
-
-  if (isLoading) {
-    return <div style={s.loading}>로딩 중...</div>;
-  }
-
-  if (!data) {
-    return <div style={s.loading}>데이터를 찾을 수 없습니다.</div>;
-  }
-
+export function DomainDetail({ data, showUseYn = true }: DomainDetailProps) {
   return (
     <div style={s.content}>
       <div style={s.fieldRow}>
