@@ -110,14 +110,14 @@ export function NoticeCreatePopup({ open, onClose }: NoticeCreatePopupProps) {
               </div>
             </div>
 
-            <div style={ps.fieldGroup}>
+            <div style={{ ...ps.fieldGroup, alignItems: "flex-start" }}>
               <div style={ps.fieldLabel}>
                 <span style={ps.labelText}>상단고정</span>
               </div>
               <Checkbox
                 checked={pinned}
                 onChange={setPinned}
-                label="상단에 고정합니다."
+                label="사용"
               />
             </div>
 
