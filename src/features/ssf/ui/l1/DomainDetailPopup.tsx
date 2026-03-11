@@ -1,7 +1,7 @@
 import { useState, type CSSProperties } from "react";
 import { Button } from "@/shared/ui/global/Button";
 import { DomainEditPopup } from "@/features/ssf/ui/l1/DomainEditPopup";
-import { DomainDetail } from "@/features/ssf/ui/component/DomainDetail";
+import { DomainDetail } from "@/features/ssf/ui/l1/component/DomainDetail";
 import type { DomainItem } from "@/features/ssf/model/types";
 import { popupStyles } from "@/shared/ui/styles";
 
