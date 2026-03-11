@@ -403,10 +403,10 @@ export function QnADetailView() {
         open={commentDeleteAlertOpen}
         onClose={() => setCommentDeleteAlertOpen(false)}
         type="warning"
-        message="댓글을 삭제하시겠습니까?"
+        message="삭제하시겠습니까? 복구할 수 없습니다."
         showCancel
         cancelLabel="취소"
-        confirmLabel="삭제"
+        confirmLabel="확인"
         onCancel={() => {
           setCommentDeleteAlertOpen(false);
           setPendingDeleteComment(null);
@@ -414,7 +414,6 @@ export function QnADetailView() {
         onConfirm={() => {
           setCommentDeleteAlertOpen(false);
           setPendingDeleteComment(null);
-          setCommentDeleteSnackbarOpen(true);
         }}
       />
 
