@@ -4,7 +4,7 @@ import { Snackbar } from "@/shared/ui/global/Snackbar";
 import { ComponentDeletePopup } from "@/features/ssf/ui/l2/ComponentDeletePopup";
 import { ComponentEditPopup } from "@/features/ssf/ui/l2/ComponentEditPopup";
 import { ComponentDetail } from "@/features/ssf/ui/l2/component/ComponentDetail";
-import type { ComponentDetailData } from "@/features/ssf/ui/l2/component/ComponentDetail";
+import type { ComponentDetailData, ComponentDetailSnapshot, HistoryEntry } from "@/features/ssf/ui/l2/component/ComponentDetail";
 import type { ComponentItem } from "@/features/ssf/model/types";
 import { useDomainListQuery } from "@/features/ssf/api/domain.queries";
 import { popupStyles } from "@/shared/ui/styles";
@@ -18,7 +18,7 @@ function CloseIcon() {
   );
 }
 
-const MOCK_L3_ITEMS = [
+const MOCK_L3_ITEMS_CURRENT = [
   { id: "BZ-PTYTMFC028-0022", name: "대리점정보관리", hasBpd: true },
   { id: "BZ-PTYTMFC028-0021", name: "파트너사정보관리", hasBpd: true },
   { id: "BZ-PTYTMFC028-0020", name: "제휴서비스관리", hasBpd: false },
@@ -41,11 +41,74 @@ const MOCK_L3_ITEMS = [
   { id: "BZ-PTYTMFC028-0003", name: "실적평가관리", hasBpd: true },
 ];
 
-const MOCK_HISTORY = [
-  { name: "전상세", date: "2025-11-28 15:24", active: true },
-  { name: "전상세", date: "2025-11-28 15:24", active: false },
-  { name: "원본", date: "2025-11-28 15:24", active: false },
+const MOCK_L3_ITEMS_V2 = [
+  { id: "BZ-PTYTMFC028-0022", name: "대리점정보관리", hasBpd: true },
+  { id: "BZ-PTYTMFC028-0021", name: "파트너사정보관리", hasBpd: false },
+  { id: "BZ-PTYTMFC028-0020", name: "제휴서비스관리", hasBpd: false },
+  { id: "BZ-PTYTMFC028-0019", name: "마케팅분석관리", hasBpd: true },
+  { id: "BZ-PTYTMFC028-0018", name: "고객세분화관리", hasBpd: false },
+  { id: "BZ-PTYTMFC028-0017", name: "파트너계약관리", hasBpd: true },
+  { id: "BZ-PTYTMFC028-0015", name: "거래처정보관리", hasBpd: true },
+  { id: "BZ-PTYTMFC028-0013", name: "위탁판매관리", hasBpd: true },
+  { id: "BZ-PTYTMFC028-0012", name: "직영점관리", hasBpd: false },
+  { id: "BZ-PTYTMFC028-0011", name: "온라인채널관리", hasBpd: true },
+  { id: "BZ-PTYTMFC028-0009", name: "채널통합관리", hasBpd: true },
+  { id: "BZ-PTYTMFC028-0008", name: "파트너수수료관리", hasBpd: false },
+  { id: "BZ-PTYTMFC028-0006", name: "인센티브관리", hasBpd: true },
+  { id: "BZ-PTYTMFC028-0004", name: "자격인증관리", hasBpd: true },
+  { id: "BZ-PTYTMFC028-0003", name: "실적평가관리", hasBpd: false },
 ];
+
+const MOCK_L3_ITEMS_ORIGINAL = [
+  { id: "BZ-PTYTMFC028-0022", name: "대리점정보관리", hasBpd: false },
+  { id: "BZ-PTYTMFC028-0021", name: "파트너사정보관리", hasBpd: false },
+  { id: "BZ-PTYTMFC028-0020", name: "제휴서비스관리", hasBpd: false },
+  { id: "BZ-PTYTMFC028-0019", name: "마케팅분석관리", hasBpd: false },
+  { id: "BZ-PTYTMFC028-0017", name: "파트너계약관리", hasBpd: false },
+  { id: "BZ-PTYTMFC028-0015", name: "거래처정보관리", hasBpd: false },
+  { id: "BZ-PTYTMFC028-0013", name: "위탁판매관리", hasBpd: false },
+  { id: "BZ-PTYTMFC028-0011", name: "온라인채널관리", hasBpd: false },
+  { id: "BZ-PTYTMFC028-0009", name: "채널통합관리", hasBpd: false },
+  { id: "BZ-PTYTMFC028-0003", name: "실적평가관리", hasBpd: false },
+];
+
+function buildHistory(currentSnapshot: ComponentDetailSnapshot): HistoryEntry[] {
+  return [
+    {
+      name: "전상세",
+      date: "2025-11-28 15:24",
+      snapshot: currentSnapshot,
+    },
+    {
+      name: "전상세",
+      date: "2025-10-15 09:30",
+      snapshot: {
+        ...currentSnapshot,
+        nameKo: currentSnapshot.nameKo,
+        nameEn: currentSnapshot.nameEn,
+        planLeader: currentSnapshot.planLeader,
+        designLeader: currentSnapshot.designLeader,
+        description: `[V2] ${currentSnapshot.description}`,
+        useYn: "Y",
+        l3Items: MOCK_L3_ITEMS_V2,
+      },
+    },
+    {
+      name: "원본",
+      date: "2025-08-01 10:00",
+      snapshot: {
+        ...currentSnapshot,
+        nameKo: currentSnapshot.nameKo,
+        nameEn: currentSnapshot.nameEn,
+        planLeader: "-",
+        designLeader: "-",
+        description: `[원본] ${currentSnapshot.description}`,
+        useYn: "N",
+        l3Items: MOCK_L3_ITEMS_ORIGINAL,
+      },
+    },
+  ];
+}
 
 const st = {
   overlay: {
@@ -130,7 +193,16 @@ export function ComponentDetailPopup({ open, onClose, item, onDeleted }: Compone
     (d) => item.domainNameKo.includes(d.nameKo) || d.nameKo.includes(item.domainNameKo)
   );
 
-  const detailData: ComponentDetailData = {
+  const domainData = domain ?? {
+    no: 0,
+    abbr: "-",
+    nameKo: item.domainNameKo,
+    nameEn: "-",
+    description: "-",
+    useYn: "-",
+  };
+
+  const currentSnapshot: ComponentDetailSnapshot = {
     componentId: item.componentId,
     nameKo: item.nameKo,
     nameEn: item.nameEn,
@@ -138,16 +210,13 @@ export function ComponentDetailPopup({ open, onClose, item, onDeleted }: Compone
     designLeader: item.designLeader,
     description: item.description,
     useYn: item.useYn,
-    domain: domain ?? {
-      no: 0,
-      abbr: "-",
-      nameKo: item.domainNameKo,
-      nameEn: "-",
-      description: "-",
-      useYn: "-",
-    },
-    history: MOCK_HISTORY,
-    l3Items: MOCK_L3_ITEMS,
+    domain: domainData,
+    l3Items: MOCK_L3_ITEMS_CURRENT,
+  };
+
+  const detailData: ComponentDetailData = {
+    ...currentSnapshot,
+    history: buildHistory(currentSnapshot),
   };
 
   return (

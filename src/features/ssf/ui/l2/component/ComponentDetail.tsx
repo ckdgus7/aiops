@@ -9,13 +9,7 @@ interface L3Item {
   hasBpd: boolean;
 }
 
-interface HistoryEntry {
-  name: string;
-  date: string;
-  active: boolean;
-}
-
-export interface ComponentDetailData {
+export interface ComponentDetailSnapshot {
   componentId: string;
   nameKo: string;
   nameEn: string;
@@ -24,8 +18,17 @@ export interface ComponentDetailData {
   description: string;
   useYn: string;
   domain: DomainItem;
-  history: HistoryEntry[];
   l3Items: L3Item[];
+}
+
+export interface HistoryEntry {
+  name: string;
+  date: string;
+  snapshot: ComponentDetailSnapshot;
+}
+
+export interface ComponentDetailData extends ComponentDetailSnapshot {
+  history: HistoryEntry[];
 }
 
 interface ComponentDetailProps {
@@ -317,11 +320,12 @@ const s = {
     cursor: "pointer",
     flexShrink: 0,
   } satisfies CSSProperties,
-  historyItem: {
+  historyItemWrap: {
     display: "flex",
     gap: 8,
     alignItems: "flex-start",
     minWidth: 142,
+    cursor: "pointer",
   } satisfies CSSProperties,
   historyMark: {
     display: "flex",
@@ -374,20 +378,25 @@ const s = {
   } satisfies CSSProperties,
 };
 
-function HistoryTimeline({ entries }: { entries: HistoryEntry[] }) {
+function HistoryTimeline({ entries, activeIndex, onSelect }: {
+  entries: HistoryEntry[];
+  activeIndex: number;
+  onSelect: (index: number) => void;
+}) {
   return (
     <div style={{ display: "flex", flexDirection: "column" }}>
       {entries.map((entry, idx) => {
         const isFirst = idx === 0;
         const isLast = idx === entries.length - 1;
+        const isActive = idx === activeIndex;
         return (
-          <div key={idx} style={s.historyItem}>
+          <div key={idx} style={s.historyItemWrap} onClick={() => onSelect(idx)}>
             <div style={s.historyMark}>
               <div style={s.historyDotRow}>
                 {!isFirst && (
                   <div style={{ position: "absolute", top: 0, bottom: "50%", width: 1, backgroundColor: "#e4e4e7" }} />
                 )}
-                <div style={{ ...s.historyDot, backgroundColor: entry.active ? "#7a5af8" : "#d4d4d8", position: "relative", zIndex: 1 }} />
+                <div style={{ ...s.historyDot, backgroundColor: isActive ? "#7a5af8" : "#d4d4d8", position: "relative", zIndex: 1 }} />
                 {!isLast && (
                   <div style={{ position: "absolute", top: "50%", bottom: 0, width: 1, backgroundColor: "#e4e4e7" }} />
                 )}
@@ -395,7 +404,7 @@ function HistoryTimeline({ entries }: { entries: HistoryEntry[] }) {
               {!isLast && <div style={s.historyLine} />}
             </div>
             <div style={s.historyCol}>
-              <span style={s.historyName}>{entry.name}</span>
+              <span style={{ ...s.historyName, fontWeight: isActive ? 600 : 400 }}>{entry.name}</span>
               <span style={s.historyDate}>{entry.date}</span>
             </div>
           </div>
@@ -433,13 +442,22 @@ function L3ListItem({ item }: { item: L3Item }) {
 
 export function ComponentDetail({ data, showUseYn = true, showDomainBox = true }: ComponentDetailProps) {
   const [l3Page, setL3Page] = useState(1);
+  const [activeHistoryIndex, setActiveHistoryIndex] = useState(0);
 
-  const totalL3 = data.l3Items.length;
+  const displayData: ComponentDetailSnapshot =
+    data.history[activeHistoryIndex]?.snapshot ?? data;
+
+  const handleHistorySelect = (index: number) => {
+    setActiveHistoryIndex(index);
+    setL3Page(1);
+  };
+
+  const totalL3 = displayData.l3Items.length;
   const totalL3Pages = Math.max(1, Math.ceil(totalL3 / L3_PAGE_SIZE));
   const clampedPage = Math.min(l3Page, totalL3Pages);
   const l3Start = (clampedPage - 1) * L3_PAGE_SIZE;
   const l3End = Math.min(l3Start + L3_PAGE_SIZE, totalL3);
-  const pagedL3Items = data.l3Items.slice(l3Start, l3End);
+  const pagedL3Items = displayData.l3Items.slice(l3Start, l3End);
 
   return (
     <div style={s.content}>
@@ -449,15 +467,15 @@ export function ComponentDetail({ data, showUseYn = true, showDomainBox = true }
             <div style={{ display: "flex", gap: 32, alignItems: "flex-start", flex: 1 }}>
               <div style={s.labelControl}>
                 <span style={s.label}>컴포넌트 ID</span>
-                <span style={s.value}>{data.componentId}</span>
+                <span style={s.value}>{displayData.componentId}</span>
               </div>
               <div style={s.labelControl}>
                 <span style={s.label}>컴포넌트(한글)</span>
-                <span style={s.value}>{data.nameKo}</span>
+                <span style={s.value}>{displayData.nameKo}</span>
               </div>
               <div style={s.labelControl}>
                 <span style={s.label}>컴포넌트(영문)</span>
-                <span style={s.value}>{data.nameEn}</span>
+                <span style={s.value}>{displayData.nameEn}</span>
               </div>
             </div>
             <button style={s.historyBtn} type="button">
@@ -469,35 +487,39 @@ export function ComponentDetail({ data, showUseYn = true, showDomainBox = true }
           <div style={s.infoRow}>
             <div style={s.labelControl}>
               <span style={s.label}>L2기획리더</span>
-              <span style={s.value}>{data.planLeader}</span>
+              <span style={s.value}>{displayData.planLeader}</span>
             </div>
             <div style={s.labelControl}>
               <span style={s.label}>L2설계리더</span>
-              <span style={s.value}>{data.designLeader}</span>
+              <span style={s.value}>{displayData.designLeader}</span>
             </div>
           </div>
 
           <div style={s.labelControlFull}>
             <span style={s.label}>컴포넌트(L2) 설명</span>
-            <div style={s.value}>{data.description}</div>
+            <div style={s.value}>{displayData.description}</div>
           </div>
 
           {showUseYn && (
             <div style={s.labelControl}>
               <span style={s.label}>사용여부</span>
-              <span style={s.value}>{data.useYn}</span>
+              <span style={s.value}>{displayData.useYn}</span>
             </div>
           )}
         </div>
 
         <div style={s.rightCol}>
-          <HistoryTimeline entries={data.history} />
+          <HistoryTimeline
+            entries={data.history}
+            activeIndex={activeHistoryIndex}
+            onSelect={handleHistorySelect}
+          />
         </div>
       </div>
 
       {showDomainBox && (
         <div style={s.domainBox}>
-          <DomainDetail data={data.domain} showUseYn={false} />
+          <DomainDetail data={displayData.domain} showUseYn={false} />
         </div>
       )}
 
