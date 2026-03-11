@@ -3,6 +3,8 @@ import { RadioGroup } from "@/shared/ui/global/RadioGroup";
 import { Input } from "@/shared/ui/global/Input";
 import { Button } from "@/shared/ui/global/Button";
 import { ToastEditor } from "@/shared/ui/service/ToastEditor";
+import { AlertModal } from "@/shared/ui/global/AlertModal";
+import { Snackbar } from "@/shared/ui/global/Snackbar";
 import type { QnADetail } from "@/features/qna/model/types";
 import { popupStyles as ps } from "@/shared/ui/styles";
 
@@ -59,12 +61,18 @@ interface UploadedFile {
   name: string;
 }
 
+async function saveQnAEdit(_params: { category: string; title: string; content: string }) {
+  await new Promise((resolve) => setTimeout(resolve, 300));
+}
+
 export function QnAEditPopup({ open, onClose, detail }: QnAEditPopupProps) {
   const [category, setCategory] = useState("이용문의");
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [files, setFiles] = useState<UploadedFile[]>([]);
   const [isDragging, setIsDragging] = useState(false);
+  const [closeAlertOpen, setCloseAlertOpen] = useState(false);
+  const [snackbar, setSnackbar] = useState<{ open: boolean; message: string }>({ open: false, message: "" });
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dragCounterRef = useRef(0);
 
@@ -90,10 +98,28 @@ export function QnAEditPopup({ open, onClose, detail }: QnAEditPopupProps) {
     setFiles((prev) => [...prev, ...newFiles]);
   }, []);
 
-  if (!open) return null;
+  if (!open) return (
+    <Snackbar
+      open={snackbar.open}
+      onClose={() => setSnackbar({ open: false, message: "" })}
+      type="success"
+      message={snackbar.message}
+    />
+  );
+
+  const resetAndClose = () => {
+    setCloseAlertOpen(false);
+    onClose();
+  };
+
+  const handleSave = async () => {
+    await saveQnAEdit({ category, title, content });
+    onClose();
+    setSnackbar({ open: true, message: "저장 되었습니다." });
+  };
 
   const handleOverlayClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) onClose();
+    if (e.target === e.currentTarget) setCloseAlertOpen(true);
   };
 
   const handleFileSelect = () => {
@@ -145,12 +171,13 @@ export function QnAEditPopup({ open, onClose, detail }: QnAEditPopupProps) {
   };
 
   return (
+    <>
     <div style={ps.overlay} onClick={handleOverlayClick}>
       <div style={ps.popup}>
         <div style={ps.header}>
           <div style={ps.titleRow}>
             <span style={ps.titleText}>Q&A 수정</span>
-            <button style={ps.closeBtn} onClick={onClose}>
+            <button style={ps.closeBtn} onClick={() => setCloseAlertOpen(true)}>
               <CloseIcon />
             </button>
           </div>
@@ -257,9 +284,9 @@ export function QnAEditPopup({ open, onClose, detail }: QnAEditPopupProps) {
               size="l"
               variant="outlined"
               color="info"
-              onClick={onClose}
+              onClick={() => setCloseAlertOpen(true)}
             >
-              취소
+              닫기
             </Button>
           </div>
           <div style={ps.footerRight}>
@@ -267,6 +294,7 @@ export function QnAEditPopup({ open, onClose, detail }: QnAEditPopupProps) {
               size="l"
               variant="filled"
               color="positive"
+              onClick={handleSave}
             >
               저장
             </Button>
@@ -274,5 +302,25 @@ export function QnAEditPopup({ open, onClose, detail }: QnAEditPopupProps) {
         </div>
       </div>
     </div>
+
+    <AlertModal
+      open={closeAlertOpen}
+      onClose={() => setCloseAlertOpen(false)}
+      type="warning"
+      message="변경된 사항을 저장하지 않고 창을 닫습니다."
+      showCancel
+      cancelLabel="취소"
+      confirmLabel="확인"
+      onCancel={() => setCloseAlertOpen(false)}
+      onConfirm={resetAndClose}
+    />
+
+    <Snackbar
+      open={snackbar.open}
+      onClose={() => setSnackbar({ open: false, message: "" })}
+      type="success"
+      message={snackbar.message}
+    />
+    </>
   );
 }
