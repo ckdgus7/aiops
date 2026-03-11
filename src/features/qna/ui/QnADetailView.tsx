@@ -210,11 +210,21 @@ export function QnADetailView() {
     navigate("/qna");
   };
 
+  const hasComments = (detail?.comments.length ?? 0) > 0;
+
   usePageHeader({
     breadcrumbItems: [{ label: "게시판" }, { label: "Q&A" }, { label: "상세" }],
     title: detail?.title ?? "Q&A",
     favoriteKey: detail?.title ?? "Q&A",
     onBack: handleGoBack,
+    actions: (
+      <>
+        <Button size="m" variant="outlined" color="negative" onClick={() => setDeleteAlertOpen(true)}>삭제</Button>
+        {!hasComments && (
+          <Button size="m" variant="outlined" color="info" onClick={() => setEditPopupOpen(true)}>수정</Button>
+        )}
+      </>
+    ),
   });
 
   useEffect(() => {
