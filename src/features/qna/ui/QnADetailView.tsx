@@ -1,4 +1,5 @@
-import { useState, useEffect, type CSSProperties } from "react";
+import { useState, useEffect } from "react";
+import type { CSSProperties } from "react";
 import { useParams, useNavigate } from "react-router";
 import { Button } from "@/shared/ui/global/Button";
 import { usePageHeader } from "@/shared/hooks/usePageHeader";
@@ -26,16 +27,6 @@ function BackIcon() {
       <path d="M15 6L9 12L15 18" stroke="#71717a" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
-}
-
-function getCategoryBadgeStyle(category: string): CSSProperties {
-  if (category === "이용문의") {
-    return { backgroundColor: "#fafaff", border: "1px solid #7a5af8", color: "#7a5af8" };
-  }
-  if (category === "기술") {
-    return { backgroundColor: "#f0fdf4", border: "1px solid #16a34a", color: "#16a34a" };
-  }
-  return { backgroundColor: "#fafafa", border: "1px solid #a1a1aa", color: "#a1a1aa" };
 }
 
 const ds = {
@@ -281,37 +272,24 @@ export function QnADetailView() {
         <div style={detailStyles.contentWrap}>
           <div style={detailStyles.metaRow}>
             <div style={detailStyles.metaItem}>
-              <span style={detailStyles.metaLabel}>분류</span>
-              <span style={{ ...detailStyles.categoryBadge, ...getCategoryBadgeStyle(detail.category) }}>
-                {detail.category}
-              </span>
+              <span style={detailStyles.metaLabel}>구분</span>
+              <span style={detailStyles.metaValue}>{detail.category}</span>
             </div>
             <div style={detailStyles.metaItem}>
               <span style={detailStyles.metaLabel}>작성자</span>
               <span style={detailStyles.metaValue}>{detail.author}</span>
             </div>
             <div style={detailStyles.metaItem}>
-              <span style={detailStyles.metaLabel}>등록일</span>
+              <span style={detailStyles.metaLabel}>작성일시</span>
               <span style={detailStyles.metaValue}>{detail.createdAt}</span>
             </div>
             <div style={detailStyles.metaItem}>
-              <span style={detailStyles.metaLabel}>조회수</span>
+              <span style={detailStyles.metaLabel}>처리상태</span>
               <span style={detailStyles.metaValue}>{detail.views}</span>
             </div>
           </div>
 
           <div style={detailStyles.contentSection}>
-            <span style={detailStyles.contentLabel}>제목</span>
-            <div style={{
-              fontFamily: FONT,
-              fontSize: 16,
-              fontWeight: 600,
-              lineHeight: "24px",
-              color: "#18181b",
-              padding: "4px 0",
-            }}>
-              {detail.title}
-            </div>
             <div style={detailStyles.contentBody}>
               {detail.content}
             </div>
