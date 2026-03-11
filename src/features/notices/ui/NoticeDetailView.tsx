@@ -110,10 +110,8 @@ export function NoticeDetailView() {
         <div style={detailStyles.contentWrap}>
           <div style={detailStyles.metaRow}>
             <div style={detailStyles.metaItem}>
-              <span style={detailStyles.metaLabel}>분류</span>
-              <span style={{ ...detailStyles.categoryBadge, ...getCategoryBadgeStyle(notice.category) }}>
-                {notice.category}
-              </span>
+              <span style={detailStyles.metaLabel}>구분</span>
+              <span style={detailStyles.metaValue}>{notice.category}</span>
             </div>
             <div style={detailStyles.metaItem}>
               <span style={detailStyles.metaLabel}>작성자</span>
@@ -130,35 +128,6 @@ export function NoticeDetailView() {
           </div>
 
           <div style={detailStyles.contentSection}>
-            <span style={detailStyles.contentLabel}>제목</span>
-            <div style={{
-              fontFamily: FONT,
-              fontSize: 16,
-              fontWeight: 600,
-              lineHeight: "24px",
-              color: "#18181b",
-              padding: "4px 0",
-            }}>
-              {notice.isNew && (
-                <span style={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  padding: "2px 8px",
-                  borderRadius: 4,
-                  backgroundColor: "#fef3f2",
-                  border: "1px solid #f04438",
-                  color: "#f04438",
-                  fontFamily: FONT,
-                  fontSize: 12,
-                  fontWeight: 500,
-                  lineHeight: "16px",
-                  marginRight: 8,
-                  verticalAlign: "middle",
-                }}>NEW</span>
-              )}
-              {notice.title}
-            </div>
             <div style={detailStyles.contentBody}>
               {notice.content}
             </div>
