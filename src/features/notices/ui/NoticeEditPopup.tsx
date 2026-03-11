@@ -5,6 +5,8 @@ import { Button } from "@/shared/ui/global/Button";
 import { Checkbox } from "@/shared/ui/global/Checkbox";
 import { DatePicker } from "@/shared/ui/global/DatePicker";
 import { ToastEditor } from "@/shared/ui/service/ToastEditor";
+import { AlertModal } from "@/shared/ui/global/AlertModal";
+import { Snackbar } from "@/shared/ui/global/Snackbar";
 import type { NoticeDetail } from "@/features/notices/model/types";
 import { popupStyles as ps } from "@/shared/ui/styles";
 
@@ -66,6 +68,17 @@ function mapCategoryToRadio(notice: NoticeDetail): string {
   return notice.category;
 }
 
+async function saveNoticeEdit(_params: {
+  category: string;
+  title: string;
+  publishDate: string;
+  content: string;
+  pinned: boolean;
+  isDraft: boolean;
+}) {
+  await new Promise((resolve) => setTimeout(resolve, 300));
+}
+
 export function NoticeEditPopup({ open, onClose, notice }: NoticeEditPopupProps) {
   const [category, setCategory] = useState("공통");
   const [title, setTitle] = useState("");
@@ -74,6 +87,8 @@ export function NoticeEditPopup({ open, onClose, notice }: NoticeEditPopupProps)
   const [content, setContent] = useState("");
   const [files, setFiles] = useState<EditFile[]>([]);
   const [isDragging, setIsDragging] = useState(false);
+  const [closeAlertOpen, setCloseAlertOpen] = useState(false);
+  const [snackbar, setSnackbar] = useState<{ open: boolean; message: string }>({ open: false, message: "" });
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dragCounterRef = useRef(0);
 
@@ -103,10 +118,34 @@ export function NoticeEditPopup({ open, onClose, notice }: NoticeEditPopupProps)
     }
   }, [open, notice]);
 
-  if (!open || !notice) return null;
+  if (!open || !notice) return (
+    <Snackbar
+      open={snackbar.open}
+      onClose={() => setSnackbar({ open: false, message: "" })}
+      type="success"
+      message={snackbar.message}
+    />
+  );
+
+  const resetAndClose = () => {
+    setCloseAlertOpen(false);
+    onClose();
+  };
+
+  const handleSave = async () => {
+    await saveNoticeEdit({ category, title, publishDate, content, pinned, isDraft: false });
+    onClose();
+    setSnackbar({ open: true, message: "저장 되었습니다." });
+  };
+
+  const handleTempSave = async () => {
+    await saveNoticeEdit({ category, title, publishDate, content, pinned, isDraft: true });
+    onClose();
+    setSnackbar({ open: true, message: "임시저장 되었습니다." });
+  };
 
   const handleOverlayClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) onClose();
+    if (e.target === e.currentTarget) setCloseAlertOpen(true);
   };
 
   const handleFileSelect = () => {
@@ -158,12 +197,13 @@ export function NoticeEditPopup({ open, onClose, notice }: NoticeEditPopupProps)
   };
 
   return (
+    <>
     <div style={ps.overlay} onClick={handleOverlayClick}>
       <div style={ps.popup}>
         <div style={ps.header}>
           <div style={ps.titleRow}>
             <span style={ps.titleText}>공지사항 수정</span>
-            <button style={ps.closeBtn} onClick={onClose}>
+            <button style={ps.closeBtn} onClick={() => setCloseAlertOpen(true)}>
               <CloseIcon />
             </button>
           </div>
@@ -291,9 +331,9 @@ export function NoticeEditPopup({ open, onClose, notice }: NoticeEditPopupProps)
               size="l"
               variant="outlined"
               color="info"
-              onClick={onClose}
+              onClick={() => setCloseAlertOpen(true)}
             >
-              취소
+              닫기
             </Button>
           </div>
           <div style={ps.footerRight}>
@@ -301,6 +341,7 @@ export function NoticeEditPopup({ open, onClose, notice }: NoticeEditPopupProps)
               size="l"
               variant="outlined"
               color="positive"
+              onClick={handleTempSave}
             >
               임시저장
             </Button>
@@ -308,6 +349,7 @@ export function NoticeEditPopup({ open, onClose, notice }: NoticeEditPopupProps)
               size="l"
               variant="filled"
               color="positive"
+              onClick={handleSave}
             >
               저장
             </Button>
@@ -315,5 +357,25 @@ export function NoticeEditPopup({ open, onClose, notice }: NoticeEditPopupProps)
         </div>
       </div>
     </div>
+
+    <AlertModal
+      open={closeAlertOpen}
+      onClose={() => setCloseAlertOpen(false)}
+      type="warning"
+      message="변경된 사항을 저장하지 않고 창을 닫습니다."
+      showCancel
+      cancelLabel="취소"
+      confirmLabel="확인"
+      onCancel={() => setCloseAlertOpen(false)}
+      onConfirm={resetAndClose}
+    />
+
+    <Snackbar
+      open={snackbar.open}
+      onClose={() => setSnackbar({ open: false, message: "" })}
+      type="success"
+      message={snackbar.message}
+    />
+    </>
   );
 }
