@@ -348,21 +348,6 @@ export function QnADetailView() {
           </div>
         </div>
 
-        <div style={detailStyles.btnRow}>
-          <div style={detailStyles.btnLeft}>
-            <Button size="l" variant="outlined" color="info" leadingIcon={<BackIcon />} onClick={handleGoList}>
-              목록
-            </Button>
-          </div>
-          <div style={detailStyles.btnRight}>
-            <Button size="l" variant="outlined" color="info" onClick={() => setEditPopupOpen(true)}>
-              수정
-            </Button>
-            <Button size="l" variant="outlined" color="info" onClick={() => setDeleteAlertOpen(true)}>
-              삭제
-            </Button>
-          </div>
-        </div>
       </div>
 
       <QnAEditPopup
