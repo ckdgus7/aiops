@@ -205,6 +205,7 @@ src/
 * Refer to similar screens or popups.
 * Refer to similar script functionality and interactions in the existing files.
 * Analyze the Figma node spec structure as deeply as possible.
+* When a file is created under the `pages/` folder, add a route to `src/app/router/routes.tsx`.
 
 
 ---
