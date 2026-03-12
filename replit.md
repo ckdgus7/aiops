@@ -201,6 +201,10 @@ src/
 * Features must depend only on shared, and direct dependencies on other features are prohibited.
 * Pages should only compose features and must not be aware of their internal implementations.
 * For data integration such as APIs, create a features/api folder and implement it using @tanstack/react-query.
+* When adding screen or popup files, check the Figma design and the existing files in parallel.
+* Refer to similar screens or popups.
+* Refer to similar script functionality and interactions in the existing files.
+* Analyze the Figma node spec structure as deeply as possible.
 
 
 ---
